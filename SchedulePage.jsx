@@ -1,1 +1,0 @@
-// SchedulePage.jsx - responsive form, emailJS, cart summary
