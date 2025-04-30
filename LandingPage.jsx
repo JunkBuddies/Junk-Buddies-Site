@@ -1,0 +1,1 @@
+// LandingPage.jsx - responsive with video, CTAs, testimonials

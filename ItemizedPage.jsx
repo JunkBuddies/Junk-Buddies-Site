@@ -1,0 +1,1 @@
+// ItemizedPage.jsx - responsive search, add/remove cart, total
