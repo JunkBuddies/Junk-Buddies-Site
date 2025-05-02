@@ -16,7 +16,8 @@ function SelectionPage() {
         {/* Load Size Option */}
         <div
           onClick={() => navigate('/load-size')}
-          className="cursor-pointer bg-gold text-black font-bold py-12 px-8 rounded-2xl text-center text-2xl hover:bg-yellow-400 transition flex flex-col justify-center items-center shadow-lg"
+          className="cursor-pointer bg-gold text-black font-bold py-12 px-8 rounded-2xl text-center text-2xl 
+          glow-button transition flex flex-col justify-center items-center shadow-lg hover:scale-105"
         >
           Load Size
         </div>
@@ -24,7 +25,8 @@ function SelectionPage() {
         {/* Itemized Option */}
         <div
           onClick={() => navigate('/itemized')}
-          className="cursor-pointer bg-gold text-black font-bold py-12 px-8 rounded-2xl text-center text-2xl hover:bg-yellow-400 transition flex flex-col justify-center items-center shadow-lg"
+          className="cursor-pointer bg-gold text-black font-bold py-12 px-8 rounded-2xl text-center text-2xl 
+          glow-button transition flex flex-col justify-center items-center shadow-lg hover:scale-105"
         >
           Itemized
         </div>
@@ -33,4 +35,4 @@ function SelectionPage() {
   );
 }
 
-export default SelectionPage;// SelectionPage.jsx - responsive 2-button layout
+export default SelectionPage;
