@@ -6,7 +6,7 @@ function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="relative bg-black text-white min-h-screen flex flex-col justify-center items-center text-center px-4">
+    <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-4">
       {/* Video background */}
       <video
         autoPlay
@@ -15,62 +15,102 @@ function LandingPage() {
         className="absolute inset-0 w-full h-full object-cover z-0"
         src="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4"
       />
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-50 z-0"></div>
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0"></div>
 
       {/* Motto */}
-      <div className="relative z-10 mt-20">
-        <h1 className="text-6xl font-bold text-gold mb-4">Junk Buddies</h1>
-        <p className="text-2xl font-bold">Making Space For What Matters</p>
+      <div className="relative z-10 mt-24">
+        <h1 className="text-7xl font-bold text-gold mb-4 drop-shadow-[0_0_20px_gold]">
+          Junk Buddies
+        </h1>
+        <p className="text-2xl font-semibold tracking-wide">Making Space For What Matters</p>
       </div>
 
       {/* CTA */}
-      <div className="relative z-10 mt-8">
+      <div className="relative z-10 mt-8 space-y-4">
         <button
           onClick={() => navigate('/selection')}
-          className="bg-gold text-black font-bold py-3 px-6 rounded-xl hover:bg-yellow-400 transition"
+          className="bg-gold text-black font-bold py-3 px-8 rounded-xl hover:bg-yellow-400 transition shadow-lg hover:scale-105"
         >
           Get Started
         </button>
+        <button
+          onClick={() => navigate('/selection')}
+          className="bg-white text-black font-bold py-3 px-8 rounded-xl hover:bg-gray-200 transition shadow-lg hover:scale-105"
+        >
+          View Pricing
+        </button>
       </div>
 
-      {/* Other sections */}
-      <div className="relative z-10 mt-20 max-w-4xl">
-        <h2 className="text-3xl text-gold font-bold mb-4">How It Works</h2>
-        <ol className="space-y-2 text-left">
-          <li>1️⃣ Choose your load size or itemized items.</li>
-          <li>2️⃣ Schedule your pickup at your convenience.</li>
-          <li>3️⃣ We arrive and clear your junk fast!</li>
-        </ol>
+      {/* Sections */}
+      <div className="relative z-10 mt-20 max-w-6xl w-full space-y-20">
+        {/* How It Works */}
+        <section className="bg-gray-800/60 rounded-xl p-6 shadow-lg">
+          <h2 className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2">How It Works</h2>
+          <ol className="space-y-3 text-lg">
+            <li>1️⃣ Choose your load size or itemized items.</li>
+            <li>2️⃣ Schedule your pickup at your convenience.</li>
+            <li>3️⃣ We arrive and clear your junk fast!</li>
+          </ol>
+        </section>
 
-        <h2 className="text-3xl text-gold font-bold mt-12 mb-4">About Us</h2>
-        <p>
-          We’re a dedicated junk removal team serving Houston and surrounding areas with reliability,
-          speed, and friendly service. Our mission is to help you make space for what matters most.
-        </p>
+        {/* About Us */}
+        <section className="bg-gray-800/60 rounded-xl p-6 shadow-lg">
+          <h2 className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2">About Us</h2>
+          <p className="text-lg leading-relaxed">
+            We’re a dedicated junk removal team serving Houston and surrounding areas with reliability,
+            speed, and friendly service. Our mission is to help you make space for what matters most.
+          </p>
+        </section>
 
-        <h2 className="text-3xl text-gold font-bold mt-12 mb-4">Testimonials</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white text-black p-4 rounded-xl shadow">
-            <p>"They were quick, friendly, and cleaned everything perfectly. Highly recommend!"</p>
-            <span>- Alex R.</span>
+        {/* Testimonials */}
+        <section className="bg-gray-800/60 rounded-xl p-6 shadow-lg">
+          <h2 className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2">Testimonials</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white text-black p-6 rounded-xl shadow-lg border-l-4 border-gold relative">
+              <p className="italic text-lg">
+                “They were quick, friendly, and cleaned everything perfectly. Highly recommend!”
+              </p>
+              <span className="block mt-4 font-semibold text-right">- Alex R.</span>
+            </div>
+            <div className="bg-white text-black p-6 rounded-xl shadow-lg border-l-4 border-gold relative">
+              <p className="italic text-lg">
+                “Excellent service and easy scheduling. They really came through for us.”
+              </p>
+              <span className="block mt-4 font-semibold text-right">- Jamie L.</span>
+            </div>
           </div>
-          <div className="bg-white text-black p-4 rounded-xl shadow">
-            <p>"Excellent service and easy scheduling. They really came through for us."</p>
-            <span>- Jamie L.</span>
-          </div>
-        </div>
+        </section>
 
-        {/* Image placeholders */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
-          <div className="bg-gray-300 rounded-full w-full h-32"></div>
-          <div className="bg-gray-300 rounded-full w-full h-32"></div>
-          <div className="bg-gray-300 rounded-full w-full h-32"></div>
-          <div className="bg-gray-300 rounded-full w-full h-32"></div>
-        </div>
+        {/* Gallery */}
+        <section>
+          <h2 className="text-3xl text-gold font-bold mb-6 text-center">Our Work in Action</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <img
+              src="/images/couch-carrying.jpg"
+              alt="Team carrying a couch"
+              className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
+            />
+            <img
+              src="/images/team-sunset.jpg"
+              alt="Junk Buddies team at sunset"
+              className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
+            />
+            <img
+              src="/images/truck-fleet.jpg"
+              alt="Fleet of Junk Buddies trucks"
+              className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
+            />
+            <img
+              src="/images/demolition-crew.jpg"
+              alt="Junk Buddies team at a demolition site"
+              className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
+            />
+          </div>
+        </section>
       </div>
     </div>
   );
 }
 
-export default LandingPage;// LandingPage.jsx - responsive with video, CTAs, testimonials
+export default LandingPage;
