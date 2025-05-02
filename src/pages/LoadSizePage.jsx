@@ -30,7 +30,7 @@ function LoadSizePage() {
             <h2 className="text-2xl font-bold mb-4">{load.name}</h2>
             <p className="text-xl mb-4">${load.price.toFixed(2)}</p>
             <button
-              className="bg-gold text-black font-bold py-3 px-6 rounded-xl hover:bg-yellow-400 transition"
+              className="glow-button w-full"
               onClick={() => addToCart(load)}
             >
               Add
@@ -42,17 +42,21 @@ function LoadSizePage() {
       {/* Cart Summary */}
       <div className="mt-10 w-full max-w-3xl border-t border-gold pt-6 flex flex-col items-center">
         <p className="text-lg mb-4 font-bold">Total: ${getTotal().toFixed(2)}</p>
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-col md:flex-row w-full">
           <button
             disabled={cart.length === 0}
-            className="bg-gold text-black font-bold py-3 px-6 rounded-xl hover:bg-yellow-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`glow-button w-full ${
+              cart.length === 0 ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
             onClick={() => navigate('/itemized', { state: { cart, total: getTotal() } })}
           >
             Add Itemized Items
           </button>
           <button
             disabled={cart.length === 0}
-            className="bg-gold text-black font-bold py-3 px-6 rounded-xl hover:bg-yellow-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`glow-button w-full ${
+              cart.length === 0 ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
             onClick={() => navigate('/schedule', { state: { cart, total: getTotal() } })}
           >
             Continue
@@ -63,4 +67,4 @@ function LoadSizePage() {
   );
 }
 
-export default LoadSizePage;// LoadSizePage.jsx - responsive pricing grid
+export default LoadSizePage;
