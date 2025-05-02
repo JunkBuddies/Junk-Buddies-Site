@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import emailjs from '@emailjs/browser';
+import emailjs from 'emailjs/com';
 
 function SchedulePage() {
   const { state } = useLocation();
