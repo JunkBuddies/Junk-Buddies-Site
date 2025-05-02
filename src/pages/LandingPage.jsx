@@ -87,22 +87,22 @@ function LandingPage() {
           <h2 className="text-3xl text-gold font-bold mb-6 text-center">Our Work in Action</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <img
-              src="/images/couch-carrying.jpg"
+              src="/images/couch-carrying.png"
               alt="Team carrying a couch"
               className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
             />
             <img
-              src="/images/team-sunset.jpg"
+              src="/images/team-sunset.png"
               alt="Junk Buddies team at sunset"
               className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
             />
             <img
-              src="/images/truck-fleet.jpg"
+              src="/images/truck-fleet.png"
               alt="Fleet of Junk Buddies trucks"
               className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
             />
             <img
-              src="/images/demolition-crew.jpg"
+              src="/images/demolition-crew.png"
               alt="Junk Buddies team at a demolition site"
               className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
             />
