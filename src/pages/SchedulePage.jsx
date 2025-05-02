@@ -93,7 +93,7 @@ function SchedulePage() {
 
         <button
           type="submit"
-          className="w-full fancy-button"
+          className="w-full bg-gold text-black font-bold py-3 px-6 rounded-xl hover:bg-yellow-400"
         >
           Schedule Pickup
         </button>
@@ -103,3 +103,5 @@ function SchedulePage() {
 }
 
 export default SchedulePage;
+
+// SchedulePage.jsx - responsive form, emailJS, cart summary
