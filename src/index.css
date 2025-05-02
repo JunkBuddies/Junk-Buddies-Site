@@ -2,14 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Glow button effect */
+/* Base Glow Button */
 .button-glow {
-  @apply relative bg-black text-black font-bold py-3 px-8 rounded-xl overflow-hidden shadow-lg transition-transform transform hover:scale-105;
-  border: 2px solid gold;
-  box-shadow: 0 0 15px gold;
+  @apply relative bg-[#FFD700] text-black font-bold py-3 px-8 rounded-xl overflow-hidden shadow-lg transition-transform hover:scale-105;
+  border: 2px solid #FFD700;
+  box-shadow: 0 0 15px #FFD700;
 }
 
-/* Shine effect on hover */
 .button-glow::before {
   content: "";
   position: absolute;
@@ -26,37 +25,36 @@
   transform: rotate(25deg);
   transition: all 0.8s ease-in-out;
   pointer-events: none;
+  opacity: 0;
 }
 
 .button-glow:hover::before {
   transform: translateX(100%) rotate(25deg);
+  opacity: 1;
 }
 
-/* Fill effect on hover */
 .button-glow:hover {
-  background: gold;
+  background: #FFD700;
   color: black;
-  box-shadow: 0 0 25px gold, 0 0 60px gold inset;
+  box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
   animation: pulse 1.2s infinite;
 }
 
-/* Pulse animation */
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 25px gold, 0 0 60px gold inset;
+    box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
   }
   50% {
-    box-shadow: 0 0 35px gold, 0 0 80px gold inset;
+    box-shadow: 0 0 40px #FFD700, 0 0 100px #FFD700 inset;
   }
   100% {
-    box-shadow: 0 0 25px gold, 0 0 60px gold inset;
+    box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
   }
 }
 
-/* Social media - always glowing */
 .button-glow-always {
-  @apply relative bg-black text-black font-bold py-3 px-8 rounded-xl overflow-hidden shadow-lg;
-  border: 2px solid gold;
-  box-shadow: 0 0 20px gold, 0 0 40px gold inset;
+  @apply relative bg-[#FFD700] text-black font-bold py-3 px-8 rounded-full overflow-hidden shadow-lg;
+  border: 2px solid #FFD700;
+  box-shadow: 0 0 20px #FFD700, 0 0 40px #FFD700 inset;
   animation: pulse 1.5s infinite;
 }
