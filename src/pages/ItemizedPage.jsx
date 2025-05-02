@@ -48,7 +48,7 @@ return ( <div className="bg-black text-white min-h-screen p-6"> <h1 className="t
         </div>
       </div>
     ) : null
-  ))}
+  )}
 
   {/* Cart Summary */}
   <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gold p-4 flex flex-col md:flex-row justify-between items-center gap-4">
