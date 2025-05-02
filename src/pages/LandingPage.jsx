@@ -30,7 +30,7 @@ function LandingPage() {
       <div className="relative z-10 mt-8 space-y-4">
         <button
           onClick={() => navigate('/selection')}
-          className="glow-button text-black font-bold py-3 px-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105"
+          className="bg-gold text-black font-bold py-3 px-8 rounded-xl hover:bg-yellow-400 transition shadow-lg hover:scale-105"
         >
           Get Started
         </button>
