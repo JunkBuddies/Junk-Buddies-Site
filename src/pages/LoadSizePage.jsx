@@ -26,7 +26,10 @@ function LoadSizePage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
         {loadSizes.map((load, idx) => (
-          <div key={idx} className="bg-white text-black p-6 rounded-2xl shadow-lg flex flex-col justify-between items-center">
+          <div
+            key={idx}
+            className="bg-white text-black p-6 rounded-2xl shadow-lg flex flex-col justify-between items-center"
+          >
             <h2 className="text-2xl font-bold mb-4">{load.name}</h2>
             <p className="text-xl mb-4">${load.price.toFixed(2)}</p>
             <button
@@ -45,15 +48,19 @@ function LoadSizePage() {
         <div className="flex gap-4">
           <button
             disabled={cart.length === 0}
-            className="bg-gold text-black font-bold py-3 px-6 rounded-xl hover:bg-yellow-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() => navigate('/itemized', { state: { cart, total: getTotal() } })}
+            className={`button-glow disabled:opacity-50 disabled:cursor-not-allowed`}
+            onClick={() =>
+              navigate('/itemized', { state: { cart, total: getTotal() } })
+            }
           >
             Add Itemized Items
           </button>
           <button
             disabled={cart.length === 0}
-            className="bg-gold text-black font-bold py-3 px-6 rounded-xl hover:bg-yellow-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() => navigate('/schedule', { state: { cart, total: getTotal() } })}
+            className={`button-glow disabled:opacity-50 disabled:cursor-not-allowed`}
+            onClick={() =>
+              navigate('/schedule', { state: { cart, total: getTotal() } })
+            }
           >
             Continue
           </button>
@@ -63,4 +70,4 @@ function LoadSizePage() {
   );
 }
 
-export default LoadSizePage; // LoadSizePage.jsx - responsive pricing grid
+export default LoadSizePage; // LoadSizePage.jsx - updated button styles
