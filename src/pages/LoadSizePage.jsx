@@ -15,10 +15,16 @@ function LoadSizePage() {
   const navigate = useNavigate();
 
   const addToCart = (item) => {
-    setCart([item]); // Ensures only one load size is in cart at a time
+    setCart((prev) => [...prev, item]); // Now allows adding multiple loads
   };
 
-  const getTotal = () => (cart.length > 0 ? cart[0].price : 0);
+  const removeFromCart = (index) => {
+    const updated = [...cart];
+    updated.splice(index, 1);
+    setCart(updated);
+  };
+
+  const getTotal = () => cart.reduce((sum, item) => sum + item.price, 0);
 
   return (
     <div className="bg-black text-white min-h-screen p-6 flex flex-col items-center">
@@ -33,7 +39,7 @@ function LoadSizePage() {
             <h2 className="text-2xl font-bold mb-4">{load.name}</h2>
             <p className="text-xl mb-4">${load.price.toFixed(2)}</p>
             <button
-              className="bg-gold text-black font-bold py-3 px-6 rounded-xl hover:bg-yellow-400 transition"
+              className="button-glow"
               onClick={() => addToCart(load)}
             >
               Add
@@ -45,6 +51,19 @@ function LoadSizePage() {
       {/* Cart Summary */}
       <div className="mt-10 w-full max-w-3xl border-t border-gold pt-6 flex flex-col items-center">
         <p className="text-lg mb-4 font-bold">Total: ${getTotal().toFixed(2)}</p>
+        <ul className="mb-4 w-full max-w-md">
+          {cart.map((item, idx) => (
+            <li key={idx} className="flex justify-between items-center text-sm border-b border-gray-700 py-2">
+              {item.name} - ${item.price.toFixed(2)}
+              <button
+                onClick={() => removeFromCart(idx)}
+                className="text-red-500 text-xs ml-2 hover:underline"
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
         <div className="flex gap-4">
           <button
             disabled={cart.length === 0}
@@ -70,4 +89,4 @@ function LoadSizePage() {
   );
 }
 
-export default LoadSizePage; // LoadSizePage.jsx - updated button styles
+export default LoadSizePage; // LoadSizePage.jsx - multiple load support, updated buttons (Rule ALPHA)
