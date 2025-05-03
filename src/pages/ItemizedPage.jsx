@@ -402,7 +402,7 @@ function ItemizedPage() {
         section.items.length > 0 ? (
           <div key={idx} className="mb-10">
             <h2 className="text-2xl text-gold mb-4">{section.category}</h2>
-            <div className="grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+             <div className="grid w-full xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {section.items.map((item, i) => (
                 <div
                   key={i}
