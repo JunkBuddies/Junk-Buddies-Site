@@ -15,7 +15,7 @@ function LoadSizePage() {
   const navigate = useNavigate();
 
   const addToCart = (item) => {
-    setCart((prev) => [...prev, item]); // Now allows adding multiple loads
+    setCart((prev) => [...prev, item]); // Allows multiple loads
   };
 
   const removeFromCart = (index) => {
@@ -64,10 +64,9 @@ function LoadSizePage() {
             </li>
           ))}
         </ul>
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-col md:flex-row">
           <button
-            disabled={cart.length === 0}
-            className={`button-glow disabled:opacity-50 disabled:cursor-not-allowed`}
+            className="button-glow"
             onClick={() =>
               navigate('/itemized', { state: { cart, total: getTotal() } })
             }
@@ -76,12 +75,12 @@ function LoadSizePage() {
           </button>
           <button
             disabled={cart.length === 0}
-            className={`button-glow disabled:opacity-50 disabled:cursor-not-allowed`}
+            className="button-glow disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={() =>
               navigate('/schedule', { state: { cart, total: getTotal() } })
             }
           >
-            Continue
+            Schedule Now
           </button>
         </div>
       </div>
@@ -89,4 +88,4 @@ function LoadSizePage() {
   );
 }
 
-export default LoadSizePage; // LoadSizePage.jsx - multiple load support, updated buttons (Rule ALPHA)
+export default LoadSizePage; // LoadSizePage.jsx - updated button text (Rule ALPHA)
