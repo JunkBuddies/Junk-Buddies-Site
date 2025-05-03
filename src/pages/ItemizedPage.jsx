@@ -167,7 +167,7 @@ function ItemizedPage() {
         <div className="flex flex-col items-center gap-2">
           <p className="font-bold">Total: ${getTotal().toFixed(2)}</p>
           <button
-            className="bg-gold px-6 py-3 rounded-xl text-black font-bold hover:bg-yellow-400 w-full"
+            className="button-glow w-full"
             onClick={() =>
               navigate('/schedule', {
                 state: { cart, total: getTotal() },
@@ -183,5 +183,3 @@ function ItemizedPage() {
 }
 
 export default ItemizedPage;
-
-// ItemizedPage.jsx - responsive search, add/remove cart, total
