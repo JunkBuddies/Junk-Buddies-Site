@@ -7,9 +7,9 @@ const itemData = [
   {
     category: 'Full Itemized List',
     items: [
-      { name: '1 Car Garage Cleanout', price: 350 },
-      { name: '2 Car Garage Cleanout', price: 500 },
-      { name: '3 Car Garage Cleanout', price: 700 },
+      { name: '1 Car Garage Cleanout', price: 0 },
+      { name: '2 Car Garage Cleanout', price: 0 },
+      { name: '3 Car Garage Cleanout', price: 0 },
       { name: '30" Range', price: 95 },
       { name: '48" Range', price: 120 },
       { name: '60" Range', price: 150 },
@@ -35,10 +35,9 @@ const itemData = [
       { name: 'Baby Swing', price: 40 },
       { name: 'Baby Walker', price: 35 },
       { name: 'Bag of Junk', price: 30 },
-      { name: 'Basement Cleanout', price: 400 },
       { name: 'Basi Systems Reformer', price: 180 },
       { name: 'Basketball Goal', price: 120 },
-      { name: 'Bathroom Cleanout', price: 250 },
+      { name: 'Bathroom Cleanout', price: 0 },
       { name: 'Bathtub - Cast Iron', price: 160 },
       { name: 'Bathtub - Fiberglass', price: 120 },
       { name: 'Bathtub - Porcelain', price: 130 },
@@ -54,8 +53,8 @@ const itemData = [
       { name: 'Bed Frame - King/Cal King', price: 90 },
       { name: 'Bed Frame - Twin', price: 70 },
       { name: 'Bedframe with Drawers', price: 100 },
-      { name: 'Bedroom Cleanout - Large', price: 350 },
-      { name: 'Bedroom Cleanout - Small', price: 220 },
+      { name: 'Bedroom Cleanout - Large', price: 0 },
+      { name: 'Bedroom Cleanout - Small', price: 0 },
       { name: 'Bed Side Rails', price: 40 },
       { name: 'Bench', price: 60 },
       { name: 'Bicycle', price: 50 },
@@ -106,7 +105,7 @@ const itemData = [
       { name: 'Custom Job - S', price: 120 },
       { name: 'Custom Job - XS', price: 80 },
       { name: 'Daybed', price: 85 },
-      { name: 'Den Cleanout', price: 300 },
+      { name: 'Den Cleanout', price: 0 },
       { name: 'Desk', price: 70 },
       { name: 'Desk - Executive', price: 100 },
       { name: 'Desk - L-Shaped', price: 110 },
@@ -168,7 +167,7 @@ const itemData = [
       { name: 'Junk Pile - Small (5x5x5 ft)', price: 140 },
       { name: 'Keyboard - Electric', price: 50 },
       { name: 'Kids Bike', price: 40 },
-      { name: 'Kitchen Cleanout', price: 350 },
+      { name: 'Kitchen Cleanout', price: 0 },
       { name: 'Ladder', price: 45 },
       { name: 'Lamp', price: 30 },
       { name: 'Large Sports Equipment', price: 100 },
@@ -178,7 +177,7 @@ const itemData = [
       { name: 'Leafblower', price: 40 },
       { name: 'Linens', price: 30 },
       { name: 'Lingerie Chest', price: 60 },
-      { name: 'Living Room Cleanout', price: 350 },
+      { name: 'Living Room Cleanout', price: 0 },
       { name: 'Loveseat - Reclining', price: 110 },
       { name: 'Luggage', price: 40 },
       { name: 'Marble/Concrete Table', price: 150 },
@@ -367,7 +366,10 @@ function ItemizedPage() {
   };
 
   const getTotal = () =>
-    (initialTotal || 0) + cart.reduce((sum, item) => sum + item.price, 0);
+    (initialTotal || 0) +
+    cart
+      .filter((item) => !item.name.toLowerCase().includes('cleanout'))
+      .reduce((sum, item) => sum + item.price, 0);
 
   const filteredData = itemData.map((section) => ({
     ...section,
@@ -381,6 +383,10 @@ function ItemizedPage() {
       <h1 className="text-gold text-4xl font-bold mb-6 text-center">
         Itemized Junk Removal
       </h1>
+
+      <div className="mb-2 text-center text-sm text-yellow-400 italic">
+        *Cleanout services are estimates only and will be confirmed by our team prior to your appointment.
+      </div>
 
       <div className="mb-6 max-w-2xl mx-auto">
         <input
@@ -404,7 +410,13 @@ function ItemizedPage() {
                 >
                   <div>
                     <p className="font-semibold">{item.name}</p>
-                    <p className="text-sm">${item.price.toFixed(2)}</p>
+                    {item.name.toLowerCase().includes('cleanout') ? (
+                      <p className="text-xs italic text-gray-700">
+                        Estimated: ${item.price.toFixed(2)}
+                      </p>
+                    ) : (
+                      <p className="text-sm">${item.price.toFixed(2)}</p>
+                    )}
                   </div>
                   <button
                     className="bg-gold mt-4 px-4 py-2 rounded text-black font-bold hover:bg-yellow-400"
@@ -429,7 +441,14 @@ function ItemizedPage() {
                 key={idx}
                 className="flex justify-between items-center text-sm"
               >
-                {item.name} - ${item.price.toFixed(2)}
+                {item.name}{' '}
+                {item.name.toLowerCase().includes('cleanout') ? (
+                  <span className="italic text-gray-400">
+                    (Estimate only)
+                  </span>
+                ) : (
+                  `- $${item.price.toFixed(2)}`
+                )}
                 <button
                   onClick={() => removeFromCart(idx)}
                   className="text-red-500 text-xs ml-2 hover:underline"
@@ -441,7 +460,9 @@ function ItemizedPage() {
           </ul>
         </div>
         <div className="flex flex-col items-center gap-2">
-          <p className="font-bold">Total: ${getTotal().toFixed(2)}</p>
+          <p className="font-bold">
+            Total: ${getTotal().toFixed(2)}
+          </p>
           <button
             className="button-glow w-full"
             onClick={() =>
