@@ -20,7 +20,7 @@ function ConfirmationPage() {
           href="https://facebook.com/JunkBuddies.info"
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-gold text-black rounded-full p-3 hover:bg-yellow-400 transition"
+          className="button-glow-always rounded-full p-3 transition"
         >
           <FaFacebookSquare size={32} />
         </a>
@@ -28,7 +28,7 @@ function ConfirmationPage() {
           href="https://instagram.com/JunkBuddies.info"
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-gold text-black rounded-full p-3 hover:bg-yellow-400 transition"
+          className="button-glow-always rounded-full p-3 transition"
         >
           <FaInstagram size={32} />
         </a>
@@ -36,14 +36,14 @@ function ConfirmationPage() {
           href="https://tiktok.com/@JunkBuddies.info"
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-gold text-black rounded-full p-3 hover:bg-yellow-400 transition"
+          className="button-glow-always rounded-full p-3 transition"
         >
           <FaTiktok size={32} />
         </a>
       </div>
 
       <button
-        className="bg-gold text-black font-bold py-3 px-6 rounded-xl hover:bg-yellow-400 transition"
+        className="button-glow w-full max-w-xs"
         onClick={() => navigate('/')}
       >
         Back to Home
@@ -53,5 +53,3 @@ function ConfirmationPage() {
 }
 
 export default ConfirmationPage;
-
-// ConfirmationPage.jsx - thank you + responsive social links
