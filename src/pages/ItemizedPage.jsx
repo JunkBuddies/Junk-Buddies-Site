@@ -350,6 +350,7 @@ const itemData = [
 function ItemizedPage() {
   const [cart, setCart] = useState([]);
   const [search, setSearch] = useState('');
+  const [cartVisible, setCartVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const initialCart = location.state?.cart || [];
@@ -402,7 +403,7 @@ function ItemizedPage() {
         section.items.length > 0 ? (
           <div key={idx} className="mb-10">
             <h2 className="text-2xl text-gold mb-4">{section.category}</h2>
-             <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {section.items.map((item, i) => (
                 <div
                   key={i}
@@ -431,49 +432,65 @@ function ItemizedPage() {
         ) : null
       )}
 
-      {/* Cart Summary */}
-      <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gold p-4 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="flex-1">
-          <p className="font-bold text-lg mb-2">Cart:</p>
-          <ul>
-            {cart.map((item, idx) => (
-              <li
-                key={idx}
-                className="flex justify-between items-center text-sm"
+      <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gold p-4">
+        <div
+          className="flex justify-between items-center cursor-pointer"
+          onClick={() => setCartVisible(!cartVisible)}
+        >
+          <p className="font-bold text-lg">View Cart ({cart.length})</p>
+          <span className={`transform transition-transform ${cartVisible ? 'rotate-180' : ''}`}>
+            ▼
+          </span>
+        </div>
+
+        {cartVisible && (
+          <div className="mt-4 flex flex-col md:flex-row justify-between items-start gap-4">
+            <div className="flex-1 max-h-40 overflow-y-auto pr-2 w-full">
+              {cart.length === 0 ? (
+                <p className="italic text-gray-400">Your cart is empty.</p>
+              ) : (
+                <ul>
+                  {cart.map((item, idx) => (
+                    <li
+                      key={idx}
+                      className="flex justify-between items-center text-sm mb-1"
+                    >
+                      {item.name}{' '}
+                      {item.name.toLowerCase().includes('cleanout') ? (
+                        <span className="italic text-gray-400">
+                          (Estimate only)
+                        </span>
+                      ) : (
+                        `- $${item.price.toFixed(2)}`
+                      )}
+                      <button
+                        onClick={() => removeFromCart(idx)}
+                        className="text-red-500 text-xs ml-2 hover:underline"
+                      >
+                        Remove
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div className="flex flex-col items-center gap-2 w-full md:w-auto">
+              <p className="font-bold">
+                Total: ${getTotal().toFixed(2)}
+              </p>
+              <button
+                className="button-glow w-full"
+                onClick={() =>
+                  navigate('/schedule', {
+                    state: { cart, total: getTotal() },
+                  })
+                }
               >
-                {item.name}{' '}
-                {item.name.toLowerCase().includes('cleanout') ? (
-                  <span className="italic text-gray-400">
-                    (Estimate only)
-                  </span>
-                ) : (
-                  `- $${item.price.toFixed(2)}`
-                )}
-                <button
-                  onClick={() => removeFromCart(idx)}
-                  className="text-red-500 text-xs ml-2 hover:underline"
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="flex flex-col items-center gap-2">
-          <p className="font-bold">
-            Total: ${getTotal().toFixed(2)}
-          </p>
-          <button
-            className="button-glow w-full"
-            onClick={() =>
-              navigate('/schedule', {
-                state: { cart, total: getTotal() },
-              })
-            }
-          >
-            Schedule Now
-          </button>
-        </div>
+                Schedule Now
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
