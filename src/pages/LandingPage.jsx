@@ -7,10 +7,7 @@ function LandingPage() {
 
   return (
     <div className="hero-space-background">
-      <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-4">
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0"></div>
-
+      <div className="relative text-white min-h-screen flex flex-col justify-center items-center text-center px-4">
         {/* Motto */}
         <div className="relative z-10 mt-24">
           <h1 className="text-7xl font-bold text-gold mb-4 drop-shadow-[0_0_20px_gold]">
