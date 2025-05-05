@@ -405,28 +405,23 @@ function ItemizedPage() {
             <h2 className="text-2xl text-gold mb-4">{section.category}</h2>
             <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {section.items.map((item, i) => (
-                <div
-                  key={i}
-                  className="bg-white text-black p-4 rounded-xl shadow flex flex-col justify-between"
-                >
-                  <div>
-                    <p className="font-semibold">{item.name}</p>
-                    {item.name.toLowerCase().includes('cleanout') ? (
-                      <p className="text-xs italic text-gray-700">
-                        Estimated: ${item.price.toFixed(2)}
-                      </p>
-                    ) : (
-                      <p className="text-sm">${item.price.toFixed(2)}</p>
-                    )}
-                  </div>
-                  <button
-                    className="bg-gold mt-4 px-4 py-2 rounded text-black font-bold hover:bg-yellow-400"
-                    onClick={() => addToCart(item)}
-                  >
-                    Add
-                  </button>
-                </div>
-              ))}
+  <button
+    key={i}
+    className="item-card-button"
+    onClick={() => addToCart(item)}
+  >
+    <div className="item-card-button-text">
+      <p className="font-semibold">{item.name}</p>
+      {item.name.toLowerCase().includes('cleanout') ? (
+        <p className="text-xs italic text-gray-700">
+          Estimated: ${item.price.toFixed(2)}
+        </p>
+      ) : (
+        <p className="text-sm">${item.price.toFixed(2)}</p>
+      )}
+    </div>
+  </button>
+))}
             </div>
           </div>
         ) : null
