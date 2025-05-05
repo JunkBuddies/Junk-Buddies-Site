@@ -32,19 +32,14 @@ function LoadSizePage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
         {loadSizes.map((load, idx) => (
-          <div
+          <button
             key={idx}
-            className="bg-white text-black p-6 rounded-2xl shadow-lg flex flex-col justify-between items-center"
+            className="item-card-button text-center"
+            onClick={() => addToCart(load)}
           >
-            <h2 className="text-2xl font-bold mb-4">{load.name}</h2>
-            <p className="text-xl mb-4">${load.price.toFixed(2)}</p>
-            <button
-              className="button-glow"
-              onClick={() => addToCart(load)}
-            >
-              Add
-            </button>
-          </div>
+            <div className="item-card-button-text text-xl font-bold mb-2">{load.name}</div>
+            <div className="item-card-button-text text-lg">${load.price.toFixed(2)}</div>
+          </button>
         ))}
       </div>
 
@@ -88,4 +83,4 @@ function LoadSizePage() {
   );
 }
 
-export default LoadSizePage; // LoadSizePage.jsx - updated button text (Rule ALPHA)
+export default LoadSizePage;
