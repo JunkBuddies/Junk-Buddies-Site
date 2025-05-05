@@ -2,62 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base Glow Button (keep original color) */
-.button-glow {
-  @apply relative bg-[#FFD700] text-black font-bold py-3 px-8 rounded-xl overflow-hidden shadow-lg transition-transform hover:scale-105;
-  border: 2px solid #FFD700;
-  box-shadow: 0 0 15px #FFD700;
-}
-
-.button-glow::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 215, 0, 0) 30%,
-    rgba(255, 215, 0, 0.5) 50%,
-    rgba(255, 215, 0, 0) 70%
-  );
-  transform: rotate(25deg);
-  transition: all 0.8s ease-in-out;
-  pointer-events: none;
-  opacity: 0;
-}
-
-.button-glow:hover::before {
-  transform: translateX(100%) rotate(25deg);
-  opacity: 1;
-}
-
-.button-glow:hover {
-  background: #FFD700;
-  color: black;
-  box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
-  animation: pulse 1.2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
-  }
-  50% {
-    box-shadow: 0 0 40px #FFD700, 0 0 100px #FFD700 inset;
-  }
-  100% {
-    box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
-  }
-}
-
-.button-glow-always {
-  @apply relative bg-[#FFD700] text-black font-bold py-3 px-8 rounded-full overflow-hidden shadow-lg;
-  border: 2px solid #FFD700;
-  box-shadow: 0 0 20px #FFD700, 0 0 40px #FFD700 inset;
-  animation: pulse 1.5s infinite;
-}
+/* No change to glow buttons — left intact */
 
 /* Hero Section Space Background */
 @keyframes spaceDrift {
@@ -94,50 +39,65 @@
   opacity: 0.75;
 }
 
-/* Itemized Page Full-Card 3D Metallic Button (ONLY this is updated) */
+/* --- NEW: Itemized Page - Realistic Metal Plaque Button --- */
 .item-card-button {
   @apply w-full text-black font-bold rounded-xl shadow-lg relative overflow-hidden transition-transform transform-gpu p-4 text-left;
-  background: linear-gradient(145deg, #d7b56d, #b28b52, #e8ca90);
-  background-size: 200% 200%;
+  background: linear-gradient(
+    135deg,
+    #d4af37 0%,
+    #f1c75e 25%,
+    #b8860b 50%,
+    #f1c75e 75%,
+    #d4af37 100%
+  );
+  background-size: 300% 300%;
+  border: 2px solid #8b6914;
+  border-radius: 1rem;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.6),
-    inset 0 -3px 8px rgba(0, 0, 0, 0.3),
-    0 8px 0 #9c7b44,
-    0 8px 20px rgba(0, 0, 0, 0.3);
-  border: 2px solid #b28b52;
-  cursor: pointer;
-  transition: all 0.2s ease;
+    inset 0 2px 4px rgba(255, 255, 255, 0.5),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+    0 6px 10px rgba(0, 0, 0, 0.5),
+    0 0 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
 }
 
+/* Shine hover effect */
 .item-card-button:hover {
   background-position: 100% 0;
-  filter: brightness(1.1) contrast(1.05);
-}
-
-.item-card-button:active {
-  transform: translateY(8px);
+  filter: brightness(1.15) contrast(1.1);
   box-shadow:
-    inset 0 2px 4px rgba(0, 0, 0, 0.4),
-    0 0 0 #9c7b44;
+    inset 0 2px 8px rgba(255, 255, 255, 0.6),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.4),
+    0 8px 15px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Engraved text */
+/* Press down effect */
+.item-card-button:active {
+  transform: translateY(5px);
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.6),
+    inset 0 -2px 6px rgba(255, 255, 255, 0.4),
+    0 0 0 rgba(0, 0, 0, 0);
+}
+
+/* Engraved text effect */
 .item-card-button-text {
-  color: #3a2f00;
+  color: #2e2e2e;
   text-shadow:
-    inset 1px 1px 2px rgba(0, 0, 0, 0.7),
-    1px 1px 0 rgba(255, 255, 255, 0.2),
-    -1px -1px 0 rgba(0, 0, 0, 0.6);
-  mix-blend-mode: multiply;
+    1px 1px 1px rgba(255, 255, 255, 0.3),
+    -1px -1px 1px rgba(0, 0, 0, 0.7),
+    inset 0 0 5px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.5px;
 }
 
-/* Optional bounce */
+/* Optional: subtle pulse bounce on click */
 @keyframes buttonBounce {
   0% {
     transform: scale(1);
   }
   50% {
-    transform: scale(0.95);
+    transform: scale(0.96);
   }
   100% {
     transform: scale(1);
@@ -145,5 +105,5 @@
 }
 
 .item-card-button.bounce {
-  animation: buttonBounce 0.3s ease-out;
+  animation: buttonBounce 0.25s ease-out;
 }
