@@ -4,9 +4,9 @@
 
 /* Base Glow Button */
 .button-glow {
-  @apply relative bg-[#FFD700] text-black font-bold py-3 px-8 rounded-xl overflow-hidden shadow-lg transition-transform hover:scale-105;
-  border: 2px solid #FFD700;
-  box-shadow: 0 0 15px #FFD700;
+  @apply relative bg-[#d7b56d] text-black font-bold py-3 px-8 rounded-xl overflow-hidden shadow-lg transition-transform hover:scale-105;
+  border: 2px solid #d7b56d;
+  box-shadow: 0 0 15px #d7b56d;
 }
 
 .button-glow::before {
@@ -18,9 +18,9 @@
   height: 200%;
   background: linear-gradient(
     120deg,
-    rgba(255, 215, 0, 0) 30%,
-    rgba(255, 215, 0, 0.5) 50%,
-    rgba(255, 215, 0, 0) 70%
+    rgba(215, 181, 109, 0) 30%,
+    rgba(215, 181, 109, 0.5) 50%,
+    rgba(215, 181, 109, 0) 70%
   );
   transform: rotate(25deg);
   transition: all 0.8s ease-in-out;
@@ -34,28 +34,28 @@
 }
 
 .button-glow:hover {
-  background: #FFD700;
+  background: #d7b56d;
   color: black;
-  box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
+  box-shadow: 0 0 30px #d7b56d, 0 0 80px #d7b56d inset;
   animation: pulse 1.2s infinite;
 }
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
+    box-shadow: 0 0 30px #d7b56d, 0 0 80px #d7b56d inset;
   }
   50% {
-    box-shadow: 0 0 40px #FFD700, 0 0 100px #FFD700 inset;
+    box-shadow: 0 0 40px #d7b56d, 0 0 100px #d7b56d inset;
   }
   100% {
-    box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
+    box-shadow: 0 0 30px #d7b56d, 0 0 80px #d7b56d inset;
   }
 }
 
 .button-glow-always {
-  @apply relative bg-[#FFD700] text-black font-bold py-3 px-8 rounded-full overflow-hidden shadow-lg;
-  border: 2px solid #FFD700;
-  box-shadow: 0 0 20px #FFD700, 0 0 40px #FFD700 inset;
+  @apply relative bg-[#d7b56d] text-black font-bold py-3 px-8 rounded-full overflow-hidden shadow-lg;
+  border: 2px solid #d7b56d;
+  box-shadow: 0 0 20px #d7b56d, 0 0 40px #d7b56d inset;
   animation: pulse 1.5s infinite;
 }
 
@@ -91,38 +91,49 @@
   background-size: cover;
   z-index: -1;
   animation: spaceDrift 60s linear infinite;
-  opacity: 0.75; /* Adjust transparency if needed */
+  opacity: 0.75;
 }
 
 /* Itemized Page Full-Card 3D Metallic Button */
 .item-card-button {
   @apply w-full text-black font-bold rounded-xl shadow-lg relative overflow-hidden transition-transform transform-gpu p-4 text-left;
-  background: linear-gradient(145deg, #FFD700, #e6c200);
-  box-shadow: 0 8px 0 #bfa100, 0 8px 20px rgba(0, 0, 0, 0.3);
-  border: 2px solid #e6c200;
+  background: linear-gradient(145deg, #d7b56d, #b28b52, #e8ca90);
+  background-size: 200% 200%;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -3px 8px rgba(0, 0, 0, 0.3),
+    0 8px 0 #9c7b44,
+    0 8px 20px rgba(0, 0, 0, 0.3);
+  border: 2px solid #b28b52;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-/* Hover effect: slight shine */
+/* Metallic shine hover effect */
 .item-card-button:hover {
-  filter: brightness(1.1);
+  background-position: 100% 0;
+  filter: brightness(1.1) contrast(1.05);
 }
 
-/* Active press effect: pushes down + removes shadow */
+/* Active press effect */
 .item-card-button:active {
   transform: translateY(8px);
-  box-shadow: 0 0 0 #bfa100;
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.4),
+    0 0 0 #9c7b44;
 }
 
 /* Engraved text */
 .item-card-button-text {
+  color: #3a2f00;
   text-shadow:
-    1px 1px 2px #bfa100,
-    -1px -1px 2px #fff;
-  color: #333;
+    inset 1px 1px 2px rgba(0, 0, 0, 0.7),
+    1px 1px 0 rgba(255, 255, 255, 0.2),
+    -1px -1px 0 rgba(0, 0, 0, 0.6);
+  mix-blend-mode: multiply;
 }
 
-/* Optional: bounce effect after click */
+/* Optional bounce */
 @keyframes buttonBounce {
   0% {
     transform: scale(1);
