@@ -93,3 +93,48 @@
   animation: spaceDrift 60s linear infinite;
   opacity: 0.75; /* Adjust transparency if needed */
 }
+
+/* Itemized Page Full-Card 3D Metallic Button */
+.item-card-button {
+  @apply w-full text-black font-bold rounded-xl shadow-lg relative overflow-hidden transition-transform transform-gpu p-4 text-left;
+  background: linear-gradient(145deg, #FFD700, #e6c200);
+  box-shadow: 0 8px 0 #bfa100, 0 8px 20px rgba(0, 0, 0, 0.3);
+  border: 2px solid #e6c200;
+  cursor: pointer;
+}
+
+/* Hover effect: slight shine */
+.item-card-button:hover {
+  filter: brightness(1.1);
+}
+
+/* Active press effect: pushes down + removes shadow */
+.item-card-button:active {
+  transform: translateY(8px);
+  box-shadow: 0 0 0 #bfa100;
+}
+
+/* Engraved text */
+.item-card-button-text {
+  text-shadow:
+    1px 1px 2px #bfa100,
+    -1px -1px 2px #fff;
+  color: #333;
+}
+
+/* Optional: bounce effect after click */
+@keyframes buttonBounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.item-card-button.bounce {
+  animation: buttonBounce 0.3s ease-out;
+}
