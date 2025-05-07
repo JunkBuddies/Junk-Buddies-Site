@@ -3,6 +3,21 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+// Load tier rates (35-yard truck)
+const loadRates = [
+  { maxVolume: 8.75, price: 250 },
+  { maxVolume: 17.5, price: 500 },
+  { maxVolume: 26.25, price: 750 },
+  { maxVolume: 35, price: 1000 }
+];
+
+// Discount progression logic
+const getDiscountRate = (index) => {
+  if (index < 2) return 0;
+  const step = Math.floor((index - 2) / 2);
+  const discount = 15 + (step * 5);
+  return Math.min(discount, 45);
+};
 const itemData = [
   {
     category: 'Beds & Bedroom Furniture',
@@ -463,41 +478,157 @@ function ItemizedPage() {
             <div className="flex-1 max-h-40 overflow-y-auto pr-2 w-full">
               {cart.length === 0 ? (
                 <p className="italic text-gray-400">Your cart is empty.</p>
+function ItemizedPage() {
+  const [cart, setCart] = useState([]);
+  const [search, setSearch] = useState('');
+  const [cartVisible, setCartVisible] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const initialCart = location.state?.cart || [];
+  const initialTotal = location.state?.total || 0;
+
+  const addToCart = (item) => {
+    setCart([...cart, item]);
+  };
+
+  const removeFromCart = (index) => {
+    const updated = [...cart];
+    updated.splice(index, 1);
+    setCart(updated);
+  };
+
+  // Dynamic pricing calculations
+  const totalVolume = cart.reduce((sum, item) => sum + item.volume, 0);
+
+  const discountedItemTotal = cart.reduce((sum, item, index) => {
+    const discountRate = getDiscountRate(index);
+    const discountedPrice = item.price * (1 - discountRate / 100);
+    return sum + discountedPrice;
+  }, 0);
+
+  const applicableLoad = loadRates.find(tier => totalVolume <= tier.maxVolume);
+  const loadPrice = applicableLoad ? applicableLoad.price : loadRates[loadRates.length - 1].price;
+
+  const finalPrice = Math.min(discountedItemTotal, loadPrice);
+  const itemSavings = cart.reduce((sum, item) => sum + item.price, 0) - discountedItemTotal;
+  const loadSavings = discountedItemTotal > loadPrice ? discountedItemTotal - loadPrice : 0;
+
+  const filteredData = itemData.map((section) => ({
+    ...section,
+    items: section.items.filter((item) =>
+      item.name.toLowerCase().includes(search.toLowerCase())
+    ),
+  }));
+
+  return (
+    <div className="bg-black text-white min-h-screen p-6 pb-32">
+      <h1 className="text-gold text-4xl font-bold mb-6 text-center">
+        Itemized Junk Removal
+      </h1>
+
+      <div className="mb-2 text-center text-sm text-yellow-400 italic">
+        *Cleanout services are estimates only and will be confirmed by our team prior to your appointment.
+      </div>
+
+      <div className="mb-6 max-w-2xl mx-auto">
+        <input
+          type="text"
+          placeholder="Search items..."
+          className="w-full p-3 rounded-xl text-black"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
+      {filteredData.map((section, idx) =>
+        section.items.length > 0 ? (
+          <div key={idx} className="mb-10">
+            <h2 className="text-2xl text-gold mb-4">{section.category}</h2>
+            <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {section.items.map((item, i) => (
+                <button
+                  key={i}
+                  className="item-card-button"
+                  onClick={() => addToCart(item)}
+                >
+                  <div className="item-card-button-text">
+                    <p className="font-semibold">{item.name}</p>
+                    {/* Price intentionally hidden */}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null
+      )}
+
+      <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gold p-4">
+        <div
+          className="flex justify-between items-center cursor-pointer"
+          onClick={() => setCartVisible(!cartVisible)}
+        >
+          <p className="text-gold text-lg font-bold">
+            View Cart ({cart.length}) — Total: ${finalPrice.toFixed(2)}
+          </p>
+          <span className={`transform transition-transform ${cartVisible ? 'rotate-180' : ''}`}>
+            ▼
+          </span>
+        </div>
+
+        {cartVisible && (
+          <div className="mt-4 flex flex-col md:flex-row justify-between items-start gap-4">
+            <div className="flex-1 max-h-40 overflow-y-auto pr-2 w-full">
+              {cart.length === 0 ? (
+                <p className="italic text-gray-400">Your cart is empty.</p>
               ) : (
                 <ul>
-                  {cart.map((item, idx) => (
-                    <li
-                      key={idx}
-                      className="flex justify-between items-center text-sm mb-1"
-                    >
-                      {item.name}{' '}
-                      {item.name.toLowerCase().includes('cleanout') ? (
-                        <span className="italic text-gray-400">
-                          (Estimate only)
-                        </span>
-                      ) : (
-                        `- $${item.price.toFixed(2)}`
-                      )}
-                      <button
-                        onClick={() => removeFromCart(idx)}
-                        className="text-red-500 text-xs ml-2 hover:underline"
+                  {cart.map((item, idx) => {
+                    const discountRate = getDiscountRate(idx);
+                    const discountedPrice = item.price * (1 - discountRate / 100);
+                    return (
+                      <li
+                        key={idx}
+                        className="flex justify-between items-center text-sm mb-1"
                       >
-                        Remove
-                      </button>
-                    </li>
-                  ))}
+                        {item.name}{' '}
+                        {discountRate > 0 ? (
+                          <span>
+                            ({discountRate}% off): ${discountedPrice.toFixed(2)}
+                          </span>
+                        ) : (
+                          <>: ${discountedPrice.toFixed(2)}</>
+                        )}
+                        <button
+                          onClick={() => removeFromCart(idx)}
+                          className="text-red-500 text-xs ml-2 hover:underline"
+                        >
+                          Remove
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
             </div>
             <div className="flex flex-col items-center gap-2 w-full md:w-auto">
+              {itemSavings > 0 && (
+                <p className="text-green-400">
+                  ✅ You saved ${itemSavings.toFixed(2)} on your items by bundling!
+                </p>
+              )}
+              {loadSavings > 0 && (
+                <p className="text-green-400">
+                  ✅ We switched you to the {applicableLoad?.maxVolume} yd³ load rate to save you ${loadSavings.toFixed(2)}!
+                </p>
+              )}
               <p className="font-bold">
-                Total: ${getTotal().toFixed(2)}
+                Final Price: ${finalPrice.toFixed(2)}
               </p>
               <button
                 className="button-glow w-full"
                 onClick={() =>
                   navigate('/schedule', {
-                    state: { cart, total: getTotal() },
+                    state: { cart, total: finalPrice },
                   })
                 }
               >
