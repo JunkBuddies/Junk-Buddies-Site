@@ -10,7 +10,7 @@ function SchedulePage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: '', // added phone
+    phone: '',
     address: '',
     date: '',
     time: '',
@@ -36,20 +36,27 @@ function SchedulePage() {
       .map((item, index) => {
         const discountRate = getDiscountRate(index);
         const discountedPrice = item.price * (1 - discountRate / 100);
-        return `${item.name} (${discountRate}% off): $${discountedPrice.toFixed(2)}`;
+        return `<li>${item.name} (${discountRate}% off): $${discountedPrice.toFixed(2)}</li>`;
       })
-      .join('\n');
+      .join('');
 
     const templateParams = {
-      ...formData, // includes name, email, phone, address, date, time
+      ...formData, // name, email, phone, address, date, time
       items: itemsList,
-      total: `$${total.toFixed(2)}`,
+      total: `$${total.toFixed(2)}`
     };
 
+    // send customer email
     emailjs
       .send('JunkBuddies.info', 'Junk_Buddies_Booking', templateParams, 'QCl4Akw_LZ3T8IvUd')
-      .then(() => navigate('/confirmation'))
-      .catch((error) => alert('Error sending confirmation: ' + error.text));
+      .then(() => {
+        // send admin email after customer email succeeds
+        emailjs
+          .send('JunkBuddies.info', 'template_57eij3s', templateParams, 'QCl4Akw_LZ3T8IvUd')
+          .then(() => navigate('/confirmation'))
+          .catch((error) => alert('Admin email error: ' + error.text));
+      })
+      .catch((error) => alert('Customer email error: ' + error.text));
   };
 
   return (
@@ -120,10 +127,7 @@ function SchedulePage() {
           <p className="mt-2 italic text-yellow-300">You don't pay until the job is done!</p>
         </div>
 
-        <button
-          type="submit"
-          className="w-full button-glow"
-        >
+        <button type="submit" className="w-full button-glow">
           Schedule Pickup
         </button>
       </form>
