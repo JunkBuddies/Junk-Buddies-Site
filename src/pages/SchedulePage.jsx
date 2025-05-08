@@ -10,6 +10,7 @@ function SchedulePage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '', // added phone
     address: '',
     date: '',
     time: '',
@@ -17,15 +18,31 @@ function SchedulePage() {
 
   const navigate = useNavigate();
 
+  const getDiscountRate = (index) => {
+    if (index < 2) return 0;
+    const step = Math.floor((index - 2) / 2);
+    const discount = 15 + (step * 5);
+    return Math.min(discount, 45);
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const itemsList = cart
+      .map((item, index) => {
+        const discountRate = getDiscountRate(index);
+        const discountedPrice = item.price * (1 - discountRate / 100);
+        return `${item.name} (${discountRate}% off): $${discountedPrice.toFixed(2)}`;
+      })
+      .join('\n');
+
     const templateParams = {
-      ...formData,
-      cart: cart.map((item) => `${item.name}: $${item.price}`).join(', '),
+      ...formData, // includes name, email, phone, address, date, time
+      items: itemsList,
       total: `$${total.toFixed(2)}`,
     };
 
@@ -57,6 +74,14 @@ function SchedulePage() {
         />
         <input
           className="w-full p-3 rounded-xl text-black"
+          type="tel"
+          name="phone"
+          placeholder="Your Phone Number"
+          required
+          onChange={handleChange}
+        />
+        <input
+          className="w-full p-3 rounded-xl text-black"
           type="text"
           name="address"
           placeholder="Pickup Address"
@@ -81,11 +106,15 @@ function SchedulePage() {
         <div className="bg-gray-800 text-white p-4 rounded-xl">
           <h2 className="text-lg font-bold mb-2">Your Cart:</h2>
           <ul className="mb-2">
-            {cart.map((item, idx) => (
-              <li key={idx}>
-                {item.name} - ${item.price.toFixed(2)}
-              </li>
-            ))}
+            {cart.map((item, idx) => {
+              const discountRate = getDiscountRate(idx);
+              const discountedPrice = item.price * (1 - discountRate / 100);
+              return (
+                <li key={idx}>
+                  {item.name} {discountRate > 0 ? `(${discountRate}% off)` : ''} - ${discountedPrice.toFixed(2)}
+                </li>
+              );
+            })}
           </ul>
           <p className="font-bold">Total: ${total.toFixed(2)}</p>
           <p className="mt-2 italic text-yellow-300">You don't pay until the job is done!</p>
