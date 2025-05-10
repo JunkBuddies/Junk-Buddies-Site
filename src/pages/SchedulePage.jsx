@@ -41,7 +41,7 @@ function SchedulePage() {
       .join('');
 
     const templateParams = {
-      ...formData, // name, email, phone, address, date, time
+      ...formData, // includes name, email, phone, address, date, time
       items: itemsList,
       total: `$${total.toFixed(2)}`
     };
@@ -50,9 +50,12 @@ function SchedulePage() {
     emailjs
       .send('JunkBuddies.info', 'Junk_Buddies_Booking', templateParams, 'QCl4Akw_LZ3T8IvUd')
       .then(() => {
-        // send admin email after customer email succeeds
+        // send admin email directly to your inbox
         emailjs
-          .send('JunkBuddies.info', 'template_57eij3s', templateParams, 'QCl4Akw_LZ3T8IvUd')
+          .send('JunkBuddies.info', 'template_57eij3s', {
+            ...templateParams,
+            email: 'JunkBuddies.info@gmail.com' // force email destination
+          }, 'QCl4Akw_LZ3T8IvUd')
           .then(() => navigate('/confirmation'))
           .catch((error) => alert('Admin email error: ' + error.text));
       })
