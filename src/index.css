@@ -2,7 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Metallic Text */
+/* Base Glow Button */
+.button-glow {
+  @apply relative bg-[#FFD700] text-black font-bold py-3 px-8 rounded-xl overflow-hidden shadow-lg transition-transform hover:scale-105;
+  border: 2px solid #FFD700;
+  box-shadow: 0 0 15px #FFD700;
+}
+.button-glow::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 215, 0, 0) 30%,
+    rgba(255, 215, 0, 0.5) 50%,
+    rgba(255, 215, 0, 0) 70%
+  );
+  transform: rotate(25deg);
+  transition: all 0.8s ease-in-out;
+  pointer-events: none;
+  opacity: 0;
+}
+.button-glow:hover::before {
+  transform: translateX(100%) rotate(25deg);
+  opacity: 1;
+}
+.button-glow:hover {
+  background: #FFD700;
+  color: black;
+  box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
+  animation: pulse 1.2s infinite;
+}
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
+  }
+  50% {
+    box-shadow: 0 0 40px #FFD700, 0 0 100px #FFD700 inset;
+  }
+  100% {
+    box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
+  }
+}
+
+/* Metallic 3D Text */
 .metallic-text-3d {
   background: linear-gradient(
     135deg,
@@ -27,22 +73,22 @@
 /* Shine Animation */
 @keyframes rightToLeftShine {
   0% {
-    left: 110%;
+    left: 120%;
     opacity: 0;
   }
-  20% {
+  10% {
     opacity: 0.25;
   }
   50% {
-    left: -10%;
-    opacity: 0.4;
+    left: -20%;
+    opacity: 0.5;
   }
   100% {
-    left: -40%;
+    left: -50%;
     opacity: 0;
   }
 }
- 
+
 .shine-wrapper {
   position: relative;
   display: inline-flex;
@@ -54,16 +100,16 @@
   content: "";
   position: absolute;
   top: 0;
-  left: 110%;
+  left: 100%;
   height: 100%;
-  width: 60%;
+  width: 100%;
   background: linear-gradient(
     120deg,
-    transparent 20%,
-    rgba(255, 255, 255, 0.45) 50%,
-    transparent 80%
+    rgba(255, 255, 255, 0) 25%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 75%
   );
-  transform: skewX(-20deg);
+  transform: skewX(-25deg);
   animation: rightToLeftShine 4s linear infinite;
   z-index: 20;
   pointer-events: none;
