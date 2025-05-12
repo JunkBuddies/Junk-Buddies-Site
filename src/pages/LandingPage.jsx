@@ -13,8 +13,8 @@ function LandingPage() {
 
         {/* Motto with Shine */}
         <div className="relative z-10 mt-24">
-          <div className="shine-wrapper">
-            <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap relative z-10">
+          <div className="relative z-10 shine-wrapper">
+            <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
               <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d">Junk</span>
               <img
                 src="/images/logo-icon.png"
