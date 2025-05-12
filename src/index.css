@@ -1,109 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@tailwind base; @tailwind components; @tailwind utilities;
 
-/* Base Glow Button (unchanged) */
-.button-glow {
-  @apply relative bg-[#FFD700] text-black font-bold py-3 px-8 rounded-xl overflow-hidden shadow-lg transition-transform hover:scale-105;
-  border: 2px solid #FFD700;
-  box-shadow: 0 0 15px #FFD700;
-}
-.button-glow::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 215, 0, 0) 30%,
-    rgba(255, 215, 0, 0.5) 50%,
-    rgba(255, 215, 0, 0) 70%
-  );
-  transform: rotate(25deg);
-  transition: all 0.8s ease-in-out;
-  pointer-events: none;
-  opacity: 0;
-}
-.button-glow:hover::before {
-  transform: translateX(100%) rotate(25deg);
-  opacity: 1;
-}
-.button-glow:hover {
-  background: #FFD700;
-  color: black;
-  box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
-  animation: pulse 1.2s infinite;
-}
-@keyframes pulse {
-  0%   { box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset; }
-  50%  { box-shadow: 0 0 40px #FFD700, 0 0 100px #FFD700 inset; }
-  100% { box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset; }
-}
+/* Base Glow Button */ .button-glow { @apply relative bg-[#FFD700] text-black font-bold py-3 px-8 rounded-xl overflow-hidden shadow-lg transition-transform hover:scale-105; border: 2px solid #FFD700; box-shadow: 0 0 15px #FFD700; } .button-glow::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient( 120deg, rgba(255, 215, 0, 0) 30%, rgba(255, 215, 0, 0.5) 50%, rgba(255, 215, 0, 0) 70% ); transform: rotate(25deg); transition: all 0.8s ease-in-out; pointer-events: none; opacity: 0; } .button-glow:hover::before { transform: translateX(100%) rotate(25deg); opacity: 1; } .button-glow:hover { background: #FFD700; color: black; box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset; animation: pulse 1.2s infinite; } @keyframes pulse { 0% { box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset; } 50% { box-shadow: 0 0 40px #FFD700, 0 0 100px #FFD700 inset; } 100% { box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset; } }
 
-/* Metallic 3D Text */
-.metallic-text-3d {
-  background: linear-gradient(
-    135deg,
-    #d4af37 0%,
-    #f1c75e 25%,
-    #b8860b 50%,
-    #f1c75e 75%,
-    #d4af37 100%
-  );
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 800;
-  text-shadow:
-    1px 1px 1px rgba(255, 255, 255, 0.6),
-    -1px -1px 1px rgba(0, 0, 0, 0.8),
-    0 0 5px rgba(0, 0, 0, 0.4),
-    inset 0 0 3px rgba(0, 0, 0, 0.4);
-  letter-spacing: 0.5px;
-}
+/* Metallic 3D Text */ .metallic-text-3d { background: linear-gradient( 135deg, #d4af37 0%, #f1c75e 25%, #b8860b 50%, #f1c75e 75%, #d4af37 100% ); background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.6), -1px -1px 1px rgba(0, 0, 0, 0.8), 0 0 5px rgba(0, 0, 0, 0.4), inset 0 0 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px; }
 
-/* Enhanced Shine Animation with more rotation intervals */
-@keyframes rotatingShineSweep {
-  0%   { left: 92%; transform: rotate(-90deg); opacity: 0.6; }
-  10%  { left: 84%; transform: rotate(-60deg); opacity: 0.7; }
-  20%  { left: 76%; transform: rotate(-45deg); opacity: 0.8; }
-  30%  { left: 68%; transform: rotate(-30deg); opacity: 0.9; }
-  40%  { left: 60%; transform: rotate(-15deg); opacity: 1; }
-  50%  { left: 50%; transform: rotate(0deg);    opacity: 1; }
-  60%  { left: 40%; transform: rotate(15deg);  opacity: 1; }
-  70%  { left: 32%; transform: rotate(30deg);  opacity: 0.9; }
-  80%  { left: 24%; transform: rotate(45deg);  opacity: 0.8; }
-  90%  { left: 16%; transform: rotate(60deg);  opacity: 0.7; }
-  100% { left: 8%;  transform: rotate(90deg);  opacity: 0.6; }
-}
+/* Astigmatism-Style Shine Animation */ @keyframes astigmatismShine { 0% { left: 100%; transform: rotate(-90deg); opacity: 0; } 10% { opacity: 0.25; } 25% { transform: rotate(-45deg); } 50% { left: 50%; transform: rotate(0deg); opacity: 0.6; } 75% { transform: rotate(45deg); } 90% { opacity: 0.3; } 100% { left: 0%; transform: rotate(90deg); opacity: 0; } }
 
-.shine-wrapper {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: fit-content;
-}
+.shine-wrapper { position: relative; display: inline-flex; align-items: center; justify-content: center; width: fit-content; }
 
-.shine-wrapper::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 92%;
-  height: 100%;
-  width: 20px;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(253, 222, 74, 0.85) 45%,
-    rgba(255, 255, 255, 0.95) 50%,
-    rgba(253, 222, 74, 0.85) 55%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  border-radius: 9999px;
-  animation: rotatingShineSweep 4s ease-in-out infinite;
-  z-index: 30;
-  pointer-events: none;
-}
+.shine-wrapper::after { content: ""; position: absolute; top: 0; left: 100%; height: 100%; width: 30px; background: linear-gradient( to right, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0) 90% ); animation: astigmatismShine 4s ease-in-out infinite; z-index: 30; pointer-events: none; }
+
