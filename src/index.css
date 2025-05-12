@@ -225,3 +225,26 @@
   z-index: 5;
   pointer-events: none;
 }
+/* Shine Effect across Junk Buddies and Logo Only */
+.shine-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.shine-overlay {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  transform: skewX(-25deg);
+  animation: rightToLeftShine 1s linear infinite;
+  pointer-events: none;
+  z-index: 20;
+}
