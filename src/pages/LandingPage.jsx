@@ -11,29 +11,26 @@ function LandingPage() {
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0"></div>
 
-        {/* Motto */}
+        {/* Motto with Shine */}
         <div className="relative z-10 mt-24">
-          <div className="relative inline-flex items-center justify-center shine-wrapper">
-            <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap z-10">
+          <div className="shine-wrapper">
+            <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap relative z-10">
               <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d">Junk</span>
-              <div className="flex items-center justify-center">
-                <img
-                  src="/images/logo-icon.png"
-                  alt="Logo"
-                  className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
-                />
-              </div>
+              <img
+                src="/images/logo-icon.png"
+                alt="Logo"
+                className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
+              />
               <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d">Buddies</span>
             </div>
             <div className="shine-overlay" />
           </div>
-
           <p className="text-2xl font-semibold tracking-wide mt-4">
             Making Space For What Matters
           </p>
         </div>
 
-        {/* CTA */}
+        {/* CTA Buttons */}
         <div className="relative z-10 mt-8 space-y-4">
           <button
             onClick={() => navigate('/selection')}
@@ -49,7 +46,7 @@ function LandingPage() {
           </button>
         </div>
 
-        {/* Sections */}
+        {/* Main Content Sections */}
         <div className="relative z-10 mt-20 max-w-6xl w-full space-y-20">
           {/* How It Works */}
           <section className="bg-gray-800/60 rounded-xl p-6 shadow-lg">
