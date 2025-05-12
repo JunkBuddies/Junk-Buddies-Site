@@ -71,11 +71,15 @@ function LandingPage() {
             <h2 className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2">Testimonials</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white text-black p-6 rounded-xl shadow-lg border-l-4 border-gold relative">
-                <p className="italic text-lg">“They were quick, friendly, and cleaned everything perfectly. Highly recommend!”</p>
+                <p className="italic text-lg">
+                  “They were quick, friendly, and cleaned everything perfectly. Highly recommend!”
+                </p>
                 <span className="block mt-4 font-semibold text-right">- Alex R.</span>
               </div>
               <div className="bg-white text-black p-6 rounded-xl shadow-lg border-l-4 border-gold relative">
-                <p className="italic text-lg">“Excellent service and easy scheduling. They really came through for us.”</p>
+                <p className="italic text-lg">
+                  “Excellent service and easy scheduling. They really came through for us.”
+                </p>
                 <span className="block mt-4 font-semibold text-right">- Jamie L.</span>
               </div>
             </div>
@@ -85,10 +89,26 @@ function LandingPage() {
           <section>
             <h2 className="text-3xl text-gold font-bold mb-6 text-center">Our Work in Action</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <img src="/images/couch-carrying.png" alt="Team carrying a couch" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
-              <img src="/images/team-sunset.png" alt="Junk Buddies team at sunset" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
-              <img src="/images/truck-fleet.png" alt="Fleet of Junk Buddies trucks" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
-              <img src="/images/demolition-crew.png" alt="Junk Buddies team at a demolition site" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
+              <img
+                src="/images/couch-carrying.png"
+                alt="Team carrying a couch"
+                className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
+              />
+              <img
+                src="/images/team-sunset.png"
+                alt="Junk Buddies team at sunset"
+                className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
+              />
+              <img
+                src="/images/truck-fleet.png"
+                alt="Fleet of Junk Buddies trucks"
+                className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
+              />
+              <img
+                src="/images/demolition-crew.png"
+                alt="Junk Buddies team at a demolition site"
+                className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
+              />
             </div>
           </section>
         </div>
