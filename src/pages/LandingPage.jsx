@@ -13,9 +13,14 @@ function LandingPage() {
 
         {/* Motto */}
         <div className="relative z-10 mt-24">
-          <div className="flex flex-wrap justify-center items-center gap-3 text-7xl font-bold text-gold drop-shadow-[0_0_20px_gold] whitespace-nowrap">
-            <span>Junk</span>
-            <span>Buddies</span>
+          <div className="flex flex-wrap justify-center items-center gap-3 text-gold drop-shadow-[0_0_20px_gold]">
+            <span className="text-6xl sm:text-7xl font-bold">Junk</span>
+            <img
+              src="/images/logo-icon.png"
+              alt="Logo"
+              className="w-10 sm:w-12 h-auto"
+            />
+            <span className="text-6xl sm:text-7xl font-bold">Buddies</span>
           </div>
           <p className="text-2xl font-semibold tracking-wide mt-4">
             Making Space For What Matters
