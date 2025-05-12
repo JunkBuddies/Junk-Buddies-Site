@@ -7,21 +7,38 @@ function LandingPage() {
 
   return (
     <div className="hero-space-background">
-      <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-4 sm:px-6 md:px-12">
+      <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-6">
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0"></div>
 
         {/* Motto */}
         <div className="relative z-10 mt-24">
-          <div className="flex items-center justify-center gap-3 flex-nowrap px-4">
-            <span className="text-[2.75rem] sm:text-[4rem] md:text-[4.5rem] font-bold text-gold drop-shadow-[0_0_20px_gold]">Junk</span>
-            <img
-              src="/images/logo-icon.png"
-              alt="Logo"
-              className="h-[3rem] sm:h-[4.25rem] md:h-[5rem] w-auto object-contain"
-            />
-            <span className="text-[2.75rem] sm:text-[4rem] md:text-[4.5rem] font-bold text-gold drop-shadow-[0_0_20px_gold]">Buddies</span>
+          <div className="flex flex-wrap justify-center items-center gap-3 text-gold font-bold drop-shadow-[0_0_20px_gold] whitespace-nowrap">
+            <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl">Junk</span>
+            
+            <div className="relative flex items-center justify-center">
+              <img
+                src="/images/logo-icon.png"
+                alt="Logo"
+                className="h-[3.25rem] sm:h-[4.5rem] md:h-[5.25rem] w-auto object-contain drop-shadow-[0_0_20px_#FFD700] animate-logo-glow"
+              />
+              <style>
+                {`
+                  @keyframes logo-glow {
+                    0% { filter: drop-shadow(0 0 10px #FFD700); }
+                    50% { filter: drop-shadow(0 0 20px #FFD700); }
+                    100% { filter: drop-shadow(0 0 10px #FFD700); }
+                  }
+                  .animate-logo-glow {
+                    animation: logo-glow 2s ease-in-out infinite;
+                  }
+                `}
+              </style>
+            </div>
+
+            <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl">Buddies</span>
           </div>
+
           <p className="text-2xl font-semibold tracking-wide mt-4">
             Making Space For What Matters
           </p>
@@ -44,7 +61,7 @@ function LandingPage() {
         </div>
 
         {/* Sections */}
-        <div className="relative z-10 mt-20 max-w-6xl w-full space-y-20 px-4 sm:px-6">
+        <div className="relative z-10 mt-20 max-w-6xl w-full space-y-20">
           {/* How It Works */}
           <section className="bg-gray-800/60 rounded-xl p-6 shadow-lg">
             <h2 className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2">How It Works</h2>
