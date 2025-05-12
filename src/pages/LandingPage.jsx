@@ -14,7 +14,9 @@ function LandingPage() {
         {/* Motto */}
         <div className="relative z-10 mt-24">
           <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
-            <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-title">Junk</span>
+            <div className="item-card-button !px-6 !py-2 !text-[2.75rem] sm:!text-6xl md:!text-7xl lg:!text-8xl !text-center">
+              Junk
+            </div>
 
             <div className="relative flex items-center justify-center">
               <img
@@ -24,7 +26,9 @@ function LandingPage() {
               />
             </div>
 
-            <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-title">Buddies</span>
+            <div className="item-card-button !px-6 !py-2 !text-[2.75rem] sm:!text-6xl md:!text-7xl lg:!text-8xl !text-center">
+              Buddies
+            </div>
           </div>
 
           <p className="text-2xl font-semibold tracking-wide mt-4">
