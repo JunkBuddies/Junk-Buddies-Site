@@ -14,10 +14,7 @@ function LandingPage() {
         {/* Motto */}
         <div className="relative z-10 mt-24">
           <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
-            <div className="item-card-button !px-6 !py-2 !text-[2.75rem] sm:!text-6xl md:!text-7xl lg:!text-8xl !text-center">
-              Junk
-            </div>
-
+            <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d">Junk</span>
             <div className="relative flex items-center justify-center">
               <img
                 src="/images/logo-icon.png"
@@ -25,12 +22,8 @@ function LandingPage() {
                 className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
               />
             </div>
-
-            <div className="item-card-button !px-6 !py-2 !text-[2.75rem] sm:!text-6xl md:!text-7xl lg:!text-8xl !text-center">
-              Buddies
-            </div>
+            <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d">Buddies</span>
           </div>
-
           <p className="text-2xl font-semibold tracking-wide mt-4">
             Making Space For What Matters
           </p>
