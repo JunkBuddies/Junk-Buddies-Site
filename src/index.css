@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base Glow Button */
+/* Base Glow Button (unchanged) */
 .button-glow {
   @apply relative bg-[#FFD700] text-black font-bold py-3 px-8 rounded-xl overflow-hidden shadow-lg transition-transform hover:scale-105;
   border: 2px solid #FFD700;
@@ -48,7 +48,7 @@
   }
 }
 
-/* Metallic 3D Text */
+/* Metallic Text Styling */
 .metallic-text-3d {
   background: linear-gradient(
     135deg,
@@ -70,27 +70,27 @@
   letter-spacing: 0.5px;
 }
 
-/* Shine Animation */
-@keyframes rightToLeftShine {
+/* SHINE ANIMATION */
+@keyframes angledShine {
   0% {
     left: 100%;
-    transform: skewX(-15deg) rotate(-3deg);
+    transform: skewX(-15deg) rotate(-10deg);
     opacity: 0;
   }
-  15% {
+  10% {
     opacity: 0.3;
   }
   50% {
     left: 0%;
     transform: skewX(-20deg) rotate(0deg);
-    opacity: 0.65;
+    opacity: 1;
   }
-  85% {
+  90% {
     opacity: 0.3;
   }
   100% {
     left: 0%;
-    transform: skewX(-25deg) rotate(3deg);
+    transform: skewX(-25deg) rotate(10deg);
     opacity: 0;
   }
 }
@@ -101,6 +101,7 @@
   align-items: center;
   justify-content: center;
   width: fit-content;
+  overflow: hidden;
 }
 
 .shine-wrapper::after {
@@ -109,14 +110,14 @@
   top: 0;
   left: 100%;
   height: 100%;
-  width: 40px; /* thinner sharper streak */
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 10%,
-    rgba(255, 255, 255, 0.85) 50%,
-    rgba(255, 255, 255, 0) 90%
+  width: 30px; /* thin sharp streak */
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.8) 30%,
+    rgba(255, 255, 255, 0.2) 70%,
+    rgba(255, 255, 255, 0) 100%
   );
-  animation: rightToLeftShine 4s ease-in-out infinite;
-  z-index: 30;
+  animation: angledShine 4s ease-in-out infinite;
+  z-index: 20;
   pointer-events: none;
 }
