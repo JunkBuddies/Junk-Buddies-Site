@@ -13,10 +13,13 @@ function LandingPage() {
 
         {/* Motto */}
         <div className="relative z-10 mt-24">
-          <h1 className="text-7xl font-bold text-gold mb-4 drop-shadow-[0_0_20px_gold]">
-            Junk Buddies
-          </h1>
-          <p className="text-2xl font-semibold tracking-wide">Making Space For What Matters</p>
+          <div className="flex flex-wrap justify-center items-center gap-3 text-7xl font-bold text-gold drop-shadow-[0_0_20px_gold] whitespace-nowrap">
+            <span>Junk</span>
+            <span>Buddies</span>
+          </div>
+          <p className="text-2xl font-semibold tracking-wide mt-4">
+            Making Space For What Matters
+          </p>
         </div>
 
         {/* CTA */}
