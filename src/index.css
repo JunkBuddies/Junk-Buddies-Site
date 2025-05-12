@@ -161,3 +161,47 @@
 .item-card-button.bounce {
   animation: buttonBounce 0.3s ease-out;
 }
+
+/* Metallic Title (Junk Buddies) */
+.metallic-title {
+  background: linear-gradient(
+    135deg,
+    #d4af37 0%,
+    #f1c75e 25%,
+    #b8860b 50%,
+    #f1c75e 75%,
+    #d4af37 100%
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  text-shadow:
+    1px 1px 1px rgba(255, 255, 255, 0.4),
+    -1px -1px 1px rgba(0, 0, 0, 0.8),
+    inset 0 0 5px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.5px;
+}
+
+/* Glow animation for metallic title */
+@keyframes metallicGlow {
+  0% {
+    text-shadow:
+      0 0 10px #FFD700,
+      0 0 20px #FFD700;
+  }
+  50% {
+    text-shadow:
+      0 0 20px #FFD700,
+      0 0 40px #FFD700;
+  }
+  100% {
+    text-shadow:
+      0 0 10px #FFD700,
+      0 0 20px #FFD700;
+  }
+}
+
+.metallic-title-glow {
+  animation: metallicGlow 2s ease-in-out infinite;
+}
