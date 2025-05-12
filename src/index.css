@@ -4,7 +4,7 @@
 
 /* Metallic 3D Text */ .metallic-text-3d { background: linear-gradient( 135deg, #d4af37 0%, #f1c75e 25%, #b8860b 50%, #f1c75e 75%, #d4af37 100% ); background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.6), -1px -1px 1px rgba(0, 0, 0, 0.8), 0 0 5px rgba(0, 0, 0, 0.4), inset 0 0 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px; }
 
-/* Shine Animation for Scan Line Streak */ @keyframes scanLineSweep { 0% { left: 100%; transform: rotate(-45deg); opacity: 0; } 10% { opacity: 0.3; } 30% { transform: rotate(-15deg); opacity: 0.6; } 50% { left: 50%; transform: rotate(0deg); opacity: 0.85; } 70% { transform: rotate(15deg); opacity: 0.6; } 90% { transform: rotate(45deg); opacity: 0.3; } 100% { left: 0%; transform: rotate(60deg); opacity: 0; } }
+/* Shine Animation for Scan Line Streak */ @keyframes scanLineSweep { 0% { left: 100%; transform: rotate(-45deg); opacity: 0; } 10% { opacity: 0.3; } 30% { transform: rotate(-15deg); opacity: 0.6; } 50% { left: 50%; transform: rotate(0deg); opacity: 0.95; } 70% { transform: rotate(15deg); opacity: 0.6; } 90% { transform: rotate(45deg); opacity: 0.3; } 100% { left: 0%; transform: rotate(60deg); opacity: 0; } }
 
 .shine-wrapper { position: relative; display: inline-flex; align-items: center; justify-content: center; width: fit-content; }
 
