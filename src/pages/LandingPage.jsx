@@ -12,8 +12,8 @@ function LandingPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0"></div>
 
         {/* Motto */}
-        <div className="relative z-10 mt-24">
-          <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
+        <div className="relative z-10 mt-24 shine-container">
+          <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap relative z-10">
             <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d">Junk</span>
             <div className="relative flex items-center justify-center">
               <img
@@ -24,6 +24,7 @@ function LandingPage() {
             </div>
             <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d">Buddies</span>
           </div>
+          <div className="shine-overlay pointer-events-none" />
           <p className="text-2xl font-semibold tracking-wide mt-4">
             Making Space For What Matters
           </p>
