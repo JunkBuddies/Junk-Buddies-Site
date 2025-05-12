@@ -70,36 +70,29 @@
   letter-spacing: 0.5px;
 }
 
-/* Dynamic Rotating Shine Keyframe */
-@keyframes sweepRotateShine {
+/* Advanced 360° Rotating Shine */
+@keyframes rotatingShineSweep {
   0% {
-    left: 65%;
-    transform: rotate(-20deg) skewX(-15deg);
+    left: 92%;
+    transform: rotate(-180deg);
     opacity: 1;
   }
   25% {
-    left: 50%;
-    transform: rotate(-10deg) skewX(-8deg);
-    opacity: 1;
+    transform: rotate(-90deg);
   }
   50% {
-    left: 35%;
-    transform: rotate(0deg) skewX(0deg);
-    opacity: 1;
+    transform: rotate(0deg);
   }
   75% {
-    left: 20%;
-    transform: rotate(10deg) skewX(8deg);
-    opacity: 1;
+    transform: rotate(90deg);
   }
   100% {
-    left: 5%;
-    transform: rotate(20deg) skewX(15deg);
+    left: 0%;
+    transform: rotate(180deg);
     opacity: 1;
   }
 }
 
-/* Wrapper */
 .shine-wrapper {
   position: relative;
   display: inline-flex;
@@ -109,20 +102,20 @@
   z-index: 10;
 }
 
-/* Thin, sharp, rotating streak */
 .shine-wrapper::after {
   content: "";
   position: absolute;
   top: 0;
+  left: 92%;
   height: 100%;
-  width: 22px;
+  width: 18px;
   background: linear-gradient(
     to right,
     rgba(255, 255, 255, 0) 15%,
     rgba(255, 255, 255, 1) 50%,
     rgba(255, 255, 255, 0) 85%
   );
-  animation: sweepRotateShine 4s ease-in-out infinite;
+  animation: rotatingShineSweep 4s ease-in-out infinite;
   pointer-events: none;
   z-index: 20;
 }
