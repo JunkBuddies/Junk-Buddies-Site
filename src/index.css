@@ -48,7 +48,7 @@
   }
 }
 
-/* Metallic 3D Text */
+/* Metallic Text */
 .metallic-text-3d {
   background: linear-gradient(
     135deg,
@@ -70,47 +70,59 @@
   letter-spacing: 0.5px;
 }
 
-/* Shine Animation (Sharp, Thin, Non-Fading) */
-@keyframes rightToLeftShine {
+/* Dynamic Rotating Shine Keyframe */
+@keyframes sweepRotateShine {
   0% {
-    left: 100%;
-    transform: skewX(-10deg) rotate(-3deg);
+    left: 65%;
+    transform: rotate(-20deg) skewX(-15deg);
+    opacity: 1;
+  }
+  25% {
+    left: 50%;
+    transform: rotate(-10deg) skewX(-8deg);
     opacity: 1;
   }
   50% {
-    left: 0%;
-    transform: skewX(-15deg) rotate(0deg);
+    left: 35%;
+    transform: rotate(0deg) skewX(0deg);
+    opacity: 1;
+  }
+  75% {
+    left: 20%;
+    transform: rotate(10deg) skewX(8deg);
     opacity: 1;
   }
   100% {
-    left: 0%;
-    transform: skewX(-20deg) rotate(3deg);
+    left: 5%;
+    transform: rotate(20deg) skewX(15deg);
     opacity: 1;
   }
 }
 
+/* Wrapper */
 .shine-wrapper {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: fit-content;
+  z-index: 10;
 }
 
+/* Thin, sharp, rotating streak */
 .shine-wrapper::after {
   content: "";
   position: absolute;
   top: 0;
-  left: 100%;
   height: 100%;
-  width: 30px; /* Thin and sharp */
+  width: 22px;
   background: linear-gradient(
     to right,
-    rgba(255, 255, 255, 0) 10%,
+    rgba(255, 255, 255, 0) 15%,
     rgba(255, 255, 255, 1) 50%,
-    rgba(255, 255, 255, 0) 90%
+    rgba(255, 255, 255, 0) 85%
   );
-  animation: rightToLeftShine 4s ease-in-out infinite;
-  z-index: 30;
+  animation: sweepRotateShine 4s ease-in-out infinite;
   pointer-events: none;
+  z-index: 20;
 }
