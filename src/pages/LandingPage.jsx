@@ -13,30 +13,18 @@ function LandingPage() {
 
         {/* Motto */}
         <div className="relative z-10 mt-24">
-          <div className="flex flex-wrap justify-center items-center gap-3 text-gold font-bold drop-shadow-[0_0_20px_gold] whitespace-nowrap">
-            <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl">Junk</span>
+          <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
+            <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text">Junk</span>
             
             <div className="relative flex items-center justify-center">
               <img
                 src="/images/logo-icon.png"
                 alt="Logo"
-                className="h-[3.25rem] sm:h-[4.5rem] md:h-[5.25rem] w-auto object-contain drop-shadow-[0_0_20px_#FFD700] animate-logo-glow"
+                className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain animate-logo-glow metallic-glow"
               />
-              <style>
-                {`
-                  @keyframes logo-glow {
-                    0% { filter: drop-shadow(0 0 10px #FFD700); }
-                    50% { filter: drop-shadow(0 0 20px #FFD700); }
-                    100% { filter: drop-shadow(0 0 10px #FFD700); }
-                  }
-                  .animate-logo-glow {
-                    animation: logo-glow 2s ease-in-out infinite;
-                  }
-                `}
-              </style>
             </div>
 
-            <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl">Buddies</span>
+            <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text">Buddies</span>
           </div>
 
           <p className="text-2xl font-semibold tracking-wide mt-4">
