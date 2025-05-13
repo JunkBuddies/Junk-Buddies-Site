@@ -70,46 +70,72 @@
   letter-spacing: 0.5px;
 }
 
-/* Shine Animation Keyframes */
+/* Scan Line Keyframes */
 @keyframes scanLineSweep {
   0% {
     left: 100%;
-    transform: rotate(-25deg);
+    transform: rotate(-40deg);
     opacity: 0;
   }
-  20% {
-    opacity: 0.3;
+  10% {
+    opacity: 0.4;
+    transform: rotate(-30deg);
+  }
+  30% {
+    transform: rotate(-10deg);
+    opacity: 0.7;
   }
   50% {
     left: 50%;
     transform: rotate(0deg);
-    opacity: 0.85;
+    opacity: 0.95;
   }
-  80% {
+  70% {
+    transform: rotate(15deg);
+    opacity: 0.6;
+  }
+  90% {
+    transform: rotate(25deg);
     opacity: 0.3;
   }
   100% {
     left: 0%;
-    transform: rotate(25deg);
+    transform: rotate(40deg);
     opacity: 0;
   }
 }
 
-/* Shine Container for Junk and Buddies */
+/* Shine Wrappers */
 .shine-wrapper {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  width: fit-content;
 }
 
-/* Separate shine wrappers for JUNK and BUDDIES */
-.shine-junk, .shine-buddies {
-  position: relative;
-  display: inline-block;
+/* First glare (Junk) */
+.shine-junk::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 100%;
+  height: 100%;
+  width: 6px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  filter: drop-shadow(0 0 4px white);
+  animation: scanLineSweep 4s ease-in-out infinite;
+  animation-delay: 0s;
+  z-index: 30;
+  pointer-events: none;
 }
 
-.shine-junk::after,
+/* Second glare (Buddies) */
 .shine-buddies::after {
   content: "";
   position: absolute;
@@ -123,16 +149,9 @@
     rgba(255, 255, 255, 1) 50%,
     rgba(255, 255, 255, 0) 100%
   );
-  filter: drop-shadow(0 0 3px white);
+  filter: drop-shadow(0 0 4px white);
+  animation: scanLineSweep 4s ease-in-out infinite;
+  animation-delay: 2s;
   z-index: 30;
   pointer-events: none;
-}
-
-.shine-junk::after {
-  animation: scanLineSweep 4s ease-in-out infinite;
-}
-
-.shine-buddies::after {
-  animation: scanLineSweep 4s ease-in-out infinite;
-  animation-delay: 0.5s;
 }
