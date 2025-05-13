@@ -240,3 +240,48 @@
     animation: none;
   }
 }
+@keyframes shineAcrossLetters {
+  0% {
+    left: 100%;
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.3;
+  }
+  50% {
+    left: 50%;
+    opacity: 0.75;
+  }
+  75% {
+    opacity: 0.3;
+  }
+  100% {
+    left: -10%;
+    opacity: 0;
+  }
+}
+
+.shine-buddies::after,
+.shine-junk::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 60px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  animation: shineAcrossLetters 2.2s ease-out 1;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.shine-buddies,
+.shine-junk {
+  position: relative;
+  overflow: hidden;
+}
