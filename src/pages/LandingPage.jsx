@@ -13,13 +13,12 @@ function LandingPage() {
           const junk = junkRef.current;
           const buddies = buddiesRef.current;
 
-          if (buddies && junk) {
-            buddies.classList.remove('shine-buddies');
+          if (junk && buddies) {
             junk.classList.remove('shine-junk');
+            buddies.classList.remove('shine-buddies');
 
-            // Trigger reflow to restart animation
-            void buddies.offsetWidth;
             void junk.offsetWidth;
+            void buddies.offsetWidth;
 
             buddies.classList.add('shine-buddies');
             setTimeout(() => junk.classList.add('shine-junk'), 2500);
@@ -50,10 +49,10 @@ function LandingPage() {
           <div className="relative z-10 shine-wrapper">
             <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
               <span
-                ref={buddiesRef}
+                ref={junkRef}
                 className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d"
               >
-                Buddies
+                Junk
               </span>
               <img
                 src="/images/logo-icon.png"
@@ -61,10 +60,10 @@ function LandingPage() {
                 className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
               />
               <span
-                ref={junkRef}
+                ref={buddiesRef}
                 className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d"
               >
-                Junk
+                Buddies
               </span>
             </div>
           </div>
