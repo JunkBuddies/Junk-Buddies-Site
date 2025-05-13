@@ -1,4 +1,4 @@
-<!-- File: src/pages/LandingPage.jsx -->import React from 'react'; import { useNavigate } from 'react-router-dom';
+// File: src/pages/LandingPage.jsx import React from 'react'; import { useNavigate } from 'react-router-dom';
 
 function LandingPage() { const navigate = useNavigate();
 
