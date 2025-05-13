@@ -87,7 +87,7 @@
   opacity: 0.75;
 }
 
-/* Itemized Page - 3D Gold Plaque Button */
+/* Item Card Button */
 .item-card-button {
   @apply w-full text-black font-bold rounded-xl shadow-lg relative overflow-hidden transition-transform transform-gpu p-4 text-left;
   background: linear-gradient(
@@ -194,7 +194,6 @@
     opacity: 0;
   }
 }
-
 .shine-junk::after,
 .shine-buddies::after {
   content: "";
@@ -211,7 +210,7 @@
   transform: skewX(-25deg);
   pointer-events: none;
   z-index: 10;
-  opacity: 0; /* Start invisible */
+  opacity: 0;
 }
 .shine-junk.shine-junk::after {
   animation: shineAcrossLetters 2.4s ease-out 1;
@@ -223,5 +222,34 @@
   .shine-junk::after,
   .shine-buddies::after {
     animation: none;
+  }
+}
+
+/* About Us Section Flip + Pulse Border Animation */
+.about-reveal {
+  animation: flipReveal 1.6s ease-out 1;
+  animation-delay: 0.25s;
+  animation-fill-mode: both;
+  border: 2px solid #FFD700;
+  box-shadow: 0 0 12px #FFD700, 0 0 32px rgba(255, 215, 0, 0.4);
+}
+
+@keyframes flipReveal {
+  0% {
+    transform: perspective(600px) rotateX(-90deg) scale(0.9);
+    opacity: 0;
+  }
+  40% {
+    transform: perspective(600px) rotateX(10deg) scale(1.02);
+    opacity: 1;
+  }
+  60% {
+    transform: perspective(600px) rotateX(-5deg) scale(1.01);
+  }
+  80% {
+    transform: perspective(600px) rotateX(2deg) scale(1.005);
+  }
+  100% {
+    transform: perspective(600px) rotateX(0deg) scale(1);
   }
 }
