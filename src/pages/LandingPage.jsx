@@ -1,26 +1,71 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function LandingPage() {
   const navigate = useNavigate();
+  const junkRef = useRef(null);
+  const buddiesRef = useRef(null);
+
+  useEffect(() => {
+    const handleIntersection = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const junk = junkRef.current;
+          const buddies = buddiesRef.current;
+
+          if (buddies && junk) {
+            buddies.classList.remove('shine-buddies');
+            junk.classList.remove('shine-junk');
+
+            // Trigger reflow to restart animation
+            void buddies.offsetWidth;
+            void junk.offsetWidth;
+
+            buddies.classList.add('shine-buddies');
+            setTimeout(() => junk.classList.add('shine-junk'), 2500);
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, {
+      threshold: 0.5,
+    });
+
+    if (junkRef.current && buddiesRef.current) {
+      observer.observe(junkRef.current.parentElement);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="hero-space-background">
       <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-6">
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0" />
 
         {/* Motto with Shine */}
         <div className="relative z-10 mt-24">
           <div className="relative z-10 shine-wrapper">
             <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
-              <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk">Junk</span>
+              <span
+                ref={buddiesRef}
+                className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d"
+              >
+                Buddies
+              </span>
               <img
                 src="/images/logo-icon.png"
                 alt="Logo"
                 className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
               />
-              <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies">Buddies</span>
+              <span
+                ref={junkRef}
+                className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d"
+              >
+                Junk
+              </span>
             </div>
           </div>
           <p className="text-2xl font-semibold tracking-wide mt-4">
@@ -30,10 +75,7 @@ function LandingPage() {
 
         {/* CTA Buttons */}
         <div className="relative z-10 mt-8 space-y-4">
-          <button
-            onClick={() => navigate('/selection')}
-            className="button-glow"
-          >
+          <button onClick={() => navigate('/selection')} className="button-glow">
             Get Started
           </button>
           <button
@@ -44,9 +86,8 @@ function LandingPage() {
           </button>
         </div>
 
-        {/* Main Content Sections */}
+        {/* Content Sections */}
         <div className="relative z-10 mt-20 max-w-6xl w-full space-y-20">
-          {/* How It Works */}
           <section className="bg-gray-800/60 rounded-xl p-6 shadow-lg">
             <h2 className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2">How It Works</h2>
             <ol className="space-y-3 text-lg">
@@ -56,7 +97,6 @@ function LandingPage() {
             </ol>
           </section>
 
-          {/* About Us */}
           <section className="bg-gray-800/60 rounded-xl p-6 shadow-lg">
             <h2 className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2">About Us</h2>
             <p className="text-lg leading-relaxed">
@@ -65,49 +105,27 @@ function LandingPage() {
             </p>
           </section>
 
-          {/* Testimonials */}
           <section className="bg-gray-800/60 rounded-xl p-6 shadow-lg">
             <h2 className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2">Testimonials</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white text-black p-6 rounded-xl shadow-lg border-l-4 border-gold relative">
-                <p className="italic text-lg">
-                  “They were quick, friendly, and cleaned everything perfectly. Highly recommend!”
-                </p>
+                <p className="italic text-lg">“They were quick, friendly, and cleaned everything perfectly. Highly recommend!”</p>
                 <span className="block mt-4 font-semibold text-right">- Alex R.</span>
               </div>
               <div className="bg-white text-black p-6 rounded-xl shadow-lg border-l-4 border-gold relative">
-                <p className="italic text-lg">
-                  “Excellent service and easy scheduling. They really came through for us.”
-                </p>
+                <p className="italic text-lg">“Excellent service and easy scheduling. They really came through for us.”</p>
                 <span className="block mt-4 font-semibold text-right">- Jamie L.</span>
               </div>
             </div>
           </section>
 
-          {/* Gallery */}
           <section>
             <h2 className="text-3xl text-gold font-bold mb-6 text-center">Our Work in Action</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <img
-                src="/images/couch-carrying.png"
-                alt="Team carrying a couch"
-                className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
-              />
-              <img
-                src="/images/team-sunset.png"
-                alt="Junk Buddies team at sunset"
-                className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
-              />
-              <img
-                src="/images/truck-fleet.png"
-                alt="Fleet of Junk Buddies trucks"
-                className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
-              />
-              <img
-                src="/images/demolition-crew.png"
-                alt="Junk Buddies team at a demolition site"
-                className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
-              />
+              <img src="/images/couch-carrying.png" alt="Team carrying a couch" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
+              <img src="/images/team-sunset.png" alt="Junk Buddies team at sunset" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
+              <img src="/images/truck-fleet.png" alt="Fleet of Junk Buddies trucks" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
+              <img src="/images/demolition-crew.png" alt="Junk Buddies team at a demolition site" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
             </div>
           </section>
         </div>
