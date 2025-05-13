@@ -16,10 +16,8 @@ function LandingPage() {
           if (junk && buddies) {
             junk.classList.remove('shine-junk');
             buddies.classList.remove('shine-buddies');
-
             void junk.offsetWidth;
             void buddies.offsetWidth;
-
             buddies.classList.add('shine-buddies');
             setTimeout(() => junk.classList.add('shine-junk'), 2500);
           }
@@ -96,11 +94,12 @@ function LandingPage() {
             </ol>
           </section>
 
+          {/* UPDATED About Us */}
           <section className="bg-gray-800/60 rounded-xl p-6 shadow-lg">
             <h2 className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2">About Us</h2>
             <p className="text-lg leading-relaxed">
-              We’re a dedicated junk removal team serving Houston and surrounding areas with reliability,
-              speed, and friendly service. Our mission is to help you make space for what matters most.
+              <strong>Built in Houston. Driven by Hustle. Trusted by Thousands.</strong><br /><br />
+              At Junk Buddies, we do more than haul junk—we make room for progress. Born and built in Houston, our crew combines precision, speed, and respect for your space to deliver next-level cleanouts. Whether it’s a single item or a full property refresh, we show up with hustle, heart, and zero excuses. Your space, your schedule, our muscle.
             </p>
           </section>
 
