@@ -162,8 +162,8 @@
   animation: buttonBounce 0.3s ease-out;
 }
 
-/* Metallic Title (Matches Itemized Buttons – No Glow) */
-.metallic-title {
+/* Metallic Text to Match Buttons (No Glow, No Hover) */
+.metallic-text-3d {
   background: linear-gradient(
     135deg,
     #d4af37 0%,
@@ -177,8 +177,9 @@
   -webkit-text-fill-color: transparent;
   font-weight: 800;
   text-shadow:
-    1px 1px 2px rgba(255, 255, 255, 0.7),
-    -2px -2px 1px rgba(0, 0, 0, 0.6),
-    2px 2px 4px rgba(0, 0, 0, 0.4);
+    1px 1px 1px rgba(255, 255, 255, 0.6),
+    -1px -1px 1px rgba(0, 0, 0, 0.8),
+    0 0 5px rgba(0, 0, 0, 0.4),
+    inset 0 0 3px rgba(0, 0, 0, 0.4);
   letter-spacing: 0.5px;
 }
