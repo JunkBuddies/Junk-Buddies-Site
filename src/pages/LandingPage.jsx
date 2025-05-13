@@ -4,17 +4,24 @@ function LandingPage() { const navigate = useNavigate();
 
 return ( <div className="hero-space-background"> <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-6"> {/* Gradient Overlay */} <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0"></div>
 
-{/* Motto with Split Shine */}
+{/* Motto with Shine */}
     <div className="relative z-10 mt-24">
-      <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap relative z-10">
-        <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk">Junk</span>
-        <img
-          src="/images/logo-icon.png"
-          alt="Logo"
-          className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
-        />
-        <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies">Buddies</span>
+      <div className="relative z-10 shine-wrapper">
+        <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
+          <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d">Junk</span>
+          <img
+            src="/images/logo-icon.png"
+            alt="Logo"
+            className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
+          />
+          <span className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d">Buddies</span>
+        </div>
+        {/* First Glare */}
+        <div className="glare-glow glare-1"></div>
+        {/* Second Glare with delay */}
+        <div className="glare-glow glare-2"></div>
       </div>
+
       <p className="text-2xl font-semibold tracking-wide mt-4">
         Making Space For What Matters
       </p>
