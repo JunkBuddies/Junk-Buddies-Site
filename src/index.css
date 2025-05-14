@@ -32,31 +32,16 @@
   animation: pulse 1.2s infinite;
 }
 @keyframes pulse {
-  0% {
-    box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
-  }
-  50% {
-    box-shadow: 0 0 40px #FFD700, 0 0 100px #FFD700 inset;
-  }
-  100% {
-    box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
-  }
+  0% { box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset; }
+  50% { box-shadow: 0 0 40px #FFD700, 0 0 100px #FFD700 inset; }
+  100% { box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset; }
 }
 
 /* Hero Background */
 @keyframes spaceDrift {
-  0% {
-    background-position: 0% 0%;
-    transform: scale(1);
-  }
-  50% {
-    background-position: 50% 20%;
-    transform: scale(1.02);
-  }
-  100% {
-    background-position: 100% 0%;
-    transform: scale(1);
-  }
+  0% { background-position: 0% 0%; transform: scale(1); }
+  50% { background-position: 50% 20%; transform: scale(1.02); }
+  100% { background-position: 100% 0%; transform: scale(1); }
 }
 .hero-space-background {
   position: relative;
@@ -125,7 +110,7 @@
   animation: buttonBounce 0.3s ease-out;
 }
 
-/* 3D Metallic Text Shine */
+/* Metallic Text Shine */
 .metallic-text-3d {
   background: linear-gradient(135deg, #d4af37 0%, #f1c75e 25%, #b8860b 50%, #f1c75e 75%, #d4af37 100%);
   background-size: 300% 300%;
@@ -176,30 +161,72 @@
   }
 }
 
-/* About Flip Only */
-.about-reveal {
-  animation: flipRevealOnce 1.2s ease-out 1;
-  animation-fill-mode: both;
-  border: 2px solid #FFD700;
-  box-shadow: 0 0 12px #FFD700, 0 0 32px rgba(255, 215, 0, 0.4);
-}
-
-@keyframes flipRevealOnce {
+/* About Title Flip Animation */
+@keyframes flipOnceSettled {
   0% {
-    transform: perspective(1000px) rotateY(-180deg) scale(0.96);
+    transform: rotateY(-90deg) scale(0.95);
     opacity: 0;
   }
-  40% {
-    transform: perspective(1000px) rotateY(12deg) scale(1.01);
+  60% {
+    transform: rotateY(10deg) scale(1.03);
     opacity: 1;
   }
-  60% {
-    transform: perspective(1000px) rotateY(-6deg);
-  }
   80% {
-    transform: perspective(1000px) rotateY(3deg);
+    transform: rotateY(-4deg) scale(1.01);
   }
   100% {
-    transform: perspective(1000px) rotateY(0deg);
+    transform: rotateY(0deg) scale(1);
   }
+}
+.about-flip {
+  animation: flipOnceSettled 1.4s ease-out 1;
+  animation-fill-mode: both;
+}
+
+/* Self Scheduling Section */
+.self-schedule-section {
+  @apply text-center px-4 py-12 rounded-xl bg-gray-800/60 shadow-lg border border-gold;
+}
+.self-schedule-badge {
+  display: inline-block;
+  background-color: #FFD700;
+  color: black;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.self-schedule-headline {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #FFD700, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.5px;
+}
+.self-schedule-description {
+  color: #e5e5e5;
+  font-size: 1.125rem;
+  margin-top: 1rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.75rem;
+}
+.secondary-cta {
+  margin-top: 2rem;
+  background-color: #FFD700;
+  color: #111;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px #FFD700, 0 0 30px rgba(255, 215, 0, 0.3);
+}
+.secondary-cta:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #FFD700, 0 0 40px rgba(255, 215, 0, 0.5);
 }
