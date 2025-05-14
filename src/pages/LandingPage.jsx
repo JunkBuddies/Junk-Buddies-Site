@@ -6,6 +6,8 @@ function LandingPage() {
   const junkRef = useRef(null);
   const buddiesRef = useRef(null);
   const aboutRef = useRef(null);
+  const aboutTitleRef = useRef(null);
+  const aboutParagraphRef = useRef(null);
 
   useEffect(() => {
     const handleIntersection = (entries) => {
@@ -38,14 +40,20 @@ function LandingPage() {
 
   useEffect(() => {
     const about = aboutRef.current;
-    if (!about) return;
+    const title = aboutTitleRef.current;
+    const para = aboutParagraphRef.current;
+    if (!about || !title || !para) return;
 
     const handleAboutIntersection = (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           about.classList.remove('about-reveal');
+          title.classList.remove('about-burn');
+          para.classList.remove('about-burn');
           void about.offsetWidth;
           about.classList.add('about-reveal');
+          title.classList.add('about-burn');
+          para.classList.add('about-burn');
         }
       });
     };
@@ -62,30 +70,48 @@ function LandingPage() {
   return (
     <div className="hero-space-background">
       <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-6">
-        {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0" />
 
-        {/* Motto with Shine */}
         <div className="relative z-10 mt-24">
           <div className="relative z-10 shine-wrapper">
             <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
-              <span ref={junkRef} className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d">Junk</span>
-              <img src="/images/logo-icon.png" alt="Logo" className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain" />
-              <span ref={buddiesRef} className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d">Buddies</span>
+              <span
+                ref={junkRef}
+                className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d"
+              >
+                Junk
+              </span>
+              <img
+                src="/images/logo-icon.png"
+                alt="Logo"
+                className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
+              />
+              <span
+                ref={buddiesRef}
+                className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d"
+              >
+                Buddies
+              </span>
             </div>
           </div>
-          <p className="text-2xl font-semibold tracking-wide mt-4">Making Space For What Matters</p>
+          <p className="text-2xl font-semibold tracking-wide mt-4">
+            Making Space For What Matters
+          </p>
         </div>
 
-        {/* CTA Buttons */}
         <div className="relative z-10 mt-8 space-y-4">
-          <button onClick={() => navigate('/selection')} className="button-glow">Get Started</button>
-          <button onClick={() => navigate('/selection')} className="bg-white text-black font-bold py-3 px-8 rounded-xl hover:bg-gray-200 transition shadow-lg hover:scale-105">View Pricing</button>
+          <button onClick={() => navigate('/selection')} className="button-glow">
+            Get Started
+          </button>
+          <button
+            onClick={() => navigate('/selection')}
+            className="bg-white text-black font-bold py-3 px-8 rounded-xl hover:bg-gray-200 transition shadow-lg hover:scale-105"
+          >
+            View Pricing
+          </button>
         </div>
 
-        {/* Content Sections */}
         <div className="relative z-10 mt-20 max-w-6xl w-full space-y-20">
-          {/* How It Works */}
           <section className="bg-gray-800/60 rounded-xl p-6 shadow-lg">
             <h2 className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2">How It Works</h2>
             <ol className="space-y-3 text-lg">
@@ -95,19 +121,25 @@ function LandingPage() {
             </ol>
           </section>
 
-          {/* About Us */}
           <section
             ref={aboutRef}
-            className="bg-gray-800/60 rounded-xl p-6 shadow-lg border-gold border-2 about-reveal"
+            className="bg-gray-800/60 rounded-xl p-6 shadow-lg border-gold border-2 animate-border"
           >
-            <h2 className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2">About Us</h2>
-            <p className="text-lg leading-relaxed">
+            <h2
+              ref={aboutTitleRef}
+              className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2"
+            >
+              About Us
+            </h2>
+            <p
+              ref={aboutParagraphRef}
+              className="text-lg leading-relaxed"
+            >
               <strong>Built in Houston. Driven by Hustle. Trusted by Thousands.</strong><br /><br />
               At Junk Buddies, we do more than haul junk—we make room for progress. Born and built in Houston, our crew combines precision, speed, and respect for your space to deliver next-level cleanouts. Whether it’s a single item or a full property refresh, we show up with hustle, heart, and zero excuses. Your space, your schedule, our muscle.
             </p>
           </section>
 
-          {/* Testimonials */}
           <section className="bg-gray-800/60 rounded-xl p-6 shadow-lg">
             <h2 className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2">Testimonials</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -122,7 +154,6 @@ function LandingPage() {
             </div>
           </section>
 
-          {/* Gallery */}
           <section>
             <h2 className="text-3xl text-gold font-bold mb-6 text-center">Our Work in Action</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
