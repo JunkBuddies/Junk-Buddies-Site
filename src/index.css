@@ -32,31 +32,16 @@
   animation: pulse 1.2s infinite;
 }
 @keyframes pulse {
-  0% {
-    box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
-  }
-  50% {
-    box-shadow: 0 0 40px #FFD700, 0 0 100px #FFD700 inset;
-  }
-  100% {
-    box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset;
-  }
+  0% { box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset; }
+  50% { box-shadow: 0 0 40px #FFD700, 0 0 100px #FFD700 inset; }
+  100% { box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset; }
 }
 
 /* Hero Background */
 @keyframes spaceDrift {
-  0% {
-    background-position: 0% 0%;
-    transform: scale(1);
-  }
-  50% {
-    background-position: 50% 20%;
-    transform: scale(1.02);
-  }
-  100% {
-    background-position: 100% 0%;
-    transform: scale(1);
-  }
+  0% { background-position: 0% 0%; transform: scale(1); }
+  50% { background-position: 50% 20%; transform: scale(1.02); }
+  100% { background-position: 100% 0%; transform: scale(1); }
 }
 .hero-space-background {
   position: relative;
@@ -183,93 +168,49 @@
   border: 2px solid #FFD700;
   box-shadow: 0 0 12px #FFD700, 0 0 32px rgba(255, 215, 0, 0.4);
 }
-
 @keyframes flipRevealOnce {
-  0% {
-    transform: perspective(1000px) rotateY(-180deg) scale(0.96);
-    opacity: 0;
-  }
-  40% {
-    transform: perspective(1000px) rotateY(12deg) scale(1.01);
-    opacity: 1;
-  }
-  60% {
-    transform: perspective(1000px) rotateY(-6deg);
-  }
-  80% {
-    transform: perspective(1000px) rotateY(3deg);
-  }
-  100% {
-    transform: perspective(1000px) rotateY(0deg);
-  }
+  0%   { transform: perspective(1000px) rotateY(-180deg) scale(0.96); opacity: 0; }
+  40%  { transform: perspective(1000px) rotateY(12deg) scale(1.01); opacity: 1; }
+  60%  { transform: perspective(1000px) rotateY(-6deg); }
+  80%  { transform: perspective(1000px) rotateY(3deg); }
+  100% { transform: perspective(1000px) rotateY(0deg); }
 }
+
 /* Self-Scheduling Reveal Section */
 .self-schedule-section {
-  @apply bg-gray-800/60 rounded-xl p-6 shadow-xl border-2 border-gold relative overflow-hidden;
+  @apply bg-gray-800/60 rounded-xl p-6 shadow-xl border-2 border-[#FFD700] relative overflow-hidden;
   animation: fadeInUp 0.9s ease-out both;
 }
-
 .self-schedule-badge {
   @apply inline-block bg-[#FFD700] text-black font-semibold px-4 py-1 rounded-full text-sm shadow-md mb-3;
   border: 2px solid #b8860b;
   box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
   animation: popBadge 0.5s ease-out both;
 }
-
 .self-schedule-title {
-  @apply text-3xl text-gold font-bold mb-2;
+  @apply text-3xl text-[#FFD700] font-bold mb-2;
   animation: slideInTitle 0.7s ease-out both;
 }
-
 .self-schedule-text {
   @apply text-lg leading-relaxed text-white;
   animation: fadeInText 1.2s ease-out both;
 }
 
-/* Keyframes */
+/* Self-Schedule Animations */
 @keyframes popBadge {
-  0% {
-    transform: scale(0.7);
-    opacity: 0;
-  }
-  80% {
-    transform: scale(1.1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-  }
+  0% { transform: scale(0.7); opacity: 0; }
+  80% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); }
 }
-
 @keyframes slideInTitle {
-  0% {
-    transform: translateX(-40%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateX(0);
-    opacity: 1;
-  }
+  0% { transform: translateX(-40%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
 }
-
 @keyframes fadeInText {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
 }
