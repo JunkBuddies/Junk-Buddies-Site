@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base Glow Button */
+/* === Base Glow Button === */
 .button-glow {
   @apply relative bg-[#FFD700] text-black font-bold py-3 px-8 rounded-xl overflow-hidden shadow-lg transition-transform hover:scale-105;
   border: 2px solid #FFD700;
@@ -43,20 +43,11 @@
   }
 }
 
-/* Hero Background */
+/* === Hero Background === */
 @keyframes spaceDrift {
-  0% {
-    background-position: 0% 0%;
-    transform: scale(1);
-  }
-  50% {
-    background-position: 50% 20%;
-    transform: scale(1.02);
-  }
-  100% {
-    background-position: 100% 0%;
-    transform: scale(1);
-  }
+  0% { background-position: 0% 0%; transform: scale(1); }
+  50% { background-position: 50% 20%; transform: scale(1.02); }
+  100% { background-position: 100% 0%; transform: scale(1); }
 }
 .hero-space-background {
   position: relative;
@@ -76,58 +67,7 @@
   opacity: 0.75;
 }
 
-/* Item Card Buttons */
-.item-card-button {
-  @apply w-full text-black font-bold rounded-xl shadow-lg relative overflow-hidden transition-transform transform-gpu p-4 text-left;
-  background: linear-gradient(135deg, #d4af37 0%, #f1c75e 25%, #b8860b 50%, #f1c75e 75%, #d4af37 100%);
-  background-size: 300% 300%;
-  border: 3px solid #8b6914;
-  border-radius: 1rem;
-  box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.6),
-              inset 0 -4px 6px rgba(0, 0, 0, 0.5),
-              0 10px 15px rgba(0, 0, 0, 0.6),
-              0 20px 30px rgba(0, 0, 0, 0.5),
-              0 25px 40px rgba(0, 0, 0, 0.4);
-}
-.item-card-button:hover {
-  background-position: 100% 0;
-  filter: brightness(1.15) contrast(1.1);
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: inset 0 4px 10px rgba(255, 255, 255, 0.6),
-              inset 0 -4px 8px rgba(0, 0, 0, 0.4),
-              0 12px 18px rgba(0, 0, 0, 0.6),
-              0 25px 35px rgba(0, 0, 0, 0.4),
-              0 30px 45px rgba(0, 0, 0, 0.3);
-}
-.item-card-button:active {
-  transform: translateY(12px) scale(0.96);
-  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.6),
-              inset 0 -2px 6px rgba(255, 255, 255, 0.3),
-              0 4px 8px rgba(0, 0, 0, 0.4);
-}
-.item-card-button-text {
-  color: #2e2e2e;
-  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.4),
-               -1px -1px 1px rgba(0, 0, 0, 0.8),
-               inset 0 0 5px rgba(0, 0, 0, 0.5);
-  letter-spacing: 0.5px;
-}
-@keyframes buttonBounce {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(0.94);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-.item-card-button.bounce {
-  animation: buttonBounce 0.3s ease-out;
-}
-
-/* Metallic Text Shine */
+/* === Metallic Shine Text === */
 .metallic-text-3d {
   background: linear-gradient(135deg, #d4af37 0%, #f1c75e 25%, #b8860b 50%, #f1c75e 75%, #d4af37 100%);
   background-size: 300% 300%;
@@ -137,13 +77,14 @@
   letter-spacing: 0.5px;
   position: relative;
   overflow: hidden;
-  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.6),
-               -1px -1px 1px rgba(0, 0, 0, 0.8),
-               0 0 5px rgba(0, 0, 0, 0.4),
-               inset 0 0 3px rgba(0, 0, 0, 0.4);
+  text-shadow:
+    1px 1px 1px rgba(255, 255, 255, 0.6),
+    -1px -1px 1px rgba(0, 0, 0, 0.8),
+    0 0 5px rgba(0, 0, 0, 0.4),
+    inset 0 0 3px rgba(0, 0, 0, 0.4);
 }
 
-/* Shine Animation */
+/* === Shine Sweep === */
 @keyframes shineAcrossLetters {
   0% { left: 100%; opacity: 0; }
   25% { opacity: 0.3; }
@@ -158,7 +99,7 @@
   top: 0;
   width: 60px;
   height: 100%;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0) 100%);
   transform: skewX(-25deg);
   pointer-events: none;
   z-index: 10;
@@ -177,7 +118,56 @@
   }
 }
 
-/* About Reveal Animations */
+/* === Item Card Buttons === */
+.item-card-button {
+  @apply w-full text-black font-bold rounded-xl shadow-lg relative overflow-hidden transition-transform transform-gpu p-4 text-left;
+  background: linear-gradient(135deg, #d4af37 0%, #f1c75e 25%, #b8860b 50%, #f1c75e 75%, #d4af37 100%);
+  background-size: 300% 300%;
+  border: 3px solid #8b6914;
+  border-radius: 1rem;
+  box-shadow:
+    inset 0 3px 6px rgba(255, 255, 255, 0.6),
+    inset 0 -4px 6px rgba(0, 0, 0, 0.5),
+    0 10px 15px rgba(0, 0, 0, 0.6),
+    0 20px 30px rgba(0, 0, 0, 0.5),
+    0 25px 40px rgba(0, 0, 0, 0.4);
+}
+.item-card-button:hover {
+  background-position: 100% 0;
+  filter: brightness(1.15) contrast(1.1);
+  transform: translateY(-6px) scale(1.03);
+  box-shadow:
+    inset 0 4px 10px rgba(255, 255, 255, 0.6),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.4),
+    0 12px 18px rgba(0, 0, 0, 0.6),
+    0 25px 35px rgba(0, 0, 0, 0.4),
+    0 30px 45px rgba(0, 0, 0, 0.3);
+}
+.item-card-button:active {
+  transform: translateY(12px) scale(0.96);
+  box-shadow:
+    inset 0 3px 8px rgba(0, 0, 0, 0.6),
+    inset 0 -2px 6px rgba(255, 255, 255, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.4);
+}
+.item-card-button-text {
+  color: #2e2e2e;
+  text-shadow:
+    1px 1px 1px rgba(255, 255, 255, 0.4),
+    -1px -1px 1px rgba(0, 0, 0, 0.8),
+    inset 0 0 5px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.5px;
+}
+@keyframes buttonBounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.94); }
+  100% { transform: scale(1); }
+}
+.item-card-button.bounce {
+  animation: buttonBounce 0.3s ease-out;
+}
+
+/* === About Section Reveal === */
 .about-reveal {
   animation:
     flipReveal 1.6s ease-out 1,
@@ -187,28 +177,16 @@
   box-shadow: 0 0 12px #FFD700, 0 0 32px rgba(255, 215, 0, 0.4);
 }
 
-/* Flip Effect */
+/* Flip effect */
 @keyframes flipReveal {
-  0% {
-    transform: perspective(600px) rotateX(-90deg) scale(0.9);
-    opacity: 0;
-  }
-  40% {
-    transform: perspective(600px) rotateX(10deg) scale(1.02);
-    opacity: 1;
-  }
-  60% {
-    transform: perspective(600px) rotateX(-5deg) scale(1.01);
-  }
-  80% {
-    transform: perspective(600px) rotateX(2deg) scale(1.005);
-  }
-  100% {
-    transform: perspective(600px) rotateX(0deg) scale(1);
-  }
+  0% { transform: perspective(600px) rotateX(-90deg) scale(0.9); opacity: 0; }
+  40% { transform: perspective(600px) rotateX(10deg) scale(1.02); opacity: 1; }
+  60% { transform: perspective(600px) rotateX(-5deg) scale(1.01); }
+  80% { transform: perspective(600px) rotateX(2deg) scale(1.005); }
+  100% { transform: perspective(600px) rotateX(0deg) scale(1); }
 }
 
-/* Burn Effect */
+/* Burn effect for header/paragraph */
 @keyframes burnReveal {
   0% {
     filter: brightness(0.5) blur(6px);
