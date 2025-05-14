@@ -47,13 +47,9 @@ function LandingPage() {
     const handleAboutIntersection = (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          about.classList.remove('about-reveal');
-          title.classList.remove('about-burn');
-          para.classList.remove('about-burn');
-          void about.offsetWidth;
-          about.classList.add('about-reveal');
-          title.classList.add('about-burn');
-          para.classList.add('about-burn');
+          title.classList.remove('about-flip');
+          void title.offsetWidth;
+          title.classList.add('about-flip');
         }
       });
     };
@@ -70,8 +66,10 @@ function LandingPage() {
   return (
     <div className="hero-space-background">
       <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-6">
+        {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0" />
 
+        {/* Motto with Shine */}
         <div className="relative z-10 mt-24">
           <div className="relative z-10 shine-wrapper">
             <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
@@ -99,6 +97,7 @@ function LandingPage() {
           </p>
         </div>
 
+        {/* CTA Buttons */}
         <div className="relative z-10 mt-8 space-y-4">
           <button onClick={() => navigate('/selection')} className="button-glow">
             Get Started
@@ -111,6 +110,19 @@ function LandingPage() {
           </button>
         </div>
 
+        {/* NEW Self-Scheduling Section */}
+        <div className="relative z-10 mt-20 max-w-5xl w-full self-schedule-section">
+          <span className="self-schedule-badge">You don’t pay until the job’s done</span>
+          <h2 className="self-schedule-headline">Self-Scheduling That Works Around You</h2>
+          <p className="self-schedule-description mt-2">
+            Skip the quotes. Book your pickup instantly with our easy self-scheduling system. We cut out the middleman, saving you time and up to 30% compared to traditional junk haulers. Schedule now — your space, your schedule, our muscle.
+          </p>
+          <button onClick={() => navigate('/selection')} className="secondary-cta">
+            Book Instantly
+          </button>
+        </div>
+
+        {/* Content Sections */}
         <div className="relative z-10 mt-20 max-w-6xl w-full space-y-20">
           <section className="bg-gray-800/60 rounded-xl p-6 shadow-lg">
             <h2 className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2">How It Works</h2>
@@ -121,6 +133,7 @@ function LandingPage() {
             </ol>
           </section>
 
+          {/* About Us Animated */}
           <section
             ref={aboutRef}
             className="bg-gray-800/60 rounded-xl p-6 shadow-lg border-gold border-2 animate-border"
