@@ -15,12 +15,7 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 215, 0, 0) 30%,
-    rgba(255, 215, 0, 0.5) 50%,
-    rgba(255, 215, 0, 0) 70%
-  );
+  background: linear-gradient(120deg, rgba(255, 215, 0, 0) 30%, rgba(255, 215, 0, 0.5) 50%, rgba(255, 215, 0, 0) 70%);
   transform: rotate(25deg);
   transition: all 0.8s ease-in-out;
   pointer-events: none;
@@ -81,16 +76,60 @@
   opacity: 0.75;
 }
 
-/* 3D Metallic Shine Text */
+/* Item Card Buttons */
+.item-card-button {
+  @apply w-full text-black font-bold rounded-xl shadow-lg relative overflow-hidden transition-transform transform-gpu p-4 text-left;
+  background: linear-gradient(135deg, #d4af37 0%, #f1c75e 25%, #b8860b 50%, #f1c75e 75%, #d4af37 100%);
+  background-size: 300% 300%;
+  border: 3px solid #8b6914;
+  border-radius: 1rem;
+  box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.6),
+              inset 0 -4px 6px rgba(0, 0, 0, 0.5),
+              0 10px 15px rgba(0, 0, 0, 0.6),
+              0 20px 30px rgba(0, 0, 0, 0.5),
+              0 25px 40px rgba(0, 0, 0, 0.4);
+}
+.item-card-button:hover {
+  background-position: 100% 0;
+  filter: brightness(1.15) contrast(1.1);
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: inset 0 4px 10px rgba(255, 255, 255, 0.6),
+              inset 0 -4px 8px rgba(0, 0, 0, 0.4),
+              0 12px 18px rgba(0, 0, 0, 0.6),
+              0 25px 35px rgba(0, 0, 0, 0.4),
+              0 30px 45px rgba(0, 0, 0, 0.3);
+}
+.item-card-button:active {
+  transform: translateY(12px) scale(0.96);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.6),
+              inset 0 -2px 6px rgba(255, 255, 255, 0.3),
+              0 4px 8px rgba(0, 0, 0, 0.4);
+}
+.item-card-button-text {
+  color: #2e2e2e;
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.4),
+               -1px -1px 1px rgba(0, 0, 0, 0.8),
+               inset 0 0 5px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.5px;
+}
+@keyframes buttonBounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.94);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.item-card-button.bounce {
+  animation: buttonBounce 0.3s ease-out;
+}
+
+/* Metallic Text Shine */
 .metallic-text-3d {
-  background: linear-gradient(
-    135deg,
-    #d4af37 0%,
-    #f1c75e 25%,
-    #b8860b 50%,
-    #f1c75e 75%,
-    #d4af37 100%
-  );
+  background: linear-gradient(135deg, #d4af37 0%, #f1c75e 25%, #b8860b 50%, #f1c75e 75%, #d4af37 100%);
   background-size: 300% 300%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -98,33 +137,19 @@
   letter-spacing: 0.5px;
   position: relative;
   overflow: hidden;
-  text-shadow:
-    1px 1px 1px rgba(255, 255, 255, 0.6),
-    -1px -1px 1px rgba(0, 0, 0, 0.8),
-    0 0 5px rgba(0, 0, 0, 0.4),
-    inset 0 0 3px rgba(0, 0, 0, 0.4);
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.6),
+               -1px -1px 1px rgba(0, 0, 0, 0.8),
+               0 0 5px rgba(0, 0, 0, 0.4),
+               inset 0 0 3px rgba(0, 0, 0, 0.4);
 }
 
-/* Shine Sweep */
+/* Shine Animation */
 @keyframes shineAcrossLetters {
-  0% {
-    left: 100%;
-    opacity: 0;
-  }
-  25% {
-    opacity: 0.3;
-  }
-  50% {
-    left: 50%;
-    opacity: 0.6;
-  }
-  75% {
-    opacity: 0.3;
-  }
-  100% {
-    left: -10%;
-    opacity: 0;
-  }
+  0% { left: 100%; opacity: 0; }
+  25% { opacity: 0.3; }
+  50% { left: 50%; opacity: 0.6; }
+  75% { opacity: 0.3; }
+  100% { left: -10%; opacity: 0; }
 }
 .shine-junk::after,
 .shine-buddies::after {
@@ -133,12 +158,7 @@
   top: 0;
   width: 60px;
   height: 100%;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.9) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0) 100%);
   transform: skewX(-25deg);
   pointer-events: none;
   z-index: 10;
@@ -157,7 +177,7 @@
   }
 }
 
-/* About Section Reveal */
+/* About Reveal Animations */
 .about-reveal {
   animation:
     flipReveal 1.6s ease-out 1,
@@ -188,22 +208,16 @@
   }
 }
 
-/* Burn Reveal */
+/* Burn Effect */
 @keyframes burnReveal {
   0% {
     filter: brightness(0.5) blur(6px);
-    text-shadow:
-      0 0 20px #ff8c00,
-      0 0 40px #ff8c00,
-      0 0 60px #ff8c00;
+    text-shadow: 0 0 20px #ff8c00, 0 0 40px #ff8c00, 0 0 60px #ff8c00;
     opacity: 0;
   }
   50% {
     filter: brightness(1.4) blur(2px);
-    text-shadow:
-      0 0 30px #ff8c00,
-      0 0 50px #ff8c00,
-      0 0 70px #ff8c00;
+    text-shadow: 0 0 30px #ff8c00, 0 0 50px #ff8c00, 0 0 70px #ff8c00;
     opacity: 1;
   }
   100% {
@@ -211,4 +225,8 @@
     text-shadow: none;
     opacity: 1;
   }
+}
+.about-burn {
+  animation: burnReveal 1.4s ease-out 1;
+  animation-fill-mode: both;
 }
