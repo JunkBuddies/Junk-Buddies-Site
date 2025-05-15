@@ -140,7 +140,7 @@ function LandingPage() {
           >
             <h2
               ref={aboutTitleRef}
-              className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2"
+              className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2 about-flip"
             >
               About Us
             </h2>
