@@ -89,20 +89,20 @@ return ( <div className="hero-space-background"> <div className="relative bg-gra
     {/* How It Works Floating Cards */}
     <div className="relative z-10 mt-20 max-w-6xl w-full">
       <h2 className="text-3xl text-gold font-bold mb-6 text-center">How It Works</h2>
-      <div className="howitworks-container">
-        <div className="howitworks-card float-up selected">
+      <div className="how-it-works-carousel">
+        <div className="how-card">
           <video autoPlay loop muted playsInline className="how-card-video">
             <source src="/videos/step1.mp4" type="video/mp4" />
           </video>
           <h3 className="how-card-title">1. Choose Your Items</h3>
         </div>
-        <div className="howitworks-card float-down">
+        <div className="how-card">
           <video autoPlay loop muted playsInline className="how-card-video">
             <source src="/videos/step2.mp4" type="video/mp4" />
           </video>
           <h3 className="how-card-title">2. Schedule Online</h3>
         </div>
-        <div className="howitworks-card float-up">
+        <div className="how-card">
           <video autoPlay loop muted playsInline className="how-card-video">
             <source src="/videos/step3.mp4" type="video/mp4" />
           </video>
