@@ -10,6 +10,22 @@ function SchedulePage() {
   const totalVolume = cart.reduce((sum, item) => sum + item.volume, 0);
 const totalItemPrice = cart.reduce((sum, item) => sum + item.price, 0);
 const highestItemPrice = cart.reduce((max, item) => Math.max(max, item.price), 0);
+  const fullLoadPoints = 450;
+const pricePerPoint = 2.22;
+const minimumPrice = 100;
+const quarterLoadThreshold = fullLoadPoints * 0.25;
+
+let finalPrice = 0;
+if (totalVolume === 0) {
+  finalPrice = 0;
+} else if (totalVolume < quarterLoadThreshold) {
+  finalPrice = Math.max(totalItemPrice, highestItemPrice, minimumPrice);
+} else {
+  const fullLoads = Math.floor(totalVolume / fullLoadPoints);
+  const remainder = totalVolume % fullLoadPoints;
+  const remainderCost = remainder * pricePerPoint;
+  finalPrice = fullLoads * 1000 + remainderCost;
+}
 
   const [formData, setFormData] = useState({
     name: '',
