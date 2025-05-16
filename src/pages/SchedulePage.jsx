@@ -7,6 +7,9 @@ import emailjs from 'emailjs-com';
 function SchedulePage() {
   const { state } = useLocation();
   const { cart, total } = state || { cart: [], total: 0 };
+  const totalVolume = cart.reduce((sum, item) => sum + item.volume, 0);
+const totalItemPrice = cart.reduce((sum, item) => sum + item.price, 0);
+const highestItemPrice = cart.reduce((max, item) => Math.max(max, item.price), 0);
 
   const [formData, setFormData] = useState({
     name: '',
