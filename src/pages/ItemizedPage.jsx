@@ -527,7 +527,7 @@ const filteredData = itemData.map((section) => ({
                 onClick={() =>
                   navigate('/schedule', {
   state: { cart, total: finalPrice, volume: totalVolume },
-});
+})
                 }
               >
                 Schedule Now
