@@ -106,7 +106,7 @@ const itemData = [
     { name: 'Sofa', price: 110, volume: 8 },
     { name: 'Stool', price: 25, volume: 1 }
   ]
-}
+},
 {
   category: 'Dressers, Cabinets & Storage',
   items: [
@@ -132,7 +132,7 @@ const itemData = [
     { name: 'Vertical Chest of Drawers', price: 75, volume: 6 },
     { name: 'Vertical Dresser', price: 75, volume: 6 }
   ]
-}
+},
 {
   category: 'Tables & Desks',
   items: [
@@ -151,7 +151,7 @@ const itemData = [
     { name: 'Table Saw', price: 90, volume: 8 },
     { name: 'Tool Bench', price: 90, volume: 10 }
   ]
-}
+},
 {
   category: 'Appliances',
   items: [
@@ -184,7 +184,7 @@ const itemData = [
     { name: 'Stove', price: 90, volume: 6 },
     { name: 'Washer', price: 100, volume: 6 }
   ]
-}
+},
 {
   category: 'Fitness & Sports',
   items: [
@@ -208,7 +208,7 @@ const itemData = [
     { name: 'Weight Bench Set', price: 80, volume: 8 },
     { name: 'Weight Machine', price: 100, volume: 10 }
   ]
-}
+},
 {
   category: 'Kids & Baby Items',
   items: [
@@ -228,7 +228,7 @@ const itemData = [
     { name: 'Swing(s)', price: 50, volume: 6 },
     { name: 'Swingset - Medium', price: 150, volume: 15 }
   ]
-}
+},
 {
   category: 'Outdoor & Yard',
   items: [
@@ -256,7 +256,7 @@ const itemData = [
     { name: 'Wheelbarrow', price: 40, volume: 4 },
     { name: 'Wood Pallet', price: 30, volume: 3 }
   ]
-}
+},
 {
   category: 'Bathroom & Plumbing',
   items: [
@@ -273,7 +273,7 @@ const itemData = [
     { name: 'Vanity - Small', price: 60, volume: 4 },
     { name: 'Water Heater', price: 80, volume: 6 }
   ]
-}
+},
 {
   category: 'Décor & Small Items',
   items: [
@@ -327,7 +327,7 @@ const itemData = [
     { name: 'Television - Tube 25in or under', price: 50, volume: 3 },
     { name: 'Toy Box', price: 35, volume: 4 }
   ]
-}
+},
 {
   category: 'Tools, Garage & Miscellaneous',
   items: [
@@ -388,7 +388,7 @@ const itemData = [
     { name: 'Wine Cooler - Small', price: 60, volume: 4 },
     { name: 'Wood Pallet', price: 30, volume: 3 }
   ]
-}
+},
 {
   category: 'Custom & Catch-All',
   items: [
@@ -400,7 +400,7 @@ const itemData = [
     { name: 'Misc. Medium Unlisted Item', price: 70, volume: 6 },
     { name: 'Misc. Small Unlisted Item', price: 50, volume: 4 }
   ]
-}
+},
 ];
 
 const filteredData = itemData.map((section) => ({
