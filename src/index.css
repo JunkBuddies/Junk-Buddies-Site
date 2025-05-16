@@ -159,8 +159,7 @@
   .shine-buddies::after {
     animation: none;
   }
-}
-
+  }
 /* About Flip Only */
 .about-reveal {
   animation: flipRevealOnce 1.2s ease-out 1;
@@ -215,4 +214,31 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
- 
+/* Floating How-It-Works Cards */
+.howitworks-container {
+  @apply flex space-x-6 overflow-x-auto no-scrollbar snap-x snap-mandatory;
+  scroll-behavior: smooth;
+  padding-bottom: 2rem;
+}
+
+.howitworks-card {
+  @apply flex-shrink-0 w-80 h-auto bg-gray-800 rounded-2xl p-6 border-2 border-[#FFD700] text-white shadow-xl snap-center relative;
+  animation: driftStart 1s ease-out both;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.howitworks-card.selected {
+  animation: floatPulse 3s ease-in-out infinite;
+  z-index: 10;
+}
+
+@keyframes driftStart {
+  0% { transform: translateY(40px) scale(0.9) rotateX(10deg); opacity: 0; }
+  100% { transform: translateY(0) scale(1) rotateX(0deg); opacity: 1; }
+}
+
+@keyframes floatPulse {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
