@@ -77,7 +77,7 @@ const itemData = [
     { name: 'Trundle Bed', price: 70, volume: 6 },
     { name: 'Waterbed', price: 90, volume: 6 }
   ]
-  }
+  },
 {
   category: 'Living Room Seating',
   items: [
