@@ -3,21 +3,41 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-// Load tier rates (35-yard truck)
-const loadRates = [
-  { maxVolume: 8.75, price: 250 },
-  { maxVolume: 17.5, price: 500 },
-  { maxVolume: 26.25, price: 750 },
-  { maxVolume: 35, price: 1000 }
+// Tier rates for 500-point truck
+const tierRates = [
+  { maxPoints: 125, price: 250, label: '¼ Load' },
+  { maxPoints: 250, price: 500, label: '½ Load' },
+  { maxPoints: 375, price: 750, label: '¾ Load' },
+  { maxPoints: 500, price: 1000, label: 'Full Load' }
 ];
 
-// Discount progression logic
-const getDiscountRate = (index) => {
-  if (index < 2) return 0;
-  const step = Math.floor((index - 2) / 2);
-  const discount = 15 + (step * 5);
-  return Math.min(discount, 45);
-};
+function ItemizedPage() {
+  const [cart, setCart] = useState([]);
+  const [search, setSearch] = useState('');
+  const [cartVisible, setCartVisible] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const initialCart = location.state?.cart || [];
+  const initialTotal = location.state?.total || 0;
+
+  const addToCart = (item) => {
+    setCart([...cart, item]);
+  };
+
+  const removeFromCart = (index) => {
+    const updated = [...cart];
+    updated.splice(index, 1);
+    setCart(updated);
+  };
+
+  const totalVolume = cart.reduce((sum, item) => sum + item.volume, 0);
+  const applicableTier = tierRates.find(t => totalVolume <= t.maxPoints) || tierRates[tierRates.length - 1];
+  const loadPrice = applicableTier.price;
+  const loadLabel = applicableTier.label;
+  const finalPrice = loadPrice;
+  const truckFillPercent = Math.min((totalVolume / 500) * 100, 100);
 const itemData = [
   {
   category: 'Beds & Bedroom Furniture',
@@ -383,42 +403,7 @@ const itemData = [
 }
 ];
 
-function ItemizedPage() {
-  const [cart, setCart] = useState([]);
-  const [search, setSearch] = useState('');
-  const [cartVisible, setCartVisible] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const initialCart = location.state?.cart || [];
-  const initialTotal = location.state?.total || 0;
-
-  const addToCart = (item) => {
-    setCart([...cart, item]);
-  };
-
-  const removeFromCart = (index) => {
-    const updated = [...cart];
-    updated.splice(index, 1);
-    setCart(updated);
-  };
-
-  // Dynamic pricing calculations
-  const totalVolume = cart.reduce((sum, item) => sum + item.volume, 0);
-
-  const discountedItemTotal = cart.reduce((sum, item, index) => {
-    const discountRate = getDiscountRate(index);
-    const discountedPrice = item.price * (1 - discountRate / 100);
-    return sum + discountedPrice;
-  }, 0);
-
-  const applicableLoad = loadRates.find(tier => totalVolume <= tier.maxVolume);
-  const loadPrice = applicableLoad ? applicableLoad.price : loadRates[loadRates.length - 1].price;
-
-  const finalPrice = Math.min(discountedItemTotal, loadPrice);
-  const itemSavings = cart.reduce((sum, item) => sum + item.price, 0) - discountedItemTotal;
-  const loadSavings = discountedItemTotal > loadPrice ? discountedItemTotal - loadPrice : 0;
-
-  const filteredData = itemData.map((section) => ({
+const filteredData = itemData.map((section) => ({
     ...section,
     items: section.items.filter((item) =>
       item.name.toLowerCase().includes(search.toLowerCase())
@@ -458,7 +443,6 @@ function ItemizedPage() {
                 >
                   <div className="item-card-button-text">
                     <p className="font-semibold">{item.name}</p>
-                    {/* Price intentionally hidden */}
                   </div>
                 </button>
               ))}
@@ -487,45 +471,36 @@ function ItemizedPage() {
                 <p className="italic text-gray-400">Your cart is empty.</p>
               ) : (
                 <ul>
-                  {cart.map((item, idx) => {
-                    const discountRate = getDiscountRate(idx);
-                    const discountedPrice = item.price * (1 - discountRate / 100);
-                    return (
-                      <li
-                        key={idx}
-                        className="flex justify-between items-center text-sm mb-1"
+                  {cart.map((item, idx) => (
+                    <li
+                      key={idx}
+                      className="flex justify-between items-center text-sm mb-1"
+                    >
+                      {item.name}: ${item.price.toFixed(2)}
+                      <button
+                        onClick={() => removeFromCart(idx)}
+                        className="text-red-500 text-xs ml-2 hover:underline"
                       >
-                        {item.name}{' '}
-                        {discountRate > 0 ? (
-                          <span>
-                            ({discountRate}% off): ${discountedPrice.toFixed(2)}
-                          </span>
-                        ) : (
-                          <>: ${discountedPrice.toFixed(2)}</>
-                        )}
-                        <button
-                          onClick={() => removeFromCart(idx)}
-                          className="text-red-500 text-xs ml-2 hover:underline"
-                        >
-                          Remove
-                        </button>
-                      </li>
-                    );
-                  })}
+                        Remove
+                      </button>
+                    </li>
+                  ))}
                 </ul>
               )}
             </div>
             <div className="flex flex-col items-center gap-2 w-full md:w-auto">
-              {itemSavings > 0 && (
-                <p className="text-green-400">
-                  ✅ You saved ${itemSavings.toFixed(2)} on your items by bundling!
-                </p>
-              )}
-              {loadSavings > 0 && (
-                <p className="text-green-400">
-                  ✅ We switched you to the {applicableLoad?.maxVolume} yd³ load rate to save you ${loadSavings.toFixed(2)}!
-                </p>
-              )}
+              <div className="w-full bg-gray-700 rounded-lg h-4 overflow-hidden">
+                <div
+                  className="bg-gold h-4 transition-all duration-300"
+                  style={{ width: `${truckFillPercent}%` }}
+                ></div>
+              </div>
+              <p className="text-xs text-yellow-400 mt-1">
+                Truck is {Math.round(truckFillPercent)}% full
+              </p>
+              <p className="text-yellow-400 text-sm font-semibold">
+                Estimated Load Tier: {loadLabel}
+              </p>
               <p className="font-bold">
                 Final Price: ${finalPrice.toFixed(2)}
               </p>
@@ -539,10 +514,36 @@ function ItemizedPage() {
               >
                 Schedule Now
               </button>
+              <button
+                className="underline text-sm text-blue-300 mt-1"
+                onClick={() => setShowComparison(true)}
+              >
+                Compare to other junk removal companies
+              </button>
             </div>
           </div>
         )}
       </div>
+
+      {showComparison && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
+          <div className="bg-white text-black p-6 rounded-xl max-w-md w-full">
+            <h3 className="text-xl font-bold mb-4 text-center">Price Comparison</h3>
+            <ul className="text-sm mb-4 space-y-1">
+              <li>• LoadUp (same items): ${Math.round(finalPrice * 1.1)}</li>
+              <li>• College Hunks: ${Math.round(finalPrice * 1.2)}</li>
+              <li>• 1-800-GOT-JUNK: ${Math.round(finalPrice * 1.3)}</li>
+            </ul>
+            <p className="text-green-700 font-bold">You’re saving with Junk Buddies!</p>
+            <button
+              className="mt-4 px-4 py-2 bg-gold text-black font-semibold rounded"
+              onClick={() => setShowComparison(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
