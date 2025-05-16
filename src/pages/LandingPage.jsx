@@ -102,12 +102,12 @@ function LandingPage() {
         {/* Self-Scheduling Section */}
         <div className="relative z-10 mt-20 max-w-5xl w-full self-schedule-section">
           <span className="self-schedule-badge">You don’t pay until the job’s done</span>
-          <h2 className="self-schedule-title">Self-Scheduling That Works Around You</h2>
+          <h2 className="self-schedule-title">Self-Scheduling</h2>
+          <h3 className="text-xl text-white font-semibold mb-2">For Guaranteed Instant Pricing</h3>
           <p className="self-schedule-text mt-2">
-            Skip the quotes. Book your pickup instantly with our easy self-scheduling system. We cut out the middleman,
-            saving you time and up to 30% compared to traditional junk haulers. Schedule now — your space, your schedule, our muscle.
+            Why wait for quotes or callbacks? Our self-scheduling tool gives you instant access to upfront pricing — 30% lower than big-brand junk haulers. Pick your items, book your time, and relax. We show up, clean up, and <strong>you only pay when the job is done</strong>.
           </p>
-          <button onClick={() => navigate('/selection')} className="secondary-cta">
+          <button onClick={() => navigate('/selection')} className="secondary-cta mt-4">
             Book Instantly
           </button>
         </div>
@@ -126,7 +126,7 @@ function LandingPage() {
           {/* About Us Section with Flip */}
           <section
             ref={aboutRef}
-            className="bg-gray-800/60 rounded-xl p-6 shadow-lg border-gold border-2 animate-border"
+            className="bg-gray-800/60 rounded-xl p-6 shadow-lg border-gold border-2 animate-border about-reveal"
           >
             <h2
               ref={aboutTitleRef}
