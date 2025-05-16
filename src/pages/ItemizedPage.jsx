@@ -524,8 +524,8 @@ const filteredData = itemData.map((section) => ({
                 className="button-glow w-full"
                 onClick={() =>
                   navigate('/schedule', {
-                    state: { cart, total: finalPrice },
-                  })
+  state: { cart, total: finalPrice, volume: totalVolume },
+});
                 }
               >
                 Schedule Now
