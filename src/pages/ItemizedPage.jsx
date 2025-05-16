@@ -3,13 +3,21 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-// Tier rates for 500-point truck
-const tierRates = [
-  { maxPoints: 125, price: 250, label: '¼ Load' },
-  { maxPoints: 250, price: 500, label: '½ Load' },
-  { maxPoints: 375, price: 750, label: '¾ Load' },
-  { maxPoints: 500, price: 1000, label: 'Full Load' }
-];
+const fullLoadPoints = 450;
+const pricePerPoint = 2.22;
+const minimumPrice = 100;
+const quarterLoadThreshold = fullLoadPoints * 0.25;
+
+function getLoadLabel(volume) {
+  if (volume === 0) return 'Empty';
+  const loadNum = Math.floor(volume / fullLoadPoints) + 1;
+  const segment = volume % fullLoadPoints;
+  if (segment === 0) return `Load ${loadNum}`;
+  if (segment <= fullLoadPoints * 0.25) return `Load ${loadNum} - 1/4`;
+  if (segment <= fullLoadPoints * 0.5) return `Load ${loadNum} - 1/2`;
+  if (segment <= fullLoadPoints * 0.75) return `Load ${loadNum} - 3/4`;
+  return `Load ${loadNum} - Full`;
+}
 
 function ItemizedPage() {
   const [cart, setCart] = useState([]);
@@ -22,9 +30,7 @@ function ItemizedPage() {
   const initialCart = location.state?.cart || [];
   const initialTotal = location.state?.total || 0;
 
-  const addToCart = (item) => {
-    setCart([...cart, item]);
-  };
+  const addToCart = (item) => setCart([...cart, item]);
 
   const removeFromCart = (index) => {
     const updated = [...cart];
@@ -33,13 +39,23 @@ function ItemizedPage() {
   };
 
   const totalVolume = cart.reduce((sum, item) => sum + item.volume, 0);
-  const applicableTier = tierRates.find(t => totalVolume <= t.maxPoints) || tierRates[tierRates.length - 1];
-  const loadPrice = applicableTier.price;
-  const loadLabel = applicableTier.label;
-  const finalPrice = loadPrice;
-  const truckFillPercent = Math.min((totalVolume / 500) * 100, 100);
-const itemData = [
-  {
+  const totalItemPrice = cart.reduce((sum, item) => sum + item.price, 0);
+  const highestItemPrice = cart.reduce((max, item) => Math.max(max, item.price), 0);
+
+  let finalPrice = 0;
+  if (totalVolume === 0) {
+    finalPrice = 0;
+  } else if (totalVolume < quarterLoadThreshold) {
+    finalPrice = Math.max(totalItemPrice, highestItemPrice, minimumPrice);
+  } else {
+    const fullLoads = Math.floor(totalVolume / fullLoadPoints);
+    const remainder = totalVolume % fullLoadPoints;
+    const remainderCost = remainder * pricePerPoint;
+    finalPrice = fullLoads * 1000 + remainderCost;
+  }
+
+  const loadLabel = getLoadLabel(totalVolume);
+  const truckFillPercent = (totalVolume % fullLoadPoints) / fullLoadPoints * 100;
   category: 'Beds & Bedroom Furniture',
   items: [
     { name: 'Adjustable Bed Base', price: 120, volume: 4 },
