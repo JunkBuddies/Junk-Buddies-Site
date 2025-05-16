@@ -44,7 +44,9 @@ function SchedulePage() {
             ...templateParams,
             email: 'JunkBuddies.info@gmail.com'
           }, 'QCl4Akw_LZ3T8IvUd')
-          .then(() => navigate('/confirmation'))
+          .then(() => navigate('/confirmation', {
+  state: { cart, total, volume }
+}))
           .catch((error) => alert('Admin email error: ' + error.text));
       })
       .catch((error) => alert('Customer email error: ' + error.text));
