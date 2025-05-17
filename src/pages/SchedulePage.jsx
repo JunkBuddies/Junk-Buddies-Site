@@ -7,25 +7,27 @@ import emailjs from 'emailjs-com';
 function SchedulePage() {
   const { state } = useLocation();
   const { cart, total } = state || { cart: [], total: 0 };
-  const totalVolume = cart.reduce((sum, item) => sum + item.volume, 0);
-const totalItemPrice = cart.reduce((sum, item) => sum + item.price, 0);
-const highestItemPrice = cart.reduce((max, item) => Math.max(max, item.price), 0);
-  const fullLoadPoints = 450;
-const pricePerPoint = 2.22;
-const minimumPrice = 100;
-const quarterLoadThreshold = fullLoadPoints * 0.25;
 
-let finalPrice = 0;
-if (totalVolume === 0) {
-  finalPrice = 0;
-} else if (totalVolume < quarterLoadThreshold) {
-  finalPrice = Math.max(totalItemPrice, highestItemPrice, minimumPrice);
-} else {
-  const fullLoads = Math.floor(totalVolume / fullLoadPoints);
-  const remainder = totalVolume % fullLoadPoints;
-  const remainderCost = remainder * pricePerPoint;
-  finalPrice = fullLoads * 1000 + remainderCost;
-}
+  const totalVolume = cart.reduce((sum, item) => sum + item.volume, 0);
+  const totalItemPrice = cart.reduce((sum, item) => sum + item.price, 0);
+  const highestItemPrice = cart.reduce((max, item) => Math.max(max, item.price), 0);
+
+  const fullLoadPoints = 450;
+  const pricePerPoint = 2.22;
+  const minimumPrice = 100;
+  const quarterLoadThreshold = fullLoadPoints * 0.25;
+
+  let finalPrice = 0;
+  if (totalVolume === 0) {
+    finalPrice = 0;
+  } else if (totalVolume < quarterLoadThreshold) {
+    finalPrice = Math.max(totalItemPrice, highestItemPrice, minimumPrice);
+  } else {
+    const fullLoads = Math.floor(totalVolume / fullLoadPoints);
+    const remainder = totalVolume % fullLoadPoints;
+    const remainderCost = remainder * pricePerPoint;
+    finalPrice = fullLoads * 1000 + remainderCost;
+  }
 
   const [formData, setFormData] = useState({
     name: '',
@@ -52,24 +54,25 @@ if (totalVolume === 0) {
     const templateParams = {
       ...formData,
       items: itemsList,
-      total: `$${total.toFixed(2)}`
+      total: `$${finalPrice.toFixed(2)}`
     };
 
     emailjs
       .send('JunkBuddies.info', 'Junk_Buddies_Booking', templateParams, 'QCl4Akw_LZ3T8IvUd')
       .then(() => {
-        emailjs
-          .send('JunkBuddies.info', 'template_57eij3s', {
-            ...templateParams,
-            email: 'JunkBuddies.info@gmail.com'
-          }, 'QCl4Akw_LZ3T8IvUd')
-          .then(() => {
-  navigate('/confirmation', {
-    state: { cart, total: finalPrice, volume: totalVolume }
-  });
-})
-.catch((error) => alert('Admin email error: ' + error.text));
-      .catch((error) => alert('Customer email error: ' + error.text));
+        return emailjs.send(
+          'JunkBuddies.info',
+          'template_57eij3s',
+          { ...templateParams, email: 'JunkBuddies.info@gmail.com' },
+          'QCl4Akw_LZ3T8IvUd'
+        );
+      })
+      .then(() => {
+        navigate('/confirmation', {
+          state: { cart, total: finalPrice, volume: totalVolume }
+        });
+      })
+      .catch((error) => alert('Email error: ' + error.text));
   };
 
   return (
@@ -132,7 +135,7 @@ if (totalVolume === 0) {
               </li>
             ))}
           </ul>
-          <p className="font-bold">Total: ${total.toFixed(2)}</p>
+          <p className="font-bold">Total: ${finalPrice.toFixed(2)}</p>
           <p className="mt-2 italic text-yellow-300">You don't pay until the job is done!</p>
         </div>
 
