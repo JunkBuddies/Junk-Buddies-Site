@@ -1,13 +1,13 @@
-// File: src/pages/ConfirmationPage.jsx
-
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaFacebookSquare, FaInstagram, FaTiktok } from 'react-icons/fa';
+import { calculatePrice } from '../utils/pricing';
 
 function ConfirmationPage() {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { cart = [], total = 0, volume = 0 } = state || {};
+  const { cart = [] } = state || {};
+  const { finalPrice: total, totalVolume: volume } = calculatePrice(cart);
 
   const maxVolume = 450;
   const fillPercent = Math.min((volume / maxVolume) * 100, 100);
