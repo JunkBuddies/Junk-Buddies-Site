@@ -32,5 +32,13 @@ for (const tier of tiers) { const tierAbsolute = fullLoads * fullLoadPoints + ti
 
 return { finalPrice: fullLoads * 1000 + remainderCost, totalVolume }; }
 
-export function getLoadLabel(volume) { if (volume === 0) return 'Empty'; const loadNum = Math.floor(volume / fullLoadPoints) + 1; const segment = volume % fullLoadPoints; if (segment === 0) return Load ${loadNum}; if (segment <= quarterLoadThreshold) return Load ${loadNum} - 1/4; if (segment <= fullLoadPoints * 0.5) return Load ${loadNum} - 1/2; if (segment <= fullLoadPoints * 0.75) return Load ${loadNum} - 3/4; return Load ${loadNum} - Full; }
-
+export function getLoadLabel(volume) {
+  if (volume === 0) return 'Empty';
+  const loadNum = Math.floor(volume / fullLoadPoints) + 1;
+  const segment = volume % fullLoadPoints;
+  if (segment === 0) return `Load ${loadNum}`;
+  if (segment <= fullLoadPoints * 0.25) return `Load ${loadNum} - 1/4`;
+  if (segment <= fullLoadPoints * 0.5) return `Load ${loadNum} - 1/2`;
+  if (segment <= fullLoadPoints * 0.75) return `Load ${loadNum} - 3/4`;
+  return `Load ${loadNum} - Full`;
+}
