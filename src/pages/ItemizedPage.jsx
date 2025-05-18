@@ -420,7 +420,7 @@ function ItemizedPage() {
   ]
     }
   ]
-},
+}
 ];
 
 const filteredData = itemData.map((section) => ({
