@@ -418,8 +418,6 @@ function ItemizedPage() {
     { name: 'Misc. Medium Unlisted Item', price: 70, volume: 12 },
     { name: 'Misc. Small Unlisted Item', price: 50, volume: 8 }
   ]
-    }
-  ]
 }
 ];
 
