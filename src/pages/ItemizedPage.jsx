@@ -2,22 +2,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-
-const fullLoadPoints = 450;
-const pricePerPoint = 2.22;
-const minimumPrice = 100;
-const quarterLoadThreshold = fullLoadPoints * 0.25;
-
-function getLoadLabel(volume) {
-  if (volume === 0) return 'Empty';
-  const loadNum = Math.floor(volume / fullLoadPoints) + 1;
-  const segment = volume % fullLoadPoints;
-  if (segment === 0) return `Load ${loadNum}`;
-  if (segment <= fullLoadPoints * 0.25) return `Load ${loadNum} - 1/4`;
-  if (segment <= fullLoadPoints * 0.5) return `Load ${loadNum} - 1/2`;
-  if (segment <= fullLoadPoints * 0.75) return `Load ${loadNum} - 3/4`;
-  return `Load ${loadNum} - Full`;
-}
+import { calculatePrice, getLoadLabel, fullLoadPoints } from '../utils/pricing';
 
 function ItemizedPage() {
   const [cart, setCart] = useState([]);
@@ -38,24 +23,9 @@ function ItemizedPage() {
     setCart(updated);
   };
 
-  const totalVolume = cart.reduce((sum, item) => sum + item.volume, 0);
-  const totalItemPrice = cart.reduce((sum, item) => sum + item.price, 0);
-  const highestItemPrice = cart.reduce((max, item) => Math.max(max, item.price), 0);
-
-  let finalPrice = 0;
-  if (totalVolume === 0) {
-    finalPrice = 0;
-  } else if (totalVolume < quarterLoadThreshold) {
-    finalPrice = Math.max(totalItemPrice, highestItemPrice, minimumPrice);
-  } else {
-    const fullLoads = Math.floor(totalVolume / fullLoadPoints);
-    const remainder = totalVolume % fullLoadPoints;
-    const remainderCost = remainder * pricePerPoint;
-    finalPrice = fullLoads * 1000 + remainderCost;
-  }
-
-  const loadLabel = getLoadLabel(totalVolume);
+  const { finalPrice, totalVolume } = calculatePrice(cart);
   const truckFillPercent = (totalVolume % fullLoadPoints) / fullLoadPoints * 100;
+  const loadLabel = getLoadLabel(totalVolume);
   const itemData = [
     {
   category: 'Beds & Bedroom Furniture',
@@ -422,148 +392,148 @@ function ItemizedPage() {
 ];
 
 const filteredData = itemData.map((section) => ({
-    ...section,
-    items: section.items.filter((item) =>
-      item.name.toLowerCase().includes(search.toLowerCase())
-    ),
-  }));
+  ...section,
+  items: section.items.filter((item) =>
+    item.name.toLowerCase().includes(search.toLowerCase())
+  ),
+}));
 
-  return (
-    <div className="bg-black text-white min-h-screen p-6 pb-32">
-      <h1 className="text-gold text-4xl font-bold mb-6 text-center">
-        Itemized Junk Removal
-      </h1>
+return (
+  <div className="bg-black text-white min-h-screen p-6 pb-32">
+    <h1 className="text-gold text-4xl font-bold mb-6 text-center">
+      Itemized Junk Removal
+    </h1>
 
-      <div className="mb-2 text-center text-sm text-yellow-400 italic">
-        *Cleanout services are estimates only and will be confirmed by our team prior to your appointment.
-      </div>
+    <div className="mb-2 text-center text-sm text-yellow-400 italic">
+      *Cleanout services are estimates only and will be confirmed by our team prior to your appointment.
+    </div>
 
-      <div className="mb-6 max-w-2xl mx-auto">
-        <input
-          type="text"
-          placeholder="Search items..."
-          className="w-full p-3 rounded-xl text-black"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
+    <div className="mb-6 max-w-2xl mx-auto">
+      <input
+        type="text"
+        placeholder="Search items..."
+        className="w-full p-3 rounded-xl text-black"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+    </div>
 
-      {filteredData.map((section, idx) =>
-        section.items.length > 0 ? (
-          <div key={idx} className="mb-10">
-            <h2 className="text-2xl text-gold mb-4">{section.category}</h2>
-            <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {section.items.map((item, i) => (
-                <button
-                  key={i}
-                  className="item-card-button"
-                  onClick={() => addToCart(item)}
-                >
-                  <div className="item-card-button-text">
-                    <p className="font-semibold">{item.name}</p>
-                  </div>
-                </button>
-              ))}
-            </div>
+    {filteredData.map((section, idx) =>
+      section.items.length > 0 ? (
+        <div key={idx} className="mb-10">
+          <h2 className="text-2xl text-gold mb-4">{section.category}</h2>
+          <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {section.items.map((item, i) => (
+              <button
+                key={i}
+                className="item-card-button"
+                onClick={() => addToCart(item)}
+              >
+                <div className="item-card-button-text">
+                  <p className="font-semibold">{item.name}</p>
+                </div>
+              </button>
+            ))}
           </div>
-        ) : null
-      )}
-
-      <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gold p-4">
-        <div
-          className="flex justify-between items-center cursor-pointer"
-          onClick={() => setCartVisible(!cartVisible)}
-        >
-          <p className="text-gold text-lg font-bold">
-            View Cart ({cart.length}) — Total: ${finalPrice.toFixed(2)}
-          </p>
-          <span className={`transform transition-transform ${cartVisible ? 'rotate-180' : ''}`}>
-            ▼
-          </span>
         </div>
+      ) : null
+    )}
 
-        {cartVisible && (
-          <div className="mt-4 flex flex-col md:flex-row justify-between items-start gap-4">
-            <div className="flex-1 max-h-40 overflow-y-auto pr-2 w-full">
-              {cart.length === 0 ? (
-                <p className="italic text-gray-400">Your cart is empty.</p>
-              ) : (
-                <ul>
-                  {cart.map((item, idx) => (
-                    <li
-                      key={idx}
-                      className="flex justify-between items-center text-sm mb-1"
-                    >
-                      {item.name}: ${item.price.toFixed(2)}
-                      <button
-                        onClick={() => removeFromCart(idx)}
-                        className="text-red-500 text-xs ml-2 hover:underline"
-                      >
-                        Remove
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-            <div className="flex flex-col items-center gap-2 w-full md:w-auto">
-              <div className="w-full bg-gray-700 rounded-lg h-4 overflow-hidden">
-                <div
-                  className="bg-gold h-4 transition-all duration-300"
-                  style={{ width: `${truckFillPercent}%` }}
-                ></div>
-              </div>
-              <p className="text-xs text-yellow-400 mt-1">
-                Truck is {Math.round(truckFillPercent)}% full
-              </p>
-              <p className="text-yellow-400 text-sm font-semibold">
-                Estimated Load Tier: {loadLabel}
-              </p>
-              <p className="font-bold">
-                Final Price: ${finalPrice.toFixed(2)}
-              </p>
-              <button
-                className="button-glow w-full"
-                onClick={() =>
-                  navigate('/schedule', {
-  state: { cart, total: finalPrice, volume: totalVolume },
-})
-                }
-              >
-                Schedule Now
-              </button>
-              <button
-                className="underline text-sm text-blue-300 mt-1"
-                onClick={() => setShowComparison(true)}
-              >
-                Compare to other junk removal companies
-              </button>
-            </div>
-          </div>
-        )}
+    <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gold p-4">
+      <div
+        className="flex justify-between items-center cursor-pointer"
+        onClick={() => setCartVisible(!cartVisible)}
+      >
+        <p className="text-gold text-lg font-bold">
+          View Cart ({cart.length}) — Total: ${finalPrice.toFixed(2)}
+        </p>
+        <span className={`transform transition-transform ${cartVisible ? 'rotate-180' : ''}`}>
+          ▼
+        </span>
       </div>
 
-      {showComparison && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
-          <div className="bg-white text-black p-6 rounded-xl max-w-md w-full">
-            <h3 className="text-xl font-bold mb-4 text-center">Price Comparison</h3>
-            <ul className="text-sm mb-4 space-y-1">
-              <li>• LoadUp (same items): ${Math.round(finalPrice * 1.1)}</li>
-              <li>• College Hunks: ${Math.round(finalPrice * 1.2)}</li>
-              <li>• 1-800-GOT-JUNK: ${Math.round(finalPrice * 1.3)}</li>
-            </ul>
-            <p className="text-green-700 font-bold">You’re saving with Junk Buddies!</p>
+      {cartVisible && (
+        <div className="mt-4 flex flex-col md:flex-row justify-between items-start gap-4">
+          <div className="flex-1 max-h-40 overflow-y-auto pr-2 w-full">
+            {cart.length === 0 ? (
+              <p className="italic text-gray-400">Your cart is empty.</p>
+            ) : (
+              <ul>
+                {cart.map((item, idx) => (
+                  <li
+                    key={idx}
+                    className="flex justify-between items-center text-sm mb-1"
+                  >
+                    {item.name}: ${item.price.toFixed(2)}
+                    <button
+                      onClick={() => removeFromCart(idx)}
+                      className="text-red-500 text-xs ml-2 hover:underline"
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <div className="flex flex-col items-center gap-2 w-full md:w-auto">
+            <div className="w-full bg-gray-700 rounded-lg h-4 overflow-hidden">
+              <div
+                className="bg-gold h-4 transition-all duration-300"
+                style={{ width: `${truckFillPercent}%` }}
+              ></div>
+            </div>
+            <p className="text-xs text-yellow-400 mt-1">
+              Truck is {Math.round(truckFillPercent)}% full
+            </p>
+            <p className="text-yellow-400 text-sm font-semibold">
+              Estimated Load Tier: {loadLabel}
+            </p>
+            <p className="font-bold">
+              Final Price: ${finalPrice.toFixed(2)}
+            </p>
             <button
-              className="mt-4 px-4 py-2 bg-gold text-black font-semibold rounded"
-              onClick={() => setShowComparison(false)}
+              className="button-glow w-full"
+              onClick={() =>
+                navigate('/schedule', {
+                  state: { cart, total: finalPrice, volume: totalVolume },
+                })
+              }
             >
-              Close
+              Schedule Now
+            </button>
+            <button
+              className="underline text-sm text-blue-300 mt-1"
+              onClick={() => setShowComparison(true)}
+            >
+              Compare to other junk removal companies
             </button>
           </div>
         </div>
       )}
     </div>
-  );
+
+    {showComparison && (
+      <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
+        <div className="bg-white text-black p-6 rounded-xl max-w-md w-full">
+          <h3 className="text-xl font-bold mb-4 text-center">Price Comparison</h3>
+          <ul className="text-sm mb-4 space-y-1">
+            <li>• LoadUp (same items): ${Math.round(finalPrice * 1.1)}</li>
+            <li>• College Hunks: ${Math.round(finalPrice * 1.2)}</li>
+            <li>• 1-800-GOT-JUNK: ${Math.round(finalPrice * 1.3)}</li>
+          </ul>
+          <p className="text-green-700 font-bold">You’re saving with Junk Buddies!</p>
+          <button
+            className="mt-4 px-4 py-2 bg-gold text-black font-semibold rounded"
+            onClick={() => setShowComparison(false)}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+);
 }
 
 export default ItemizedPage;
