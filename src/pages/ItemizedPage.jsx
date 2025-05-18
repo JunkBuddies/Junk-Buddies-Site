@@ -58,7 +58,6 @@ function ItemizedPage() {
   const truckFillPercent = (totalVolume % fullLoadPoints) / fullLoadPoints * 100;
   const itemData = [
     {
-   {
   category: 'Beds & Bedroom Furniture',
   items: [
     { name: 'Adjustable Bed Base', price: 120, volume: 20 },
