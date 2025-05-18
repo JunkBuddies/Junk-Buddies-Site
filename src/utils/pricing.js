@@ -61,7 +61,7 @@ export function calculatePrice(cart) {
   return {
     finalPrice: fullLoads * 1000 + remainderCost,
     totalVolume
-  };
+  }; 
 }
 
 export function getLoadLabel(volume) {
