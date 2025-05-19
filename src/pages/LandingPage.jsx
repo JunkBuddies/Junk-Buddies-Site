@@ -108,6 +108,12 @@ return ( <div className="hero-space-background"> <div className="relative bg-gra
           </video>
           <h3 className="how-card-title">3. We Haul It Fast</h3>
         </div>
+
+        {/* Floating Badge Card */}
+        <div className="howitworks-badge-card how-card">
+          <h3 className="badge-title">You Relax.</h3>
+          <p className="badge-subtitle">Your Buddies Show Up. You Only Pay When It’s Done.</p>
+        </div>
       </div>
     </div>
 
