@@ -296,3 +296,61 @@
   50%  { transform: translateY(-10px); }
   100% { transform: translateY(0); }
 }
+/* Floating Badge Block */
+.howitworks-badge-card {
+  @apply flex-shrink-0 w-80 h-auto bg-gradient-to-r from-[#FFD700] via-[#b8860b] to-[#d4af37] rounded-2xl p-6 border-2 border-[#FFD700] text-white shadow-xl snap-center relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: driftStart 1s ease-out both;
+  position: relative;
+}
+
+/* Logo Background */
+.howitworks-badge-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/images/logo-icon.png') no-repeat center center;
+  background-size: contain;
+  opacity: 0.15;
+  mix-blend-mode: multiply;
+  z-index: -1;
+  filter: grayscale(100%);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Floating Badge Text Animation */
+.howitworks-badge-card .badge-title {
+  @apply text-2xl font-bold text-center text-[#FFD700] mb-2;
+  animation: textSlideIn 0.5s ease-out;
+  font-weight: 700;
+}
+
+.howitworks-badge-card .badge-subtitle {
+  @apply text-lg text-center text-white opacity-90;
+  animation: textSlideIn 1s ease-out;
+  font-weight: 500;
+}
+
+@keyframes textSlideIn {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes driftStart {
+  0% { transform: translateY(40px) scale(0.9) rotateX(10deg); opacity: 0; }
+  100% { transform: translateY(0) scale(1) rotateX(0deg); opacity: 1; }
+}
+
+@keyframes floatPulse {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
