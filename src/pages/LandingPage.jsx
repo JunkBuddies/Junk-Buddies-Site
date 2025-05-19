@@ -108,7 +108,9 @@ return ( <div className="hero-space-background"> <div className="relative bg-gra
           </video>
           <h3 className="how-card-title">3. We Haul It Fast</h3>
         </div>
-        <div className="howitworks-badge-card">
+
+        {/* Floating Badge Card */}
+        <div className="howitworks-badge-card how-card">
           <h3 className="badge-title">You Relax.</h3>
           <p className="badge-subtitle">Your Buddies Show Up. You Only Pay When It’s Done.</p>
         </div>
@@ -137,15 +139,11 @@ return ( <div className="hero-space-background"> <div className="relative bg-gra
         <h2 className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2">Testimonials</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white text-black p-6 rounded-xl shadow-lg border-l-4 border-gold relative">
-            <p className="italic text-lg">
-              “They were quick, friendly, and cleaned everything perfectly. Highly recommend!”
-            </p>
+            <p className="italic text-lg">“They were quick, friendly, and cleaned everything perfectly. Highly recommend!”</p>
             <span className="block mt-4 font-semibold text-right">- Alex R.</span>
           </div>
           <div className="bg-white text-black p-6 rounded-xl shadow-lg border-l-4 border-gold relative">
-            <p className="italic text-lg">
-              “Excellent service and easy scheduling. They really came through for us.”
-            </p>
+            <p className="italic text-lg">“Excellent service and easy scheduling. They really came through for us.”</p>
             <span className="block mt-4 font-semibold text-right">- Jamie L.</span>
           </div>
         </div>
