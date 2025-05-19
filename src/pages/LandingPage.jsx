@@ -110,24 +110,24 @@ return ( <div className="hero-space-background"> <div className="relative bg-gra
           <video autoPlay loop muted playsInline className="how-card-video">
             <source src="/videos/step1.mp4" type="video/mp4" />
           </video>
-          <h3 className="how-card-title">1. Choose Your Items</h3>
+          <h3 className="how-card-title">1. Tap to Start</h3>
         </div>
         <div ref={setCardRef} className="how-card">
           <video autoPlay loop muted playsInline className="how-card-video">
             <source src="/videos/step2.mp4" type="video/mp4" />
           </video>
-          <h3 className="how-card-title">2. Schedule Online</h3>
+          <h3 className="how-card-title">2. Add in Seconds</h3>
         </div>
         <div ref={setCardRef} className="how-card">
           <video autoPlay loop muted playsInline className="how-card-video">
             <source src="/videos/step3.mp4" type="video/mp4" />
           </video>
-          <h3 className="how-card-title">3. We Haul It Fast</h3>
+          <h3 className="how-card-title">3. Schedule Instantly</h3>
         </div>
 
         {/* Floating Badge Card */}
         <div ref={setCardRef} className="howitworks-badge-card how-card">
-          <h3 className="badge-title">You Relax.</h3>
+          <h3 className="badge-title">We Make Space For What Matters.</h3>
           <p className="badge-subtitle">Your Buddies Show Up. You Only Pay When It’s Done.</p>
         </div>
       </div>
