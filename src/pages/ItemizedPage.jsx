@@ -404,10 +404,6 @@ return (
   Tell Us What You’ve Got — We’ll Show You the Price.
 </h1>
 
-    <div className="mb-2 text-center text-sm text-yellow-400 italic">
-      *Cleanout services are estimates only and will be confirmed by our team prior to your appointment.
-    </div>
-
     <div className="mb-6 max-w-2xl mx-auto">
      <div className="mt-4 mb-6 flex flex-wrap justify-center gap-3">
   <div className="compare-badge-silver">
