@@ -17,7 +17,7 @@ function SelectionPage() {
         <div className="flex flex-col items-center text-center">
           <div
             onClick={() => navigate('/load-size')}
-            className="item-card-button text-2xl"
+            className="item-card-button text-2xl flex items-center justify-center"
           >
             Load Size
           </div>
@@ -30,7 +30,7 @@ function SelectionPage() {
         <div className="flex flex-col items-center text-center">
           <div
             onClick={() => navigate('/itemized')}
-            className="item-card-button text-2xl"
+            className="item-card-button text-2xl flex items-center justify-center"
           >
             Itemized
           </div>
@@ -44,4 +44,3 @@ function SelectionPage() {
 }
 
 export default SelectionPage;
- 
