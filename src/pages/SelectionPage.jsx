@@ -8,18 +8,16 @@ function SelectionPage() {
 
   return (
     <div className="bg-black text-white min-h-screen flex flex-col justify-center items-center px-4">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl text-gold font-bold mb-3">
-          What Are You Getting Rid Of?
-        </h1>
-      </div>
+      <h1 className="text-4xl text-gold font-bold mb-10 text-center">
+        What Are You Getting Rid Of?
+      </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full max-w-2xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-2xl">
         {/* Load Size Option */}
         <div className="flex flex-col items-center text-center">
           <div
             onClick={() => navigate('/load-size')}
-            className="cursor-pointer button-glow text-center text-2xl flex flex-col justify-center items-center"
+            className="metallic-button"
           >
             Load Size
           </div>
@@ -32,7 +30,7 @@ function SelectionPage() {
         <div className="flex flex-col items-center text-center">
           <div
             onClick={() => navigate('/itemized')}
-            className="cursor-pointer button-glow text-center text-2xl flex flex-col justify-center items-center"
+            className="metallic-button"
           >
             Itemized
           </div>
