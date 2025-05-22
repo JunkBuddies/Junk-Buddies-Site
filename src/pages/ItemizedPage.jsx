@@ -400,9 +400,9 @@ const filteredData = itemData.map((section) => ({
 
 return (
   <div className="bg-black text-white min-h-screen p-6 pb-32">
-    <h1 className="text-gold text-4xl font-bold mb-6 text-center">
-      Itemized Junk Removal
-    </h1>
+    <h1 className="metallic-text-3d text-4xl mb-6 text-center">
+  Tell Us What You’ve Got — We’ll Show You the Price.
+</h1>
 
     <div className="mb-2 text-center text-sm text-yellow-400 italic">
       *Cleanout services are estimates only and will be confirmed by our team prior to your appointment.
