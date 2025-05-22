@@ -19,7 +19,7 @@ function SelectionPage() {
         <div className="flex flex-col items-center text-center">
           <div
             onClick={() => navigate('/load-size')}
-            className="cursor-pointer button-glow text-2xl px-8 py-4"
+            className="cursor-pointer button-glow text-center text-2xl flex flex-col justify-center items-center"
           >
             Load Size
           </div>
@@ -32,7 +32,7 @@ function SelectionPage() {
         <div className="flex flex-col items-center text-center">
           <div
             onClick={() => navigate('/itemized')}
-            className="cursor-pointer button-glow text-2xl px-8 py-4"
+            className="cursor-pointer button-glow text-center text-2xl flex flex-col justify-center items-center"
           >
             Itemized
           </div>
