@@ -477,12 +477,12 @@ return (
             )}
           </div>
           <div className="flex flex-col items-center gap-2 w-full md:w-auto">
-            <div className="w-full bg-gray-700 rounded-lg h-4 overflow-hidden">
-              <div
-                className="bg-gold h-4 transition-all duration-300"
-                style={{ width: `${truckFillPercent}%` }}
-              ></div>
-            </div>
+            <div className="truck-fill-container">
+  <div
+    className="truck-fill-bar"
+    style={{ width: `${Math.min(truckFillPercent, 100)}%` }}
+  />
+</div>
             <p className="text-xs text-yellow-400 mt-1">
               Truck is {Math.round(truckFillPercent)}% full
             </p>
