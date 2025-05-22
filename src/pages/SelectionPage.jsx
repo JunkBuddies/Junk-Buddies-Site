@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Trash2, Sofa } from 'lucide-react';
 
 function SelectionPage() {
   const navigate = useNavigate();
@@ -21,9 +20,8 @@ function SelectionPage() {
           onClick={() => navigate('/load-size')}
           className="cursor-pointer button-glow text-center text-2xl flex flex-col items-center py-6"
         >
-          <Trash2 className="w-10 h-10 mb-2 text-white" />
           <span>Load Size</span>
-          <p className="text-sm text-gray-300 mt-2">
+          <p className="text-sm text-gray-300 mt-2 max-w-xs">
             Choose <span className="text-gold font-semibold">‘Load Size’</span> for piles or large cleanouts.
           </p>
         </div>
@@ -33,9 +31,8 @@ function SelectionPage() {
           onClick={() => navigate('/itemized')}
           className="cursor-pointer button-glow text-center text-2xl flex flex-col items-center py-6"
         >
-          <Sofa className="w-10 h-10 mb-2 text-white" />
           <span>Itemized</span>
-          <p className="text-sm text-gray-300 mt-2">
+          <p className="text-sm text-gray-300 mt-2 max-w-xs">
             Choose <span className="text-gold font-semibold">‘Itemized’</span> for specific furniture or appliances.
           </p>
         </div>
