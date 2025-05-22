@@ -17,7 +17,7 @@ function SelectionPage() {
         <div className="flex flex-col items-center text-center">
           <div
             onClick={() => navigate('/load-size')}
-            className="metallic-button"
+            className="item-card-button text-2xl"
           >
             Load Size
           </div>
@@ -30,7 +30,7 @@ function SelectionPage() {
         <div className="flex flex-col items-center text-center">
           <div
             onClick={() => navigate('/itemized')}
-            className="metallic-button"
+            className="item-card-button text-2xl"
           >
             Itemized
           </div>
