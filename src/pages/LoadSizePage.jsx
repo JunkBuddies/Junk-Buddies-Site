@@ -15,7 +15,7 @@ function LoadSizePage() {
   const navigate = useNavigate();
 
   const addToCart = (item) => {
-    setCart((prev) => [...prev, item]); // Allows multiple loads
+    setCart((prev) => [...prev, item]);
   };
 
   const removeFromCart = (index) => {
@@ -28,8 +28,18 @@ function LoadSizePage() {
 
   return (
     <div className="bg-black text-white min-h-screen p-6 flex flex-col items-center">
-      <h1 className="text-4xl text-gold font-bold mb-10 text-center">Select Your Load Size</h1>
+      <h1 className="text-4xl text-gold font-bold mb-6 text-center">Select Your Load Size</h1>
 
+      {/* Infographic Image */}
+      <div className="w-full flex justify-center mt-4 mb-10">
+        <img
+          src="/images/load-size-truck-visual.png"
+          alt="Box Truck to Pickup Load Comparison"
+          className="max-w-5xl w-full rounded-xl shadow-lg border border-gold"
+        />
+      </div>
+
+      {/* Load Size Buttons */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
         {loadSizes.map((load, idx) => (
           <button
