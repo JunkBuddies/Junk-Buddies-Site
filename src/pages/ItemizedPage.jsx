@@ -409,7 +409,7 @@ return (
     </div>
 
     <div className="mb-6 max-w-2xl mx-auto">
-     <div className="mt-4 flex flex-wrap justify-center gap-3">
+     <div className="mt-4 mb-6 flex flex-wrap justify-center gap-3">
   <div className="compare-badge-silver">
     You Don’t Pay Until the Job Is Done
   </div>
