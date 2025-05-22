@@ -409,6 +409,14 @@ return (
     </div>
 
     <div className="mb-6 max-w-2xl mx-auto">
+     <div className="mt-4 flex flex-wrap justify-center gap-3">
+  <div className="compare-badge-silver">
+    You Don’t Pay Until the Job Is Done
+  </div>
+  <div className="compare-badge-silver">
+    Compare Prices Instantly in Cart
+  </div>
+</div>
       <input
         type="text"
         placeholder="Search items..."
@@ -418,14 +426,6 @@ return (
       />
     </div>
 
-    <div className="mt-4 flex flex-wrap justify-center gap-3">
-  <div className="compare-badge">
-    You Don’t Pay Until the Job Is Done
-  </div>
-  <div className="compare-badge">
-    Compare Prices Instantly in Cart
-  </div>
-</div>
     {filteredData.map((section, idx) =>
       section.items.length > 0 ? (
         <div key={idx} className="mb-10">
