@@ -393,3 +393,22 @@
     inset 0 -2px 4px rgba(255, 255, 255, 0.3),
     0 3px 6px rgba(0, 0, 0, 0.3);
 }
+.truck-fill-container {
+  @apply w-full bg-gray-800 rounded-full h-6 overflow-hidden border-2 border-[#FFD700];
+  box-shadow: 0 0 10px #FFD70044 inset;
+}
+
+.truck-fill-bar {
+  height: 100%;
+  transition: width 0.5s ease-in-out;
+  background: linear-gradient(135deg, #d4af37 0%, #f1c75e 25%, #b8860b 50%, #f1c75e 75%, #d4af37 100%);
+  background-size: 400% 400%;
+  animation: metallicPulse 5s ease-in-out infinite;
+  border-radius: inherit;
+}
+
+@keyframes metallicPulse {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
