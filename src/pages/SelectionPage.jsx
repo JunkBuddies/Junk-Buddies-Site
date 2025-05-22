@@ -14,25 +14,29 @@ function SelectionPage() {
         </h1>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-2xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full max-w-2xl">
         {/* Load Size Option */}
-        <div
-          onClick={() => navigate('/load-size')}
-          className="cursor-pointer button-glow text-center text-2xl flex flex-col items-center py-6"
-        >
-          <span>Load Size</span>
-          <p className="text-sm text-gray-300 mt-2 max-w-xs">
+        <div className="flex flex-col items-center text-center">
+          <div
+            onClick={() => navigate('/load-size')}
+            className="cursor-pointer button-glow text-2xl px-8 py-4"
+          >
+            Load Size
+          </div>
+          <p className="text-sm text-gray-300 mt-3 max-w-xs">
             Choose <span className="text-gold font-semibold">‘Load Size’</span> for piles or large cleanouts.
           </p>
         </div>
 
         {/* Itemized Option */}
-        <div
-          onClick={() => navigate('/itemized')}
-          className="cursor-pointer button-glow text-center text-2xl flex flex-col items-center py-6"
-        >
-          <span>Itemized</span>
-          <p className="text-sm text-gray-300 mt-2 max-w-xs">
+        <div className="flex flex-col items-center text-center">
+          <div
+            onClick={() => navigate('/itemized')}
+            className="cursor-pointer button-glow text-2xl px-8 py-4"
+          >
+            Itemized
+          </div>
+          <p className="text-sm text-gray-300 mt-3 max-w-xs">
             Choose <span className="text-gold font-semibold">‘Itemized’</span> for specific furniture or appliances.
           </p>
         </div>
