@@ -60,7 +60,12 @@ function SchedulePage() {
 
   return (
     <div className="bg-black text-white min-h-screen p-6">
-      <h1 className="text-3xl text-gold font-bold mb-6 text-center">Schedule Your Pickup</h1>
+      <h1 className="text-3xl text-gold font-bold mb-6 text-center">Book Junk Pickup - Pay nothing now</h1>
+     <div className="mt-4 mb-6 flex justify-center">
+  <div className="compare-badge-silver">
+    No Upfront Payment Required
+  </div>
+</div>
       <form onSubmit={handleSubmit} className="max-w-lg mx-auto space-y-4">
         <input
           className="w-full p-3 rounded-xl text-black"
