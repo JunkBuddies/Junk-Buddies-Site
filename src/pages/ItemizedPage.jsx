@@ -518,24 +518,29 @@ return (
     </div>
 
     {showComparison && (
-      <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
-        <div className="bg-white text-black p-6 rounded-xl max-w-md w-full">
-          <h3 className="text-xl font-bold mb-4 text-center">Price Comparison</h3>
-          <ul className="text-sm mb-4 space-y-1">
-            <li>• LoadUp (same items): ${Math.round(finalPrice * 1.1)}</li>
-            <li>• College Hunks: ${Math.round(finalPrice * 1.2)}</li>
-            <li>• 1-800-GOT-JUNK: ${Math.round(finalPrice * 1.3)}</li>
-          </ul>
-          <p className="text-green-700 font-bold">You’re saving with Junk Buddies!</p>
-          <button
-            className="mt-4 px-4 py-2 bg-gold text-black font-semibold rounded"
-            onClick={() => setShowComparison(false)}
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    )}
+  <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
+    <div className="bg-white text-black p-6 rounded-xl max-w-md w-full">
+      <h3 className="text-xl font-bold mb-4 text-center">Price Comparison</h3>
+      <ul className="text-sm mb-4 space-y-1">
+        <li>• LoadUp (estimated): ${Math.round(finalPrice * 1.1)}</li>
+        <li>• College Hunks (estimated): ${Math.round(finalPrice * 1.2)}</li>
+        <li>• 1-800-GOT-JUNK (estimated): ${Math.round(finalPrice * 1.3)}</li>
+      </ul>
+      <p className="text-green-700 font-bold text-center">
+        *Prices are estimated based on similar services and may vary by location and time.
+      </p>
+      <p className="text-green-700 font-bold text-center mt-2">
+        You’re likely saving with Junk Buddies!
+      </p>
+      <button
+        className="mt-4 px-4 py-2 bg-gold text-black font-semibold rounded"
+        onClick={() => setShowComparison(false)}
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
   </div>
 );
 }
