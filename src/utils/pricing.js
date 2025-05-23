@@ -1,9 +1,9 @@
 // File: src/utils/pricing.js
 
-export const fullLoadPoints = 450;
-export const pricePerPoint = 2.22;
+export const fullLoadPoints = 550;
+export const pricePerPoint = 1.82;
 export const minimumPrice = 100;
-export const quarterLoadThreshold = fullLoadPoints * 0.25; // 112.5
+export const quarterLoadThreshold = fullLoadPoints * 0.25; // 137.5
 export const quarterLoadPrice = 250;
 
 export function calculatePrice(cart) {
