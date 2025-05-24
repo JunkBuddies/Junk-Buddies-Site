@@ -1,7 +1,9 @@
 // File: src/pages/LoadSizePage.jsx
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { calculatePrice } from '../utils/pricing';
 
 const loadSizes = [
   { name: 'Full Load', price: 1000 },
@@ -11,8 +13,9 @@ const loadSizes = [
 ];
 
 function LoadSizePage() {
-  const [cart, setCart] = useState([]);
+  const { cart, setCart } = useCart();
   const navigate = useNavigate();
+  const { finalPrice } = calculatePrice(cart);
 
   const addToCart = (item) => {
     setCart((prev) => [...prev, item]);
@@ -23,8 +26,6 @@ function LoadSizePage() {
     updated.splice(index, 1);
     setCart(updated);
   };
-
-  const getTotal = () => cart.reduce((sum, item) => sum + item.price, 0);
 
   return (
     <div className="bg-black text-white min-h-screen p-6 flex flex-col items-center">
@@ -55,7 +56,7 @@ function LoadSizePage() {
 
       {/* Cart Summary */}
       <div className="mt-10 w-full max-w-3xl border-t border-gold pt-6 flex flex-col items-center">
-        <p className="text-lg mb-4 font-bold">Total: ${getTotal().toFixed(2)}</p>
+        <p className="text-lg mb-4 font-bold">Total: ${finalPrice.toFixed(2)}</p>
         <ul className="mb-4 w-full max-w-md">
           {cart.map((item, idx) => (
             <li key={idx} className="flex justify-between items-center text-sm border-b border-gray-700 py-2">
@@ -72,18 +73,14 @@ function LoadSizePage() {
         <div className="flex gap-4 flex-col md:flex-row">
           <button
             className="button-glow"
-            onClick={() =>
-              navigate('/itemized', { state: { cart, total: getTotal() } })
-            }
+            onClick={() => navigate('/itemized')}
           >
             Add Itemized Items
           </button>
           <button
             disabled={cart.length === 0}
             className="button-glow disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() =>
-              navigate('/schedule', { state: { cart, total: getTotal() } })
-            }
+            onClick={() => navigate('/schedule')}
           >
             Schedule Now
           </button>
