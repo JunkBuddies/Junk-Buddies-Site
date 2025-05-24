@@ -9,8 +9,8 @@ function SchedulePage() {
   const { state } = useLocation();
   const { cart } = state || { cart: [] };
 
+  // Correct spot for pricing calculation
   const { finalPrice, totalVolume } = calculatePrice(cart);
-  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -20,6 +20,8 @@ function SchedulePage() {
     date: '',
     time: '',
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -58,16 +60,12 @@ function SchedulePage() {
 
   return (
     <div className="bg-black text-white min-h-screen p-6">
-      <h1 className="text-3xl text-gold font-bold mb-6 text-center">
-        Book Your Pickup — No Upfront Payment
-      </h1>
-
-      <div className="mt-4 mb-6 flex justify-center">
-        <div className="compare-badge-silver">
-          No Upfront Charges • Instant Estimate Based on Your Items
-        </div>
-      </div>
-
+      <h1 className="text-3xl text-gold font-bold mb-6 text-center">Book Junk Pickup - Pay nothing now</h1>
+     <div className="mt-4 mb-6 flex justify-center">
+  <div className="compare-badge-silver">
+    No Upfront Payment Required
+  </div>
+</div>
       <form onSubmit={handleSubmit} className="max-w-lg mx-auto space-y-4">
         <input
           className="w-full p-3 rounded-xl text-black"
@@ -125,10 +123,8 @@ function SchedulePage() {
               </li>
             ))}
           </ul>
-          <p className="font-bold">Estimated Total: ${finalPrice.toFixed(2)}</p>
-          <p className="mt-2 italic text-yellow-300">
-            You don’t pay until the job is complete. Final cost may vary depending on actual load size.
-          </p>
+          <p className="font-bold">Total: ${finalPrice.toFixed(2)}</p>
+          <p className="mt-2 italic text-yellow-300">You don't pay until the job is done!</p>
         </div>
 
         <button type="submit" className="w-full button-glow">
