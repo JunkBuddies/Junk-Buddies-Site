@@ -7,20 +7,23 @@ import LoadSizePage from './pages/LoadSizePage';
 import ItemizedPage from './pages/ItemizedPage';
 import SchedulePage from './pages/SchedulePage';
 import ConfirmationPage from './pages/ConfirmationPage';
+import { CartProvider } from './context/CartContext';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/selection" element={<SelectionPage />} />
-        <Route path="/load-size" element={<LoadSizePage />} />
-        <Route path="/itemized" element={<ItemizedPage />} />
-        <Route path="/schedule" element={<SchedulePage />} />
-        <Route path="/confirmation" element={<ConfirmationPage />} />
-      </Routes>
-    </Router>
+    <CartProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/selection" element={<SelectionPage />} />
+          <Route path="/load-size" element={<LoadSizePage />} />
+          <Route path="/itemized" element={<ItemizedPage />} />
+          <Route path="/schedule" element={<SchedulePage />} />
+          <Route path="/confirmation" element={<ConfirmationPage />} />
+        </Routes>
+      </Router>
+    </CartProvider>
   );
 }
 
-export default App;// App.jsx - routing
+export default App; // App.jsx - routing
