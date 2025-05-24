@@ -10,6 +10,7 @@ const removeFromCart = (index) => { const updated = [...cart]; updated.splice(in
 
 const { finalPrice, totalVolume } = calculatePrice(cart); const truckFillPercent = (totalVolume % fullLoadPoints) / fullLoadPoints * 100; const loadLabel = getLoadLabel(totalVolume);
 
+    const itemData = [               
     {
   category: 'Beds & Bedroom Furniture',
   items: [
