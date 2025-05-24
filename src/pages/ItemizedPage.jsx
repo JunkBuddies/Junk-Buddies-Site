@@ -1,32 +1,15 @@
 // File: src/pages/ItemizedPage.jsx
 
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { calculatePrice, getLoadLabel, fullLoadPoints } from '../utils/pricing';
+import React, { useState, useEffect } from 'react'; import { useNavigate } from 'react-router-dom'; import { useCart } from '../context/CartContext'; import { calculatePrice, getLoadLabel, fullLoadPoints } from '../utils/pricing'; import { itemData } from '../data/itemData';
 
-function ItemizedPage() {
-  const [cart, setCart] = useState([]);
-  const [search, setSearch] = useState('');
-  const [cartVisible, setCartVisible] = useState(false);
-  const [showComparison, setShowComparison] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
+function ItemizedPage() { const { cart, setCart } = useCart(); const [search, setSearch] = useState(''); const [cartVisible, setCartVisible] = useState(false); const [showComparison, setShowComparison] = useState(false); const navigate = useNavigate();
 
-  const initialCart = location.state?.cart || [];
-  const initialTotal = location.state?.total || 0;
+const addToCart = (item) => setCart([...cart, item]);
 
-  const addToCart = (item) => setCart([...cart, item]);
+const removeFromCart = (index) => { const updated = [...cart]; updated.splice(index, 1); setCart(updated); };
 
-  const removeFromCart = (index) => {
-    const updated = [...cart];
-    updated.splice(index, 1);
-    setCart(updated);
-  };
+const { finalPrice, totalVolume } = calculatePrice(cart); const truckFillPercent = (totalVolume % fullLoadPoints) / fullLoadPoints * 100; const loadLabel = getLoadLabel(totalVolume);
 
-  const { finalPrice, totalVolume } = calculatePrice(cart);
-  const truckFillPercent = (totalVolume % fullLoadPoints) / fullLoadPoints * 100;
-  const loadLabel = getLoadLabel(totalVolume);
-  const itemData = [
     {
   category: 'Beds & Bedroom Furniture',
   items: [
@@ -391,159 +374,152 @@ function ItemizedPage() {
 }
 ];
 
-const filteredData = itemData.map((section) => ({
-  ...section,
-  items: section.items.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase())
-  ),
-}));
+const filteredData = itemData.map((section) => ({ ...section, items: section.items.filter((item) => item.name.toLowerCase().includes(search.toLowerCase()) ), }));
 
-return (
-  <div className="bg-black text-white min-h-screen p-6 pb-32">
-    <h1 className="metallic-text-3d text-4xl mb-6 text-center">
-  Tell Us What You’ve Got — We’ll Show You the Price.
-</h1>
+return ( <div className="bg-black text-white min-h-screen p-6 pb-32"> <h1 className="metallic-text-3d text-4xl mb-6 text-center"> Tell Us What You’ve Got — We’ll Show You the Price. </h1>
 
-    <div className="mb-6 max-w-2xl mx-auto">
-     <div className="mt-4 mb-6 flex flex-wrap justify-center gap-3">
-  <div className="compare-badge-silver">
-    You Don’t Pay Until the Job Is Done
-  </div>
-  <div className="compare-badge-silver">
-    Compare Prices Instantly in Cart
-  </div>
-</div>
-      <input
-        type="text"
-        placeholder="Search items..."
-        className="w-full p-3 rounded-xl text-black"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-    </div>
-
-    {filteredData.map((section, idx) =>
-      section.items.length > 0 ? (
-        <div key={idx} className="mb-10">
-          <h2 className="text-2xl text-gold mb-4">{section.category}</h2>
-          <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {section.items.map((item, i) => (
-              <button
-                key={i}
-                className="item-card-button"
-                onClick={() => addToCart(item)}
-              >
-                <div className="item-card-button-text">
-                  <p className="font-semibold">{item.name}</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : null
-    )}
-
-    <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gold p-4">
-      <div
-        className="flex justify-between items-center cursor-pointer"
-        onClick={() => setCartVisible(!cartVisible)}
-      >
-        <p className="text-gold text-lg font-bold">
-          View Cart ({cart.length}) — Total: ${finalPrice.toFixed(2)}
-        </p>
-        <span className={`transform transition-transform ${cartVisible ? 'rotate-180' : ''}`}>
-          ▼
-        </span>
+<div className="mb-6 max-w-2xl mx-auto">
+    <div className="mt-4 mb-6 flex flex-wrap justify-center gap-3">
+      <div className="compare-badge-silver">
+        You Don’t Pay Until the Job Is Done
       </div>
+      <div className="compare-badge-silver">
+        Compare Prices Instantly in Cart
+      </div>
+    </div>
+    <input
+      type="text"
+      placeholder="Search items..."
+      className="w-full p-3 rounded-xl text-black"
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+    />
+  </div>
 
-      {cartVisible && (
-        <div className="mt-4 flex flex-col md:flex-row justify-between items-start gap-4">
-          <div className="flex-1 max-h-40 overflow-y-auto pr-2 w-full">
-            {cart.length === 0 ? (
-              <p className="italic text-gray-400">Your cart is empty.</p>
-            ) : (
-              <ul>
-                {cart.map((item, idx) => (
-                  <li
-                    key={idx}
-                    className="flex justify-between items-center text-sm mb-1"
-                  >
-                    {item.name}: ${item.price.toFixed(2)}
-                    <button
-                      onClick={() => removeFromCart(idx)}
-                      className="text-red-500 text-xs ml-2 hover:underline"
-                    >
-                      Remove
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-          <div className="flex flex-col items-center gap-2 w-full md:w-auto">
-            <div className="truck-fill-container">
-  <div
-    className="truck-fill-bar"
-    style={{ width: `${Math.min(truckFillPercent, 100)}%` }}
-  />
-</div>
-            <p className="text-xs text-yellow-400 mt-1">
-              Truck is {Math.round(truckFillPercent)}% full
-            </p>
-            <p className="text-yellow-400 text-sm font-semibold">
-              Estimated Load Tier: {loadLabel}
-            </p>
-            <p className="font-bold">
-              Final Price: ${finalPrice.toFixed(2)}
-            </p>
+  {filteredData.map((section, idx) =>
+    section.items.length > 0 ? (
+      <div key={idx} className="mb-10">
+        <h2 className="text-2xl text-gold mb-4">{section.category}</h2>
+        <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {section.items.map((item, i) => (
             <button
-              className="button-glow w-full"
-              onClick={() =>
-                navigate('/schedule', {
-                  state: { cart, total: finalPrice, volume: totalVolume },
-                })
-              }
+              key={i}
+              className="item-card-button"
+              onClick={() => addToCart(item)}
             >
-              Schedule Now
+              <div className="item-card-button-text">
+                <p className="font-semibold">{item.name}</p>
+              </div>
             </button>
-            <button
-              className="underline text-sm text-blue-300 mt-1"
-              onClick={() => setShowComparison(true)}
-            >
-              Compare to other junk removal companies
-            </button>
-          </div>
+          ))}
         </div>
-      )}
+      </div>
+    ) : null
+  )}
+
+  <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gold p-4">
+    <div
+      className="flex justify-between items-center cursor-pointer"
+      onClick={() => setCartVisible(!cartVisible)}
+    >
+      <p className="text-gold text-lg font-bold">
+        View Cart ({cart.length}) — Total: ${finalPrice.toFixed(2)}
+      </p>
+      <span className={`transform transition-transform ${cartVisible ? 'rotate-180' : ''}`}>
+        ▼
+      </span>
     </div>
 
-    {showComparison && (
-  <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
-    <div className="bg-white text-black p-6 rounded-xl max-w-md w-full">
-      <h3 className="text-xl font-bold mb-4 text-center">Price Comparison</h3>
-      <ul className="text-sm mb-4 space-y-1">
-        <li>• LoadUp (estimated): ${Math.round(finalPrice * 1.1)}</li>
-        <li>• College Hunks (estimated): ${Math.round(finalPrice * 1.2)}</li>
-        <li>• 1-800-GOT-JUNK (estimated): ${Math.round(finalPrice * 1.3)}</li>
-      </ul>
-      <p className="text-green-700 font-bold text-center">
-        *Prices are estimated based on similar services and may vary by location and time.
-      </p>
-      <p className="text-green-700 font-bold text-center mt-2">
-        You’re likely saving with Junk Buddies!
-      </p>
-      <button
-        className="mt-4 px-4 py-2 bg-gold text-black font-semibold rounded"
-        onClick={() => setShowComparison(false)}
-      >
-        Close
-      </button>
+    {cartVisible && (
+      <div className="mt-4 flex flex-col md:flex-row justify-between items-start gap-4">
+        <div className="flex-1 max-h-40 overflow-y-auto pr-2 w-full">
+          {cart.length === 0 ? (
+            <p className="italic text-gray-400">Your cart is empty.</p>
+          ) : (
+            <ul>
+              {cart.map((item, idx) => (
+                <li
+                  key={idx}
+                  className="flex justify-between items-center text-sm mb-1"
+                >
+                  {item.name}: ${item.price.toFixed(2)}
+                  <button
+                    onClick={() => removeFromCart(idx)}
+                    className="text-red-500 text-xs ml-2 hover:underline"
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div className="flex flex-col items-center gap-2 w-full md:w-auto">
+          <div className="truck-fill-container">
+            <div
+              className="truck-fill-bar"
+              style={{ width: `${Math.min(truckFillPercent, 100)}%` }}
+            />
+          </div>
+          <p className="text-xs text-yellow-400 mt-1">
+            Truck is {Math.round(truckFillPercent)}% full
+          </p>
+          <p className="text-yellow-400 text-sm font-semibold">
+            Estimated Load Tier: {loadLabel}
+          </p>
+          <p className="font-bold">
+            Final Price: ${finalPrice.toFixed(2)}
+          </p>
+          <button
+            className="button-glow w-full"
+            onClick={() =>
+              navigate('/schedule', {
+                state: { cart, total: finalPrice, volume: totalVolume },
+              })
+            }
+          >
+            Schedule Now
+          </button>
+          <button
+            className="underline text-sm text-blue-300 mt-1"
+            onClick={() => setShowComparison(true)}
+          >
+            Compare to other junk removal companies
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+
+  {showComparison && (
+    <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
+      <div className="bg-white text-black p-6 rounded-xl max-w-md w-full">
+        <h3 className="text-xl font-bold mb-4 text-center">Price Comparison</h3>
+        <ul className="text-sm mb-4 space-y-1">
+          <li>• LoadUp (estimated): ${Math.round(finalPrice * 1.1)}</li>
+          <li>• College Hunks (estimated): ${Math.round(finalPrice * 1.2)}</li>
+          <li>• 1-800-GOT-JUNK (estimated): ${Math.round(finalPrice * 1.3)}</li>
+        </ul>
+        <p className="text-green-700 font-bold text-center">
+          *Prices are estimated based on similar services and may vary by location and time.
+        </p>
+        <p className="text-green-700 font-bold text-center mt-2">
+          You’re likely saving with Junk Buddies!
+        </p>
+        <button
+          className="mt-4 px-4 py-2 bg-gold text-black font-semibold rounded"
+          onClick={() => setShowComparison(false)}
+        >
+          Close
+        </button>
+      </div>
     </div>
-  </div>
-)}
-  </div>
-);
-}
+  )}
+</div>
+
+); }
 
 export default ItemizedPage;
+
+
  
