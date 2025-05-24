@@ -1,5 +1,3 @@
-// File: src/pages/SchedulePage.jsx
-
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import emailjs from 'emailjs-com';
@@ -59,7 +57,10 @@ function SchedulePage() {
 
   return (
     <div className="bg-black text-white min-h-screen p-6">
-      <h1 className="text-3xl text-gold font-bold mb-6 text-center">Book Junk Pickup - Pay nothing now</h1>
+      <h1 className="text-3xl text-gold font-bold mb-6 text-center">
+        Book Junk Pickup - Pay nothing now
+      </h1>
+
       <div className="mt-4 mb-6 flex justify-center">
         <div className="compare-badge-silver">
           No Upfront Payment Required
@@ -120,13 +121,11 @@ function SchedulePage() {
                 key={time}
                 type="button"
                 onClick={() => setFormData({ ...formData, time })}
-                className={`text-center py-3 rounded-xl transition-all border-2 w-full ${
-                  formData.time === time
-                    ? 'bg-gold text-black border-white'
-                    : 'bg-gray-300 text-black border-gray-400 hover:bg-gray-200'
+                className={`silver-button w-full ${
+                  formData.time === time ? 'silver-button-active' : ''
                 }`}
               >
-                <div className="font-bold text-lg">{label}</div>
+                <div className="text-lg font-bold">{label}</div>
                 <div className="text-sm">{time}</div>
               </button>
             ))}
@@ -143,7 +142,9 @@ function SchedulePage() {
             ))}
           </ul>
           <p className="font-bold">Total: ${finalPrice.toFixed(2)}</p>
-          <p className="mt-2 italic text-yellow-300">You don't pay until the job is done!</p>
+          <p className="mt-2 italic text-yellow-300">
+            You don't pay until the job is done!
+          </p>
         </div>
 
         <button type="submit" className="w-full button-glow">
