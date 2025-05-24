@@ -108,29 +108,28 @@ function SchedulePage() {
           onChange={handleChange}
         />
 
-        {/* Time Selection Buttons */}
         <div>
-          <label className="block mb-2 font-semibold">Select Time Window:</label>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {[
-              { label: 'Morning', time: '8:00 AM – 11:00 AM' },
-              { label: 'Afternoon', time: '12:00 PM – 3:00 PM' },
-              { label: 'Evening', time: '4:00 PM – 7:00 PM' },
-            ].map(({ label, time }) => (
-              <button
-                key={time}
-                type="button"
-                onClick={() => setFormData({ ...formData, time })}
-                className={`silver-button w-full ${
-                  formData.time === time ? 'silver-button-active' : ''
-                }`}
-              >
-                <div className="text-lg font-bold">{label}</div>
-                <div className="text-sm">{time}</div>
-              </button>
-            ))}
-          </div>
-        </div>
+  <label className="block mb-2 font-semibold">Select Time Window:</label>
+  <div className="grid grid-cols-3 gap-4">
+    {[
+      { label: 'Morning', time: '8:00 AM – 11:00 AM' },
+      { label: 'Afternoon', time: '12:00 PM – 3:00 PM' },
+      { label: 'Evening', time: '4:00 PM – 7:00 PM' },
+    ].map(({ label, time }) => (
+      <button
+        key={time}
+        type="button"
+        onClick={() => setFormData({ ...formData, time })}
+        className={`silver-button ${
+          formData.time === time ? 'silver-button-active' : ''
+        } w-full text-center`}
+      >
+        <div className="text-lg font-bold">{label}</div>
+        <div className="text-sm">{time}</div>
+      </button>
+    ))}
+  </div>
+</div>
 
         <div className="bg-gray-800 text-white p-4 rounded-xl">
           <h2 className="text-lg font-bold mb-2">Your Cart:</h2>
