@@ -432,3 +432,11 @@
   transform: scale(1.05);
   filter: brightness(1.08) contrast(1.05);
 }
+@layer components {
+  .silver-button {
+    @apply bg-gray-300 text-black border border-gray-400 font-bold rounded-xl py-3 px-4 text-center transition-all hover:bg-gray-200;
+  }
+  .silver-button-active {
+    @apply bg-gold text-black border-2 border-white;
+  }
+}
