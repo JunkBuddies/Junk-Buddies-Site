@@ -440,3 +440,8 @@
     @apply bg-gold text-black border-2 border-white;
   }
 }
+@layer utilities {
+  .bg-gold {
+    background-color: #FFD700;
+  }
+}
