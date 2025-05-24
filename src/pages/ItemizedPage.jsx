@@ -1,6 +1,6 @@
 // File: src/pages/ItemizedPage.jsx
 
-import React, { useState, useEffect } from 'react'; import { useNavigate } from 'react-router-dom'; import { useCart } from '../context/CartContext'; import { calculatePrice, getLoadLabel, fullLoadPoints } from '../utils/pricing'; import { itemData } from '../data/itemData';
+import React, { useState, useEffect } from 'react'; import { useNavigate } from 'react-router-dom'; import { useCart } from '../context/CartContext'; import { calculatePrice, getLoadLabel, fullLoadPoints } from '../utils/pricing'; 
 
 function ItemizedPage() { const { cart, setCart } = useCart(); const [search, setSearch] = useState(''); const [cartVisible, setCartVisible] = useState(false); const [showComparison, setShowComparison] = useState(false); const navigate = useNavigate();
 
