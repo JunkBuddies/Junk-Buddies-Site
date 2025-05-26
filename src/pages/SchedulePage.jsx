@@ -7,7 +7,9 @@ import { useCart } from '../context/CartContext';
 import { calculatePrice } from '../utils/pricing';
 
 const generatePresetDates = () => {
+  const labels = ['Today', 'Tomorrow', 'Day After'];
   const presets = [];
+
   for (let i = 0; i < 6; i++) {
     const date = new Date();
     date.setDate(date.getDate() + i);
@@ -33,6 +35,7 @@ const generatePresetDates = () => {
       value: isoDate
     });
   }
+
   return presets;
 };
 
@@ -132,11 +135,10 @@ function SchedulePage() {
           onChange={handleChange}
         />
 
-        {/* Date Selection */}
+        {/* Updated Date Selection Section */}
         <div className="space-y-3">
           <label className="block font-semibold">Select Date:</label>
-
-          <div className="flex flex-wrap gap-4 justify-between">
+          <div className="grid grid-cols-3 gap-4">
             {presetDates.map(({ label, dateFormatted, value }) => (
               <button
                 key={value}
@@ -144,25 +146,26 @@ function SchedulePage() {
                 onClick={() => setFormData({ ...formData, date: value })}
                 className={`silver-button ${
                   formData.date === value ? 'silver-button-active' : ''
-                } flex-grow text-center min-w-[115px] max-w-[calc(16.66%-0.75rem)] h-[72px] flex flex-col justify-center items-center`}
+                } h-[72px] w-full flex flex-col justify-center items-center text-center`}
               >
                 <div className="text-base font-bold leading-snug">{label}</div>
                 <div className="text-sm">{dateFormatted}</div>
               </button>
             ))}
           </div>
-
-          <p className="text-sm text-gray-400 text-center">Or pick a custom date</p>
-
-          <input
-            className="w-full p-3 rounded-xl text-black text-center"
-            type="date"
-            name="date"
-            onChange={handleChange}
-          />
+          <div>
+            <label className="block font-semibold mt-2 mb-1 text-center text-sm text-gray-300">
+              Or choose a custom date:
+            </label>
+            <input
+              className="w-full p-3 rounded-xl text-black text-center"
+              type="date"
+              name="date"
+              onChange={handleChange}
+            />
+          </div>
         </div>
 
-        {/* Time Selection */}
         <div>
           <label className="block mb-2 font-semibold">Select Time Window:</label>
           <div className="grid grid-cols-3 gap-4">
