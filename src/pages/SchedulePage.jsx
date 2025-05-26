@@ -2,38 +2,34 @@
 
 import React, { useState } from 'react'; import { useNavigate } from 'react-router-dom'; import emailjs from 'emailjs-com'; import { useCart } from '../context/CartContext'; import { calculatePrice } from '../utils/pricing';
 
-const generatePresetDates = () => {
-  const labels = ['Today', 'Tomorrow', 'Day After'];
-  const presets = [];
+const generatePresetDates = () => { const labels = ['Today', 'Tomorrow', 'Day After']; const presets = [];
 
-  for (let i = 0; i < 6; i++) {
-    const date = new Date();
-    date.setDate(date.getDate() + i);
+for (let i = 0; i < 6; i++) { const date = new Date(); date.setDate(date.getDate() + i);
 
-    const label =
-      i === 0 ? 'Today' :
-      i === 1 ? 'Tomorrow' :
-      i === 2 ? 'Day After' :
-      date.toLocaleDateString('en-US', { weekday: 'long' });
+const label =
+  i === 0 ? 'Today' :
+  i === 1 ? 'Tomorrow' :
+  i === 2 ? 'Day After' :
+  date.toLocaleDateString('en-US', { weekday: 'long' });
 
-    const dateFormatted = date.toLocaleDateString('en-US', {
-      weekday: i < 3 ? 'long' : undefined,
-      month: '2-digit',
-      day: '2-digit',
-      year: 'numeric'
-    });
+const dateFormatted = date.toLocaleDateString('en-US', {
+  weekday: i < 3 ? 'long' : undefined,
+  month: '2-digit',
+  day: '2-digit',
+  year: 'numeric'
+});
 
-    const isoDate = date.toISOString().split('T')[0];
+const isoDate = date.toISOString().split('T')[0];
 
-    presets.push({
-      label,
-      dateFormatted,
-      value: isoDate
-    });
-  }
+presets.push({
+  label,
+  dateFormatted,
+  value: isoDate
+});
 
-  return presets;
-};
+}
+
+return presets; };
 
 const presetDates = generatePresetDates();
 
@@ -115,35 +111,41 @@ return ( <div className="bg-black text-white min-h-screen p-6"> <h1 className="t
       required
       onChange={handleChange}
     />
+
+    {/* Date Selection */}
     <div className="space-y-3">
-  <label className="block font-semibold">Select Date:</label>
+      <label className="block font-semibold">Select Date:</label>
+      <div className="flex flex-wrap justify-between gap-3">
+        {presetDates.map(({ label, dateFormatted, value }) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => setFormData({ ...formData, date: value })}
+            className={`silver-button min-h-[64px] flex-1 text-center ${
+              formData.date === value ? 'silver-button-active' : ''
+            }`}
+          >
+            <div className="text-base font-bold">{label}</div>
+            <div className="text-sm">{dateFormatted}</div>
+          </button>
+        ))}
+      </div>
 
-  <div className="grid grid-cols-3 gap-4">
-    {presetDates.map(({ label, dateFormatted, value }) => (
-      <button
-        key={value}
-        type="button"
-        onClick={() => setFormData({ ...formData, date: value })}
-        className={`silver-button ${
-          formData.date === value ? 'silver-button-active' : ''
-        }`}
-      >
-        <div className="text-base font-bold">{label}</div>
-        <div className="text-sm">{dateFormatted}</div>
-      </button>
-    ))}
-  </div>
+      <div>
+        <label className="block font-semibold mt-2 mb-1 text-center text-sm text-gray-300">
+          Or choose a custom date:
+        </label>
+        <input
+          className="w-full p-3 rounded-xl text-black silver-button text-center"
+          type="date"
+          name="date"
+          value={formData.date}
+          onChange={handleChange}
+        />
+      </div>
+    </div>
 
-  <p className="text-sm text-gray-400 text-center">Or pick a custom date</p>
-  
-  <input
-    className="w-full p-3 rounded-xl text-black"
-    type="date"
-    name="date"
-    onChange={handleChange}
-  />
-</div>
-
+    {/* Time Selection */}
     <div>
       <label className="block mb-2 font-semibold">Select Time Window:</label>
       <div className="grid grid-cols-3 gap-4">
@@ -156,9 +158,9 @@ return ( <div className="bg-black text-white min-h-screen p-6"> <h1 className="t
             key={time}
             type="button"
             onClick={() => setFormData({ ...formData, time })}
-            className={`silver-button ${
+            className={`silver-button min-h-[64px] w-full text-center ${
               formData.time === time ? 'silver-button-active' : ''
-            } w-full text-center`}
+            }`}
           >
             <div className="text-lg font-bold">{label}</div>
             <div className="text-sm">{time}</div>
