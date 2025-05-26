@@ -153,18 +153,25 @@ function SchedulePage() {
               </button>
             ))}
           </div>
-          <div>
-            <label className="block font-semibold mt-2 mb-1 text-center text-sm text-gray-300">
-              Or choose a custom date:
-            </label>
-            <input
-              className="w-full p-3 rounded-xl text-black text-center"
-              type="date"
-              name="date"
-              onChange={handleChange}
-            />
+  <div className="relative">
+    <input
+      className={`w-full p-3 rounded-xl text-center appearance-none transition-all duration-200 silver-button ${
+        formData.date && !presetDates.some(d => d.value === formData.date)
+          ? 'text-gold border-2 border-[#FFD700]'
+          : 'text-black border border-gray-300'
+      }`}
+      type="date"
+      name="date"
+      value={formData.date}
+      onChange={handleChange}
+    />
+    {!formData.date && (
+      <span className="absolute left-0 right-0 top-1/2 transform -translate-y-1/2 text-center text-sm text-black pointer-events-none">
+        Or choose custom date
+      </span>
+    )}
+  </div>
           </div>
-        </div>
 
         <div>
           <label className="block mb-2 font-semibold">Select Time Window:</label>
