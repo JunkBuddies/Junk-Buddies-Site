@@ -135,6 +135,12 @@ return ( <div className="bg-black text-white min-h-screen p-6"> <h1 className="t
         {formData.date && !presetDates.some(d => d.value === formData.date) && (
           <div className="absolute left-0 right-0 top-0 bottom-0 flex items-center justify-center pointer-events-none font-bold text-black">
             {formData.customDateFormatted}
+            new Date(formData.date).toLocaleDateString('en-US', {
+  weekday: 'long',
+  month: '2-digit',
+  day: '2-digit',
+  year: 'numeric'
+})
           </div>
         )}
       </div>
