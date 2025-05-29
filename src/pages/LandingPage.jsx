@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'; import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useRef } from 'react'; import { useNavigate, Link } from 'react-router-dom';
 
 function LandingPage() { const navigate = useNavigate(); const junkRef = useRef(null); const buddiesRef = useRef(null); const aboutRef = useRef(null); const aboutTitleRef = useRef(null); const aboutParagraphRef = useRef(null); const cardRefs = useRef([]); cardRefs.current = [];
 
