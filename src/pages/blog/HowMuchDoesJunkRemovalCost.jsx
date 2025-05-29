@@ -1,6 +1,12 @@
 // File: src/pages/blog/HowMuchDoesJunkRemovalCost.jsx import React from 'react';
 
-function HowMuchDoesJunkRemovalCost() { return ( <div className="bg-[#3a3a3a] text-white min-h-screen px-6 py-10 max-w-4xl mx-auto"> <h1 className="text-3xl md:text-4xl text-gold font-bold mb-6"> How Much Does Junk Removal Cost in Houston? (2025 Guide) </h1>
+function HowMuchDoesJunkRemovalCost() { return ( <div
+  style={{
+    backgroundColor: '#2b2b2b',
+    backgroundImage: 'linear-gradient(145deg, #2b2b2b 0%, #1f1f1f 100%)',
+  }}
+  className="text-white min-h-screen px-6 py-10 max-w-4xl mx-auto"
+> <h1 className="text-3xl md:text-4xl text-gold font-bold mb-6"> How Much Does Junk Removal Cost in Houston? (2025 Guide) </h1>
 
 <p className="text-lg text-gray-300 mb-6">
     Trying to get rid of junk in Houston but not sure what it’s going to cost? You’re not alone.
