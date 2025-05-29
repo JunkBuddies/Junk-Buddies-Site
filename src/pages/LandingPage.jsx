@@ -185,6 +185,20 @@ return ( <div className="hero-space-background"> <div className="relative bg-gra
       </section>
     </div>
   </div>
+  {/* Footer Section */}
+<footer className="bg-black text-gray-400 py-8 px-4 mt-20 text-center border-t border-gold">
+  <div className="text-sm space-y-3">
+    <Link
+      to="/blog"
+      className="text-gold font-semibold hover:underline block"
+    >
+      📝 Read Our Blog — Junk Removal Tips, Pricing & More
+    </Link>
+    <div className="text-xs text-gray-500">
+      © {new Date().getFullYear()} Junk Buddies. All rights reserved.
+    </div>
+  </div>
+</footer>
 </div>
 
 ); }
