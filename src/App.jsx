@@ -7,6 +7,8 @@ import LoadSizePage from './pages/LoadSizePage';
 import ItemizedPage from './pages/ItemizedPage';
 import SchedulePage from './pages/SchedulePage';
 import ConfirmationPage from './pages/ConfirmationPage';
+import BlogPage from './pages/BlogPage';
+import HowMuchDoesJunkRemovalCost from './pages/blog/HowMuchDoesJunkRemovalCost';
 import { CartProvider } from './context/CartContext';
 
 function App() {
@@ -20,16 +22,14 @@ function App() {
           <Route path="/itemized" element={<ItemizedPage />} />
           <Route path="/schedule" element={<SchedulePage />} />
           <Route path="/confirmation" element={<ConfirmationPage />} />
+
+          {/* ✅ Blog Routes must go here inside the component */}
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/how-much-does-junk-removal-cost" element={<HowMuchDoesJunkRemovalCost />} />
         </Routes>
       </Router>
     </CartProvider>
   );
 }
-import BlogPage from './pages/BlogPage';
-import HowMuchDoesJunkRemovalCost from './pages/blog/HowMuchDoesJunkRemovalCost';
 
-<Routes>
-  <Route path="/blog" element={<BlogPage />} />
-  <Route path="/blog/how-much-does-junk-removal-cost" element={<HowMuchDoesJunkRemovalCost />} />
-</Routes>
-export default App; // App.jsx - routing
+export default App;
