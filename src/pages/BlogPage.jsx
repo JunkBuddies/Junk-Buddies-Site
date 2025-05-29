@@ -3,7 +3,13 @@ import { Link } from 'react-router-dom';
 
 function BlogPage() {
   return (
-    <div className="bg-black text-white min-h-screen px-6 py-10 max-w-5xl mx-auto">
+    <div
+      style={{
+        backgroundColor: '#2b2b2b',
+        backgroundImage: 'linear-gradient(145deg, #2b2b2b 0%, #1f1f1f 100%)',
+      }}
+      className="text-white min-h-screen px-6 py-10 max-w-5xl mx-auto"
+    >
       <h1 className="text-4xl font-bold text-gold mb-4">Junk Buddies Blog</h1>
       <p className="text-lg text-gray-300 mb-10">
         Real advice from local pros. No fluff. No corporate-speak. Just solid info on junk removal in Houston — and how to save time, money, and space.
@@ -13,7 +19,7 @@ function BlogPage() {
         {/* Blog Post Preview #1 */}
         <div className="border border-gold p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
           <Link to="/blog/how-much-does-junk-removal-cost" className="text-2xl text-gold font-bold hover:underline">
-            How Much Does Junk Removal Cost in Houston? (2025 No-BS Breakdown)
+            How Much Does Junk Removal Cost in Houston? (2025 Breakdown)
           </Link>
           <p className="text-gray-300 mt-3">
             Most companies hide their prices. We don’t. See what junk removal really costs in Houston — and how to avoid getting ripped off.
@@ -27,7 +33,7 @@ function BlogPage() {
         </div>
 
         {/* Placeholder for future posts */}
-        {/* 
+        {/*
         <div>
           <Link to="/blog/next-post-slug" className="text-xl text-gold font-semibold hover:underline">
             Future Blog Title
