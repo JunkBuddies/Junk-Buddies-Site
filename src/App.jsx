@@ -25,5 +25,11 @@ function App() {
     </CartProvider>
   );
 }
+import BlogPage from './pages/BlogPage';
+import HowMuchDoesJunkRemovalCost from './pages/blog/HowMuchDoesJunkRemovalCost';
 
+<Routes>
+  <Route path="/blog" element={<BlogPage />} />
+  <Route path="/blog/how-much-does-junk-removal-cost" element={<HowMuchDoesJunkRemovalCost />} />
+</Routes>
 export default App; // App.jsx - routing
