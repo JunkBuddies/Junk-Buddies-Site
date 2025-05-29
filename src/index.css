@@ -468,3 +468,6 @@
     background-color: #FFD700;
   }
 }
+body {
+  overflow-x: hidden;
+}
