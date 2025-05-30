@@ -80,9 +80,12 @@ function HowMuchDoesJunkRemovalCost() { return ( <div
     </tbody>
   </table>
   <p className="text-sm italic text-gray-400 mb-6">
-  *LoadUp’s $75 is often just a show-up fee — item costs are added after.{' '}
+  <span className="text-red-500 font-medium">
+    *LoadUp’s $75 is often just a show-up fee
+  </span>{' '}
+  — item costs are added after.{' '}
   <span style={{ color: '#FFD700', fontWeight: '600' }}>
-    Our $100 base already includes pickup for most small items, no surprises.
+    Junk Buddies' $100 base already includes pickup for most small items, no surprises.
   </span>
 </p>
 
