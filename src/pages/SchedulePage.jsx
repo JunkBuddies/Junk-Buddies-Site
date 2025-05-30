@@ -1,7 +1,7 @@
 // File: src/pages/SchedulePage.jsx
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import emailjs from 'emailjs-com';
 import { useCart } from '../context/CartContext';
 import { calculatePrice } from '../utils/pricing';
@@ -178,7 +178,12 @@ function SchedulePage() {
           <p className="font-bold">Total: ${finalPrice.toFixed(2)}</p>
           <p className="mt-2 italic text-yellow-300">You don't pay until the job is done!</p>
         </div>
-
+<p className="text-sm text-gray-400 mt-4">
+  Curious what your booking will cost in total?{' '}
+  <Link to="/blog/how-much-does-junk-removal-cost" className="text-gold underline hover:text-white">
+    View our full price transparency promise
+  </Link>.
+</p>
         <button type="submit" className="w-full button-glow">Schedule Pickup</button>
       </form>
     </div>
