@@ -81,7 +81,7 @@ function HowMuchDoesJunkRemovalCost() { return ( <div
   </table>
   <p className="text-sm italic text-gray-400 mb-6">
   *LoadUp’s $75 is often just a show-up fee — item costs are added after.{' '}
-  <span className="text-gold font-semibold">
+  <span style={{ color: '#FFD700', fontWeight: '600' }}>
     Our $100 base already includes pickup for most small items, no surprises.
   </span>
 </p>
