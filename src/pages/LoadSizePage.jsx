@@ -1,7 +1,7 @@
 // File: src/pages/LoadSizePage.jsx
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { calculatePrice } from '../utils/pricing';
 
@@ -53,7 +53,12 @@ function LoadSizePage() {
           </button>
         ))}
       </div>
-
+<p className="text-sm text-gray-400 mt-4">
+  Want to see how your load size compares?{' '}
+  <Link to="/blog/how-much-does-junk-removal-cost" className="text-gold underline hover:text-white">
+    See full pricing breakdown
+  </Link>.
+</p>
       {/* Cart Summary */}
       <div className="mt-10 w-full max-w-3xl border-t border-gold pt-6 flex flex-col items-center">
         <p className="text-lg mb-4 font-bold">Total: ${finalPrice.toFixed(2)}</p>
