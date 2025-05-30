@@ -1,6 +1,6 @@
 // File: src/pages/ItemizedPage.jsx
 
-import React, { useState, useEffect } from 'react'; import { useNavigate } from 'react-router-dom'; import { useCart } from '../context/CartContext'; import { calculatePrice, getLoadLabel, fullLoadPoints } from '../utils/pricing'; 
+import React, { useState, useEffect } from 'react'; import { useNavigate, Link } from 'react-router-dom'; import { useCart } from '../context/CartContext'; import { calculatePrice, getLoadLabel, fullLoadPoints } from '../utils/pricing'; 
 
 function ItemizedPage() { const { cart, setCart } = useCart(); const [search, setSearch] = useState(''); const [cartVisible, setCartVisible] = useState(false); const [showComparison, setShowComparison] = useState(false); const navigate = useNavigate();
 
@@ -417,7 +417,12 @@ return ( <div className="bg-black text-white min-h-screen p-6 pb-32"> <h1 classN
       </div>
     ) : null
   )}
-
+<p className="text-sm text-gray-400 mt-4">
+  Not sure what it’ll cost overall?{' '}
+  <Link to="/blog/how-much-does-junk-removal-cost" className="text-gold underline hover:text-white">
+    Check out our no-surprise pricing guide
+  </Link>.
+</p>
   <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gold p-4">
     <div
       className="flex justify-between items-center cursor-pointer"
