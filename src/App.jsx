@@ -9,6 +9,7 @@ import SchedulePage from './pages/SchedulePage';
 import ConfirmationPage from './pages/ConfirmationPage';
 import BlogPage from './pages/BlogPage';
 import HowMuchDoesJunkRemovalCost from './pages/blog/HowMuchDoesJunkRemovalCost';
+import SaveMoneyOnJunkRemoval from './pages/blog/SaveMoneyOnJunkRemoval';
 import { CartProvider } from './context/CartContext';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           {/* ✅ Blog Routes must go here inside the component */}
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/how-much-does-junk-removal-cost" element={<HowMuchDoesJunkRemovalCost />} />
+          <Route path="/blog/save-money-on-junk-removal" element={<SaveMoneyOnJunkRemoval />} />
         </Routes>
       </Router>
     </CartProvider>
