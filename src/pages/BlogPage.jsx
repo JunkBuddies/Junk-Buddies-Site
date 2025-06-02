@@ -1,3 +1,4 @@
+// File: src/pages/BlogPage.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -16,7 +17,7 @@ function BlogPage() {
       </p>
 
       <div className="space-y-10">
-        {/* Blog Post Preview #1 */}
+        {/* Blog Post 1 */}
         <div className="border border-gold p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
           <Link to="/blog/how-much-does-junk-removal-cost" className="text-2xl text-gold font-bold hover:underline">
             How Much Does Junk Removal Cost in Houston? (2025 Breakdown)
@@ -32,15 +33,21 @@ function BlogPage() {
           </Link>
         </div>
 
-        {/* Placeholder for future posts */}
-        {/*
-        <div>
-          <Link to="/blog/next-post-slug" className="text-xl text-gold font-semibold hover:underline">
-            Future Blog Title
+        {/* Blog Post 2 */}
+        <div className="border border-gold p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200">
+          <Link to="/blog/save-money-on-junk-removal" className="text-2xl text-gold font-bold hover:underline">
+            💰 10 Easy Ways to Save Money on Junk Removal
           </Link>
-          <p className="text-gray-400 mt-2">Short preview text for future post...</p>
+          <p className="text-gray-300 mt-3">
+            Real-world tips to keep costs down without sacrificing service. Learn how to get more value, avoid hidden fees, and choose the right junk removal strategy.
+          </p>
+          <Link
+            to="/blog/save-money-on-junk-removal"
+            className="inline-block mt-4 text-sm text-gold hover:underline"
+          >
+            Read More →
+          </Link>
         </div>
-        */}
       </div>
     </div>
   );
