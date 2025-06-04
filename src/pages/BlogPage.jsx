@@ -15,6 +15,14 @@ function BlogPage() {
       <p className="text-lg text-gray-300 mb-10">
         Real advice from local pros. No fluff. No corporate-speak. Just solid info on junk removal in Houston — and how to save time, money, and space.
       </p>
+      <div className="mt-12 space-y-4 text-center">
+  <Link to="/faq" className="text-gold hover:underline text-lg block">
+    📌 Frequently Asked Questions
+  </Link>
+  <Link to="/" className="text-gold hover:underline text-lg block">
+    🏠 Return to Homepage
+  </Link>
+</div>
 
       <div className="space-y-10">
         {/* Blog Post 1 */}
