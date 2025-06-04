@@ -10,6 +10,7 @@ import ConfirmationPage from './pages/ConfirmationPage';
 import BlogPage from './pages/BlogPage';
 import HowMuchDoesJunkRemovalCost from './pages/blog/HowMuchDoesJunkRemovalCost';
 import SaveMoneyOnJunkRemoval from './pages/blog/SaveMoneyOnJunkRemoval';
+import FaqPage from './pages/FaqPage';
 import { CartProvider } from './context/CartContext';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/how-much-does-junk-removal-cost" element={<HowMuchDoesJunkRemovalCost />} />
           <Route path="/blog/save-money-on-junk-removal" element={<SaveMoneyOnJunkRemoval />} />
+          <Route path="/faq" element={<FaqPage />} />
         </Routes>
       </Router>
     </CartProvider>
