@@ -194,6 +194,9 @@ return ( <div className="hero-space-background"> <div className="relative bg-gra
     >
       📝 Read Our Blog — Junk Removal Tips, Pricing & More
     </Link>
+    <a href="/faq" className="text-gold hover:underline block">
+  📌 Frequently Asked Questions
+</a>
     <div className="text-xs text-gray-500">
       © {new Date().getFullYear()} Junk Buddies. All rights reserved.
     </div>
