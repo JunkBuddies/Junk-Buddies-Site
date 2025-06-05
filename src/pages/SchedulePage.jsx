@@ -12,22 +12,9 @@ const generatePresetDates = () => {
   for (let i = 0; i < 6; i++) {
     const date = new Date();
     date.setDate(date.getDate() + i);
-
-    const label =
-      i === 0 ? 'Today' :
-      i === 1 ? 'Tomorrow' :
-      i === 2 ? 'Day After' :
-      date.toLocaleDateString('en-US', { weekday: 'long' });
-
-    const dateFormatted = date.toLocaleDateString('en-US', {
-      weekday: i < 3 ? 'long' : undefined,
-      month: '2-digit',
-      day: '2-digit',
-      year: 'numeric'
-    });
-
+    const label = i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : i === 2 ? 'Day After' : date.toLocaleDateString('en-US', { weekday: 'long' });
+    const dateFormatted = date.toLocaleDateString('en-US', { weekday: i < 3 ? 'long' : undefined, month: '2-digit', day: '2-digit', year: 'numeric' });
     const isoDate = date.toISOString().split('T')[0];
-
     presets.push({ label, dateFormatted, value: isoDate });
   }
   return presets;
@@ -38,17 +25,9 @@ const presetDates = generatePresetDates();
 function SchedulePage() {
   const { cart } = useCart();
   const { finalPrice, totalVolume } = calculatePrice(cart);
-
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    date: '',
-    time: '',
-    customDateFormatted: ''
+    name: '', email: '', phone: '', address: '', date: '', time: '', customDateFormatted: ''
   });
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -57,10 +36,8 @@ function SchedulePage() {
 
     if (name === 'date' && !presetDates.some(d => d.value === value)) {
       const [year, month, day] = value.split('-');
-      const d = new Date(+year, month - 1, +day); // Local time-safe
-      const formatted = d.toLocaleDateString('en-US', {
-        weekday: 'long', month: '2-digit', day: '2-digit', year: 'numeric'
-      });
+      const d = new Date(+year, month - 1, +day);
+      const formatted = d.toLocaleDateString('en-US', { weekday: 'long', month: '2-digit', day: '2-digit', year: 'numeric' });
       updated.customDateFormatted = formatted;
     }
 
@@ -70,9 +47,9 @@ function SchedulePage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const itemsList = cart.map(item =>
-      `<li>${item.name}: $${item.price.toFixed(2)}</li>`
-    ).join('');
+    const itemsList = cart.length
+      ? `<ul>${cart.map(item => `<li><strong>${item.name}</strong>: $${item.price.toFixed(2)}</li>`).join('')}</ul>`
+      : 'No items selected.';
 
     const templateParams = {
       ...formData,
@@ -80,24 +57,21 @@ function SchedulePage() {
       total: `$${finalPrice.toFixed(2)}`
     };
 
+    // Send customer confirmation
     emailjs.send('JunkBuddies.info', 'Junk_Buddies_Booking', templateParams, 'QCl4Akw_LZ3T8IvUd')
-      .then(() => {
-        return emailjs.send(
-          'JunkBuddies.info',
-          'template_57eij3s',
-          { ...templateParams, email: 'JunkBuddies.info@gmail.com' },
-          'QCl4Akw_LZ3T8IvUd'
-        );
-      })
       .then(() => navigate('/confirmation'))
       .catch(error => alert('Email error: ' + error.text));
+
+    // Send internal job summary copy
+    emailjs.send('JunkBuddies.info', 'template_57eij3s', {
+      ...templateParams,
+      email: 'JunkBuddies.info@gmail.com'
+    }, 'QCl4Akw_LZ3T8IvUd');
   };
 
   return (
     <div className="bg-black text-white min-h-screen p-6">
-      <h1 className="text-3xl text-gold font-bold mb-6 text-center">
-        Book Junk Pickup - Pay nothing now
-      </h1>
+      <h1 className="text-3xl text-gold font-bold mb-6 text-center">Book Junk Pickup - Pay nothing now</h1>
 
       <div className="mt-4 mb-6 flex justify-center">
         <div className="compare-badge-silver">No Upfront Payment Required</div>
@@ -178,12 +152,14 @@ function SchedulePage() {
           <p className="font-bold">Total: ${finalPrice.toFixed(2)}</p>
           <p className="mt-2 italic text-yellow-300">You don't pay until the job is done!</p>
         </div>
-<p className="text-sm text-gray-400 mt-4">
-  Curious what your booking will cost in total?{' '}
-  <Link to="/blog/how-much-does-junk-removal-cost" className="text-gold underline hover:text-white">
-    View our full price transparency promise
-  </Link>.
-</p>
+
+        <p className="text-sm text-gray-400 mt-4">
+          Curious what your booking will cost in total?{' '}
+          <Link to="/blog/how-much-does-junk-removal-cost" className="text-gold underline hover:text-white">
+            View our full price transparency promise
+          </Link>.
+        </p>
+
         <button type="submit" className="w-full button-glow">Schedule Pickup</button>
       </form>
     </div>
