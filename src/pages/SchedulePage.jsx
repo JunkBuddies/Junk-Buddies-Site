@@ -24,7 +24,7 @@ const presetDates = generatePresetDates();
 
 function SchedulePage() {
   const { cart } = useCart();
-  const { finalPrice, totalVolume } = calculatePrice(cart);
+  const { finalPrice } = calculatePrice(cart);
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', address: '', date: '', time: '', customDateFormatted: ''
   });
@@ -47,22 +47,25 @@ function SchedulePage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const itemsList = cart.length
-      ? `<ul>${cart.map(item => `<li><strong>${item.name}</strong>: $${item.price.toFixed(2)}</li>`).join('')}</ul>`
-      : 'No items selected.';
+    const orderNumber = `JB-${Date.now().toString().slice(-6)}`;
+    const year = new Date().getFullYear();
+    const itemsList = cart.map(item => `<li><strong>${item.name}</strong>: $${item.price.toFixed(2)}</li>`).join('');
 
     const templateParams = {
       ...formData,
-      items: itemsList,
-      total: `$${finalPrice.toFixed(2)}`
+      orderNumber,
+      year,
+      items: `<ul>${itemsList}</ul>`,
+      cartItems: itemsList,
+      total: `${finalPrice.toFixed(2)}`
     };
 
-    // Send customer confirmation
+    // Send confirmation to customer
     emailjs.send('JunkBuddies.info', 'Junk_Buddies_Booking', templateParams, 'QCl4Akw_LZ3T8IvUd')
       .then(() => navigate('/confirmation'))
       .catch(error => alert('Email error: ' + error.text));
 
-    // Send internal job summary copy
+    // Send internal copy
     emailjs.send('JunkBuddies.info', 'template_57eij3s', {
       ...templateParams,
       email: 'JunkBuddies.info@gmail.com'
@@ -83,6 +86,7 @@ function SchedulePage() {
         <input className="w-full p-3 rounded-xl text-black" type="tel" name="phone" placeholder="Your Phone Number" required onChange={handleChange} />
         <input className="w-full p-3 rounded-xl text-black" type="text" name="address" placeholder="Pickup Address" required onChange={handleChange} />
 
+        {/* Date & Time Inputs */}
         <div className="space-y-3">
           <label className="block font-semibold">Select Date:</label>
           <div className="grid grid-cols-3 gap-4">
@@ -125,6 +129,7 @@ function SchedulePage() {
           </div>
         </div>
 
+        {/* Time Window Selection */}
         <div>
           <label className="block mb-2 font-semibold">Select Time Window:</label>
           <div className="grid grid-cols-3 gap-4">
@@ -142,6 +147,7 @@ function SchedulePage() {
           </div>
         </div>
 
+        {/* Cart Summary */}
         <div className="bg-gray-800 text-white p-4 rounded-xl">
           <h2 className="text-lg font-bold mb-2">Your Cart:</h2>
           <ul className="mb-2">
