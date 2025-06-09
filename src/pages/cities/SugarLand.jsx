@@ -1,45 +1,57 @@
+// File: src/pages/cities/SugarLand.jsx
+
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-const SugarLand = () => { return ( <div className="min-h-screen bg-gray-900 text-white px-6 py-12"> <div className="max-w-4xl mx-auto"> <h1 className="text-4xl font-bold text-gold mb-6 text-center"> Junk Removal in Sugar Land, TX </h1> <p className="text-lg text-gray-300 mb-6 text-center"> Reliable, local junk removal in Sugar Land with instant pricing, no upfront payment, and 5-star service — that’s the Junk Buddies difference. </p>
-
-<div className="bg-gray-800 border border-gold rounded-xl shadow-lg p-6 mb-6">
-      <h2 className="text-2xl text-gold font-semibold mb-4">Why Sugar Land Trusts Junk Buddies</h2>
-      <ul className="list-disc list-inside text-gray-300 space-y-2">
-        <li>✅ Fast pickup & same-day availability in Sugar Land</li>
-        <li>✅ Transparent pricing with no surprise fees</li>
-        <li>✅ Large trucks = fewer trips = better value</li>
-        <li>✅ Locally owned and operated near Sugar Land</li>
-        <li>✅ Serving residential, commercial, and apartment properties</li>
-      </ul>
-    </div>
-
-    <div className="bg-gray-800 border border-gold rounded-xl shadow-lg p-6 mb-6">
-      <h2 className="text-2xl text-gold font-semibold mb-4">Neighborhoods & Zip Codes We Serve in Sugar Land</h2>
-      <p className="text-gray-300 mb-2">
-        Whether you're in a gated community, new development, or business plaza, we’ve got you covered:
+const SugarLand = () => {
+  return (
+    <div className="min-h-screen bg-gray-900 text-white px-6 py-12">
+      <h1 className="text-4xl text-gold font-bold mb-6">Junk Removal in Sugar Land, TX</h1>
+      <p className="text-lg mb-4">
+        Junk Buddies is Sugar Land’s top-rated junk removal service — locally driven, trusted, and built for your schedule. Whether it’s clearing furniture in First Colony, appliance haul-offs in New Territory, or entire garage cleanouts in Telfair, we bring the muscle and the hustle.
       </p>
-      <ul className="list-disc list-inside text-gray-300 space-y-1">
+      <p className="text-md text-gray-300 mb-6">
+        Our team offers same-day junk removal in Sugar Land for furniture, electronics, yard waste, hot tubs, construction debris, commercial junk, eviction cleanouts, and more. You’ll never pay upfront — and our pricing beats the big guys every time.
+      </p>
+
+      <p className="text-md mb-4">
+        Serving ZIP codes: <span className="text-gold">77478, 77479, 77487, 77496, 77498</span>, and more.
+      </p>
+
+      {/* Hidden crawlable ZIPs */}
+      <ul className="sr-only">
         <li>77478</li>
         <li>77479</li>
         <li>77487</li>
         <li>77496</li>
         <li>77498</li>
+        <li>77099</li>
+        <li>77083</li>
+        <li>77082</li>
+        <li>77407</li>
+        <li>77459</li>
+        <li>77489</li>
+        <li>77071</li>
+        <li>77085</li>
+        <li>77406</li>
+        <li>77469</li>
+        <li>77477</li>
+        <li>77072</li>
+        <li>77031</li>
+        <li>77063</li>
+        <li>77450</li>
       </ul>
-    </div>
 
-    <div className="text-center mt-10">
-      <a
-        href="/selection"
-        className="inline-block bg-gold text-black font-bold py-3 px-6 rounded-xl hover:bg-yellow-400 transition shadow-md"
-      >
-        Get Instant Pricing in Sugar Land
-      </a>
+      <div className="mt-8">
+        <Link
+          to="/schedule"
+          className="inline-block bg-gold text-black font-bold py-3 px-6 rounded-xl shadow-lg hover:scale-105 transition"
+        >
+          Book Sugar Land Junk Pickup
+        </Link>
+      </div>
     </div>
-  </div>
-</div>
-
-); };
+  );
+};
 
 export default SugarLand;
-
-
