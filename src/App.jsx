@@ -12,6 +12,7 @@ import HowMuchDoesJunkRemovalCost from './pages/blog/HowMuchDoesJunkRemovalCost'
 import SaveMoneyOnJunkRemoval from './pages/blog/SaveMoneyOnJunkRemoval';
 import FaqPage from './pages/FaqPage';
 import ServiceAreasPage from './pages/ServiceAreasPage';
+import HoustonPage from './pages/service-areas/Houston';
 import { CartProvider } from './context/CartContext';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
           <Route path="/blog/save-money-on-junk-removal" element={<SaveMoneyOnJunkRemoval />} />
           <Route path="/faq" element={<FaqPage />} />
          <Route path="/service-areas" element={<ServiceAreasPage />} />
+          <Route path="/service-areas/houston" element={<HoustonPage />} />
         </Routes>
       </Router>
     </CartProvider>
