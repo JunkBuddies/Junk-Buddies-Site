@@ -54,7 +54,14 @@ return () => {
 
 }, []);
 
-return ( <div className="hero-space-background"> <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-6"> <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0" />
+return ( <div className="hero-space-background"> <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-6"> <div className="absolute top-6 right-6 z-50">
+  <Link
+    to="/service-areas"
+    className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded-lg shadow-md"
+  >
+    Cities We Serve
+  </Link>
+</div> <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0" />
 
 {/* Motto with Shine */}
     <div className="relative z-10 mt-24">
