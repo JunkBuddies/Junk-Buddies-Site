@@ -210,7 +210,7 @@ function LandingPage() {
           </section>
         </div>
       </div>
-
+</div>
       {/* Footer Section */}
       <footer className="bg-black text-gray-400 py-8 px-4 mt-20 text-center border-t border-gold">
         <div className="text-sm space-y-3">
