@@ -173,22 +173,23 @@
 
 /* About Flip Only */
 .about-reveal {
-  opacity: 0;
-  transform: perspective(1000px) rotateY(-180deg) scale(0.96);
-  transition: none;
+  transform: perspective(1000px) rotateY(0deg) scale(1); /* visible by default */
+  opacity: 1;
   border: 2px solid #FFD700;
   box-shadow: 0 0 12px #FFD700, 0 0 32px rgba(255, 215, 0, 0.4);
 }
+
 .about-reveal.in-view {
   animation: flipRevealOnce 1.2s ease-out 1;
   animation-fill-mode: both;
 }
+
 @keyframes flipRevealOnce {
-  0%   { transform: perspective(1000px) rotateY(-180deg) scale(0.96); opacity: 0; }
-  40%  { transform: perspective(1000px) rotateY(12deg) scale(1.01); opacity: 1; }
+  0%   { transform: perspective(1000px) rotateY(-180deg) scale(0.96); opacity: 1; }
+  40%  { transform: perspective(1000px) rotateY(12deg) scale(1.01); }
   60%  { transform: perspective(1000px) rotateY(-6deg); }
   80%  { transform: perspective(1000px) rotateY(3deg); }
-  100% { transform: perspective(1000px) rotateY(0deg); }
+  100% { transform: perspective(1000px) rotateY(0deg) scale(1); }
 }
 
 /* Self-Scheduling Reveal Section */
