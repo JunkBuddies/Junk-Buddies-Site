@@ -50,7 +50,6 @@ function LandingPage() {
   }, []);
 
   return (
-    <div className="hero-space-background">
       <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-6">
         <div className="absolute top-6 right-6 z-50">
           <Link
