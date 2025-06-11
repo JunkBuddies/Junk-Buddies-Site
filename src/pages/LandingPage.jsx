@@ -162,6 +162,6 @@ className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded
 </div>
 
 ); }
-}
+
 export default LandingPage;
 
