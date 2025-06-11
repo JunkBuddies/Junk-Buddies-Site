@@ -171,19 +171,13 @@
   }
 }
 
-/* === About Us Flip Reveal === */
+/* About Flip Only */
 .about-reveal {
-  opacity: 0;
-  transform: perspective(1000px) rotateY(-180deg) scale(0.96);
-  transition: none;
+  animation: flipRevealOnce 1.2s ease-out 1;
+  animation-fill-mode: both;
   border: 2px solid #FFD700;
   box-shadow: 0 0 12px #FFD700, 0 0 32px rgba(255, 215, 0, 0.4);
 }
-.about-reveal.in-view {
-  animation: flipRevealOnce 1.2s ease-out 1;
-  animation-fill-mode: both;
-}
-
 @keyframes flipRevealOnce {
   0%   { transform: perspective(1000px) rotateY(-180deg) scale(0.96); opacity: 0; }
   40%  { transform: perspective(1000px) rotateY(12deg) scale(1.01); opacity: 1; }
@@ -191,6 +185,7 @@
   80%  { transform: perspective(1000px) rotateY(3deg); }
   100% { transform: perspective(1000px) rotateY(0deg); }
 }
+
 /* Self-Scheduling Reveal Section */
 .self-schedule-section {
   @apply bg-gray-800/60 rounded-xl p-6 shadow-xl border-2 border-[#FFD700] relative overflow-hidden;
@@ -475,4 +470,4 @@
 }
 body {
   overflow-x: hidden;
-}
+  }
