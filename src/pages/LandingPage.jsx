@@ -111,37 +111,38 @@ return ( <div className="hero-space-background"> <div className="relative bg-gra
 
     {/* How It Works Floating Cards */}
     <div className="relative z-10 mt-20 max-w-6xl w-full">
-      <h2 className="text-3xl text-gold font-bold mb-6 text-center">How It Works</h2>
-      <div className="how-it-works-carousel">
-        <div ref={setCardRef} className="how-card">
-          <video autoPlay loop muted playsInline className="how-card-video">
-            <source src="/videos/step1.mp4" type="video/mp4" />
-          </video>
-          <h3 className="how-card-title">1. Tap to Start</h3>
-        </div>
-        <div ref={setCardRef} className="how-card">
-          <video autoPlay loop muted playsInline className="how-card-video">
-            <source src="/videos/step2.mp4" type="video/mp4" />
-          </video>
-          <h3 className="how-card-title">2. Add in Seconds</h3>
-        </div>
-        <div ref={setCardRef} className="how-card">
-          <video autoPlay loop muted playsInline className="how-card-video">
-            <source src="/videos/step3.mp4" type="video/mp4" />
-          </video>
-          <h3 className="how-card-title">3. Schedule Instantly</h3>
-        </div>
-        <div ref={setCardRef} className="howitworks-badge-card how-card">
-          <h3 className="badge-title">We Make Space For What Matters.</h3>
-          <p className="badge-subtitle">Your Buddies Show Up. You Only Pay When It’s Done.</p>
-        </div>
-      </div>
-      <div className="mt-8 flex justify-center">
-        <button onClick={() => navigate('/selection')} className="cta-metallic-button">
-          Get Instant Pricing
-        </button>
-      </div>
+    <div className="relative z-10 mt-20 max-w-6xl w-full">
+  <h2 className="text-3xl text-gold font-bold mb-6 text-center">How It Works</h2>
+  <div className="how-it-works-carousel">
+    <div className="how-card bg-[#D4D4D4] text-black rounded-xl shadow-xl">
+      <video autoPlay loop muted playsInline className="how-card-video rounded-t-xl">
+        <source src="/videos/step1.mp4" type="video/mp4" />
+      </video>
+      <h3 className="how-card-title font-bold py-2 text-center">1. Tap to Start</h3>
     </div>
+    <div className="how-card bg-[#D4D4D4] text-black rounded-xl shadow-xl">
+      <video autoPlay loop muted playsInline className="how-card-video rounded-t-xl">
+        <source src="/videos/step2.mp4" type="video/mp4" />
+      </video>
+      <h3 className="how-card-title font-bold py-2 text-center">2. Add in Seconds</h3>
+    </div>
+    <div className="how-card bg-[#D4D4D4] text-black rounded-xl shadow-xl">
+      <video autoPlay loop muted playsInline className="how-card-video rounded-t-xl">
+        <source src="/videos/step3.mp4" type="video/mp4" />
+      </video>
+      <h3 className="how-card-title font-bold py-2 text-center">3. Schedule Instantly</h3>
+    </div>
+    <div className="howitworks-badge-card how-card bg-[#D4D4D4] text-black rounded-xl shadow-xl p-4 flex flex-col items-center justify-center">
+      <h3 className="badge-title text-xl font-bold text-center">We Make Space For What Matters.</h3>
+      <p className="badge-subtitle text-center mt-2">Your Buddies Show Up. You Only Pay When It’s Done.</p>
+    </div>
+  </div>
+  <div className="mt-8 flex justify-center">
+    <button onClick={() => navigate('/selection')} className="cta-metallic-button">
+      Get Instant Pricing
+    </button>
+  </div>
+</div>
 
     {/* About Us Section with Flip */}
     <div className="relative z-10 mt-20 max-w-6xl w-full space-y-20">
