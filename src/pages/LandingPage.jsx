@@ -4,55 +4,9 @@ function LandingPage() { const navigate = useNavigate(); const junkRef = useRef(
 
 const setCardRef = (el) => { if (el && !cardRefs.current.includes(el)) { cardRefs.current.push(el); } };
 
-useEffect(() => { const handleIntersection = (entries) => { entries.forEach((entry) => { if (entry.isIntersecting) { const junk = junkRef.current; const buddies = buddiesRef.current; if (junk && buddies) { junk.classList.remove('shine-junk'); buddies.classList.remove('shine-buddies'); void junk.offsetWidth; void buddies.offsetWidth; buddies.classList.add('shine-buddies'); setTimeout(() => junk.classList.add('shine-junk'), 2500); } } }); };
+useEffect(() => { const junk = junkRef.current; const buddies = buddiesRef.current; if (junk && buddies) { junk.classList.remove('shine-junk'); buddies.classList.remove('shine-buddies'); void junk.offsetWidth; void buddies.offsetWidth; buddies.classList.add('shine-buddies'); setTimeout(() => junk.classList.add('shine-junk'), 2500); } }, []);
 
-const observer = new IntersectionObserver(handleIntersection, {
-  threshold: 0.5,
-});
-
-if (junkRef.current && buddiesRef.current) {
-  observer.observe(junkRef.current.parentElement);
-}
-
-return () => observer.disconnect();
-
-}, []);
-
-useEffect(() => { const about = aboutRef.current; if (!about) return;
-
-const handleAboutIntersection = (entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      about.classList.remove('about-reveal');
-      void about.offsetWidth;
-      about.classList.add('about-reveal');
-    }
-  });
-};
-
-const aboutObserver = new IntersectionObserver(handleAboutIntersection, {
-  threshold: 0.5,
-});
-
-aboutObserver.observe(about);
-
-return () => aboutObserver.disconnect();
-
-}, []);
-
-useEffect(() => { const observer = new IntersectionObserver( (entries) => { entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add('in-view'); } }); }, { threshold: 0.3 } );
-
-cardRefs.current.forEach((ref) => {
-  if (ref) observer.observe(ref);
-});
-
-return () => {
-  cardRefs.current.forEach((ref) => {
-    if (ref) observer.unobserve(ref);
-  });
-};
-
-}, []);
+useEffect(() => { const about = aboutRef.current; if (!about) return; about.classList.remove('about-reveal'); void about.offsetWidth; about.classList.add('about-reveal'); }, []);
 
 return ( <div className="hero-space-background"> <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-6"> <div className="absolute top-6 right-6 z-50"> <Link
 to="/service-areas"
@@ -63,7 +17,7 @@ className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded
     <div className="relative z-10 mt-24">
       <div className="relative z-10 shine-wrapper">
         <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
-          <span ref={junkRef} className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d">
+          <span ref={junkRef} className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk">
             Junk
           </span>
           <img
@@ -71,7 +25,7 @@ className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded
             alt="Logo"
             className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
           />
-          <span ref={buddiesRef} className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d">
+          <span ref={buddiesRef} className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies">
             Buddies
           </span>
         </div>
@@ -109,27 +63,27 @@ className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded
     <div className="relative z-10 mt-20 max-w-6xl w-full">
       <h2 className="text-3xl text-gold font-bold mb-6 text-center">How It Works</h2>
       <div className="how-it-works-carousel">
-        <div className="how-card bg-[#D4D4D4] text-black rounded-xl shadow-xl">
-          <video autoPlay loop muted playsInline className="how-card-video rounded-t-xl">
+        <div className="how-card floatWaveUp">
+          <video autoPlay loop muted playsInline className="how-card-video">
             <source src="/videos/step1.mp4" type="video/mp4" />
           </video>
-          <h3 className="how-card-title font-bold py-2 text-center">1. Tap to Start</h3>
+          <h3 className="how-card-title">1. Tap to Start</h3>
         </div>
-        <div className="how-card bg-[#D4D4D4] text-black rounded-xl shadow-xl">
-          <video autoPlay loop muted playsInline className="how-card-video rounded-t-xl">
+        <div className="how-card floatWaveDown">
+          <video autoPlay loop muted playsInline className="how-card-video">
             <source src="/videos/step2.mp4" type="video/mp4" />
           </video>
-          <h3 className="how-card-title font-bold py-2 text-center">2. Add in Seconds</h3>
+          <h3 className="how-card-title">2. Add in Seconds</h3>
         </div>
-        <div className="how-card bg-[#D4D4D4] text-black rounded-xl shadow-xl">
-          <video autoPlay loop muted playsInline className="how-card-video rounded-t-xl">
+        <div className="how-card floatWaveUp">
+          <video autoPlay loop muted playsInline className="how-card-video">
             <source src="/videos/step3.mp4" type="video/mp4" />
           </video>
-          <h3 className="how-card-title font-bold py-2 text-center">3. Schedule Instantly</h3>
+          <h3 className="how-card-title">3. Schedule Instantly</h3>
         </div>
-        <div className="howitworks-badge-card how-card bg-[#D4D4D4] text-black rounded-xl shadow-xl p-4 flex flex-col items-center justify-center">
-          <h3 className="badge-title text-xl font-bold text-center">We Make Space For What Matters.</h3>
-          <p className="badge-subtitle text-center mt-2">Your Buddies Show Up. You Only Pay When It’s Done.</p>
+        <div className="howitworks-badge-card how-card floatPulse">
+          <h3 className="badge-title">We Make Space For What Matters.</h3>
+          <p className="badge-subtitle">Your Buddies Show Up. You Only Pay When It’s Done.</p>
         </div>
       </div>
       <div className="mt-8 flex justify-center">
@@ -191,7 +145,10 @@ className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded
   {/* Footer Section */}
   <footer className="bg-black text-gray-400 py-8 px-4 mt-20 text-center border-t border-gold">
     <div className="text-sm space-y-3">
-      <Link to="/blog" className="text-gold font-semibold hover:underline block">
+      <Link
+        to="/blog"
+        className="text-gold font-semibold hover:underline block"
+      >
         📝 Read Our Blog — Junk Removal Tips, Pricing & More
       </Link>
       <a href="/faq" className="text-gold hover:underline block">
