@@ -86,7 +86,6 @@ return ( <div className="hero-space-background"> {/* HERO Section with backgroun
         Book Instantly
       </button>
     </div>
-  </div>
 
         {/* How It Works Floating Cards */}
         <div className="relative z-10 mt-20 max-w-6xl w-full">
