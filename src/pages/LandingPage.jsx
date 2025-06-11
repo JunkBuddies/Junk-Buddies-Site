@@ -1,77 +1,38 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react'; import { useNavigate, Link } from 'react-router-dom';
 
-function LandingPage() {
-  const navigate = useNavigate();
-  const junkRef = useRef(null);
-  const buddiesRef = useRef(null);
-  const aboutRef = useRef(null);
-  const aboutTitleRef = useRef(null);
-  const aboutParagraphRef = useRef(null);
-  const cardRefs = useRef([]);
-  cardRefs.current = [];
+function LandingPage() { const navigate = useNavigate(); const junkRef = useRef(null); const buddiesRef = useRef(null); const aboutRef = useRef(null); const aboutTitleRef = useRef(null); const aboutParagraphRef = useRef(null); const cardRefs = useRef([]); cardRefs.current = [];
 
-  const [aboutInView, setAboutInView] = useState(false);
+const [aboutInView, setAboutInView] = useState(false);
 
-  const setCardRef = (el) => {
-    if (el && !cardRefs.current.includes(el)) {
-      cardRefs.current.push(el);
-    }
-  };
+const setCardRef = (el) => { if (el && !cardRefs.current.includes(el)) { cardRefs.current.push(el); } };
 
-  useEffect(() => {
-    const junk = junkRef.current;
-    const buddies = buddiesRef.current;
-    if (junk && buddies) {
-      junk.classList.remove('shine-junk');
-      buddies.classList.remove('shine-buddies');
-      void junk.offsetWidth;
-      void buddies.offsetWidth;
-      buddies.classList.add('shine-buddies');
-      setTimeout(() => junk.classList.add('shine-junk'), 2500);
-    }
-  }, []);
+useEffect(() => { const junk = junkRef.current; const buddies = buddiesRef.current; if (junk && buddies) { junk.classList.remove('shine-junk'); buddies.classList.remove('shine-buddies'); void junk.offsetWidth; void buddies.offsetWidth; buddies.classList.add('shine-buddies'); setTimeout(() => junk.classList.add('shine-junk'), 2500); } }, []);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setAboutInView(true);
-      },
-      { threshold: 0.4 }
-    );
+useEffect(() => { const observer = new IntersectionObserver( ([entry]) => { if (entry.isIntersecting) setAboutInView(true); }, { threshold: 0.4 } );
 
-    if (aboutRef.current) {
-      observer.observe(aboutRef.current);
-    }
+if (aboutRef.current) {
+  observer.observe(aboutRef.current);
+}
 
-    return () => {
-      if (aboutRef.current) observer.unobserve(aboutRef.current);
-    };
-  }, []);
+return () => {
+  if (aboutRef.current) observer.unobserve(aboutRef.current);
+};
 
-  return (
-    <div className="hero-space-background">
-      <div className="relative text-white text-center isolate overflow-hidden">
-  <img
-    src="/images/Earth-moon-background.png"
-    alt="Earth Background"
-    className="absolute inset-0 w-full h-full object-contain object-top z-0"
-    style={{ maxHeight: 'auto' }}
-  />
+}, []);
 
-  <div className="relative z-10 bg-black/70 px-6 min-h-screen flex flex-col justify-center items-center">
-    <div className="absolute top-6 right-6 z-50">
-      <Link
-        to="/service-areas"
-        className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded-lg shadow-md"
-      >
-        Cities We Serve
-      </Link>
-    </div>
+return ( <div className="hero-space-background"> {/* HERO Section with background image */} <div className="relative w-full isolate overflow-hidden"> <img src="/images/Earth-moon-background.png" alt="Earth Background" className="absolute inset-0 w-full h-full object-cover object-top z-0" style={{ maxHeight: '850px' }} />
 
-    {/* Motto with Shine */}
-    <div className="relative z-10 mt-24">
-      <div className="shine-wrapper">
+<div className="relative z-10 bg-black/70 flex flex-col justify-center items-center text-center text-white py-20 px-6">
+      <div className="absolute top-6 right-6 z-50">
+        <Link
+          to="/service-areas"
+          className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded-lg shadow-md"
+        >
+          Cities We Serve
+        </Link>
+      </div>
+
+      <div className="shine-wrapper mb-6">
         <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
           <span
             ref={junkRef}
@@ -92,23 +53,24 @@ function LandingPage() {
           </span>
         </div>
       </div>
-      <p className="text-2xl font-semibold tracking-wide mt-4">
+
+      <p className="text-2xl font-semibold tracking-wide mb-6">
         Making Space For What Matters
       </p>
+
+      <div className="space-y-4">
+        <button onClick={() => navigate('/selection')} className="button-glow">
+          Get Started
+        </button>
+        <button
+          onClick={() => navigate('/selection')}
+          className="bg-white text-black font-bold py-3 px-8 rounded-xl hover:bg-gray-200 transition shadow-lg hover:scale-105"
+        >
+          View Pricing
+        </button>
+      </div>
     </div>
 
-    {/* CTA Buttons */}
-    <div className="relative z-10 mt-8 space-y-4">
-      <button onClick={() => navigate('/selection')} className="button-glow">
-        Get Started
-      </button>
-      <button
-        onClick={() => navigate('/selection')}
-        className="bg-white text-black font-bold py-3 px-8 rounded-xl hover:bg-gray-200 transition shadow-lg hover:scale-105"
-      >
-        View Pricing
-      </button>
-    </div>
 
     {/* Self-Scheduling Section */}
     <div className="relative z-10 mt-20 max-w-5xl w-full self-schedule-section">
