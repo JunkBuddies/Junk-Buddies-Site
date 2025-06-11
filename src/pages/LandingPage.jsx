@@ -63,30 +63,39 @@ function LandingPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0" />
 
         {/* Motto with Shine */}
-        <div className="relative z-10 mt-24">
-          <div className="relative z-10 shine-wrapper">
-            <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
-              <span
-                ref={junkRef}
-                className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk"
-              >
-                Junk
-              </span>
-              <img
-                src="/images/logo-icon.png"
-                alt="Logo"
-                className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
-              />
-              <span
-                ref={buddiesRef}
-                className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies"
-              >
-                Buddies
-              </span>
-            </div>
-          </div>
-          <p className="text-2xl font-semibold tracking-wide mt-4">Making Space For What Matters</p>
-        </div>
+        <div className="relative w-full isolate overflow-hidden">
+  <img
+    src="/images/Earth-moon-background.png"
+    alt="Earth Moon Background"
+    className="absolute inset-0 w-full h-full object-cover object-top z-0"
+    style={{ maxHeight: '100vh' }}
+  />
+  
+  <div className="relative z-10 mt-24 flex flex-col items-center text-center px-4">
+    <div className="shine-wrapper">
+      <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
+        <span
+          ref={junkRef}
+          className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk"
+        >
+          Junk
+        </span>
+        <img
+          src="/images/logo-icon.png"
+          alt="Logo"
+          className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
+        />
+        <span
+          ref={buddiesRef}
+          className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies"
+        >
+          Buddies
+        </span>
+      </div>
+    </div>
+    <p className="text-2xl font-semibold tracking-wide mt-4">Making Space For What Matters</p>
+  </div>
+</div>
 
         {/* CTA Buttons */}
         <div className="relative z-10 mt-8 space-y-4">
