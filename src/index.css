@@ -186,7 +186,7 @@ box-shadow: 0 0 12px #FFD700, 0 0 32px rgba(255, 215, 0, 0.4);
 100% { transform: perspective(1000px) rotateY(0deg); }
 }
 
-/* Self-Scheduling Reveal Section /
+/* Self-Scheduling Reveal Section*/
 .self-schedule-section {
 @apply bg-gray-800/60 rounded-xl p-6 shadow-xl border-2 border-[#FFD700] relative overflow-hidden;
 animation: fadeInUp 0.9s ease-out both;
@@ -276,7 +276,7 @@ z-index: 20;
 animation: floatPulse 3s ease-in-out infinite !important;
 }
 
-/* Individual Float Behaviors /
+/* Individual Float Behaviors*/
 @keyframes floatWaveUp {
 0%   { transform: translateY(0px) rotateX(1deg); }
 25%  { transform: translateY(-8px) rotateX(2deg); }
