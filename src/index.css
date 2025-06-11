@@ -355,7 +355,6 @@
   100% { transform: translateY(0px); }
 }
 .how-card {
-.how-card {
   opacity: 1 !important;
   transform: none !important;
   animation: floatPulse 4s ease-in-out infinite;
