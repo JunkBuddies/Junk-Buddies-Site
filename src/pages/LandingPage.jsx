@@ -1,91 +1,118 @@
-import React, { useEffect, useRef, useState } from 'react'; import { useNavigate, Link } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 
-function LandingPage() { const navigate = useNavigate(); const junkRef = useRef(null); const buddiesRef = useRef(null); const aboutRef = useRef(null); const aboutTitleRef = useRef(null); const aboutParagraphRef = useRef(null); const cardRefs = useRef([]); cardRefs.current = [];
+function LandingPage() {
+  const navigate = useNavigate();
+  const junkRef = useRef(null);
+  const buddiesRef = useRef(null);
+  const aboutRef = useRef(null);
+  const aboutTitleRef = useRef(null);
+  const aboutParagraphRef = useRef(null);
+  const cardRefs = useRef([]);
+  cardRefs.current = [];
 
-const [aboutInView, setAboutInView] = useState(false);
+  const [aboutInView, setAboutInView] = useState(false);
 
-const setCardRef = (el) => { if (el && !cardRefs.current.includes(el)) { cardRefs.current.push(el); } };
+  const setCardRef = (el) => {
+    if (el && !cardRefs.current.includes(el)) {
+      cardRefs.current.push(el);
+    }
+  };
 
-useEffect(() => { const junk = junkRef.current; const buddies = buddiesRef.current; if (junk && buddies) { junk.classList.remove('shine-junk'); buddies.classList.remove('shine-buddies'); void junk.offsetWidth; void buddies.offsetWidth; buddies.classList.add('shine-buddies'); setTimeout(() => junk.classList.add('shine-junk'), 2500); } }, []);
+  useEffect(() => {
+    const junk = junkRef.current;
+    const buddies = buddiesRef.current;
+    if (junk && buddies) {
+      junk.classList.remove('shine-junk');
+      buddies.classList.remove('shine-buddies');
+      void junk.offsetWidth;
+      void buddies.offsetWidth;
+      buddies.classList.add('shine-buddies');
+      setTimeout(() => junk.classList.add('shine-junk'), 2500);
+    }
+  }, []);
 
-useEffect(() => { const observer = new IntersectionObserver( ([entry]) => { if (entry.isIntersecting) setAboutInView(true); }, { threshold: 0.4 } );
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setAboutInView(true);
+      },
+      { threshold: 0.4 }
+    );
 
-if (aboutRef.current) {
-  observer.observe(aboutRef.current);
-}
+    if (aboutRef.current) {
+      observer.observe(aboutRef.current);
+    }
 
-return () => {
-  if (aboutRef.current) observer.unobserve(aboutRef.current);
-};
+    return () => {
+      if (aboutRef.current) observer.unobserve(aboutRef.current);
+    };
+  }, []);
 
-}, []);
-
-return ( <div className="hero-space-background"> {/* HERO Section with background image */} <div className="relative w-full isolate overflow-hidden"> <img src="/images/Earth-moon-background.png" alt="Earth Background" className="absolute inset-0 w-full h-full object-cover object-top z-0" style={{ maxHeight: '850px' }} />
-
-<div className="relative z-10 bg-black/70 flex flex-col justify-center items-center text-center text-white py-20 px-6">
-      <div className="absolute top-6 right-6 z-50">
-        <Link
-          to="/service-areas"
-          className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded-lg shadow-md"
-        >
-          Cities We Serve
-        </Link>
-      </div>
-
-      <div className="shine-wrapper mb-6">
-        <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
-          <span
-            ref={junkRef}
-            className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk"
+  return (
+    <div className="hero-space-background">
+      <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-6">
+        <div className="absolute top-6 right-6 z-50">
+          <Link
+            to="/service-areas"
+            className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded-lg shadow-md"
           >
-            Junk
-          </span>
-          <img
-            src="/images/logo-icon.png"
-            alt="Logo"
-            className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
-          />
-          <span
-            ref={buddiesRef}
-            className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies"
-          >
-            Buddies
-          </span>
+            Cities We Serve
+          </Link>
         </div>
-      </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0" />
 
-      <p className="text-2xl font-semibold tracking-wide mb-6">
-        Making Space For What Matters
-      </p>
+        {/* Motto with Shine */}
+        <div className="relative z-10 mt-24">
+          <div className="relative z-10 shine-wrapper">
+            <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
+              <span
+                ref={junkRef}
+                className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk"
+              >
+                Junk
+              </span>
+              <img
+                src="/images/logo-icon.png"
+                alt="Logo"
+                className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
+              />
+              <span
+                ref={buddiesRef}
+                className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies"
+              >
+                Buddies
+              </span>
+            </div>
+          </div>
+          <p className="text-2xl font-semibold tracking-wide mt-4">Making Space For What Matters</p>
+        </div>
 
-      <div className="space-y-4">
-        <button onClick={() => navigate('/selection')} className="button-glow">
-          Get Started
-        </button>
-        <button
-          onClick={() => navigate('/selection')}
-          className="bg-white text-black font-bold py-3 px-8 rounded-xl hover:bg-gray-200 transition shadow-lg hover:scale-105"
-        >
-          View Pricing
-        </button>
-      </div>
-    </div>
+        {/* CTA Buttons */}
+        <div className="relative z-10 mt-8 space-y-4">
+          <button onClick={() => navigate('/selection')} className="button-glow">
+            Get Started
+          </button>
+          <button
+            onClick={() => navigate('/selection')}
+            className="bg-white text-black font-bold py-3 px-8 rounded-xl hover:bg-gray-200 transition shadow-lg hover:scale-105"
+          >
+            View Pricing
+          </button>
+        </div>
 
-
-    {/* Self-Scheduling Section */}
-    <div className="relative z-10 mt-20 max-w-5xl w-full self-schedule-section">
-      <span className="self-schedule-badge">You don’t pay until the job’s done</span>
-      <h2 className="self-schedule-title">Self-Scheduling</h2>
-      <h3 className="text-xl text-white font-semibold mb-2">
-        For Guaranteed Instant Pricing
-      </h3>
-      <p className="self-schedule-text mt-2">
-        Why wait for quotes or callbacks? Our self-scheduling tool gives you instant access to upfront pricing — 30% lower than big-brand junk haulers. Pick your items, book your time, and relax. We show up, clean up, and <strong>you only pay when the job is done</strong>.
-      </p>
-      <button onClick={() => navigate('/selection')} className="secondary-cta mt-4">
-        Book Instantly
-      </button>
-    </div>
+        {/* Self-Scheduling Section */}
+        <div className="relative z-10 mt-20 max-w-5xl w-full self-schedule-section">
+          <span className="self-schedule-badge">You don’t pay until the job’s done</span>
+          <h2 className="self-schedule-title">Self-Scheduling</h2>
+          <h3 className="text-xl text-white font-semibold mb-2">For Guaranteed Instant Pricing</h3>
+          <p className="self-schedule-text mt-2">
+            Why wait for quotes or callbacks? Our self-scheduling tool gives you instant access to upfront pricing — 30% lower than big-brand junk haulers. Pick your items, book your time, and relax. We show up, clean up, and <strong>you only pay when the job is done</strong>.
+          </p>
+          <button onClick={() => navigate('/selection')} className="secondary-cta mt-4">
+            Book Instantly
+          </button>
+        </div>
 
         {/* How It Works Floating Cards */}
         <div className="relative z-10 mt-20 max-w-6xl w-full">
@@ -170,7 +197,7 @@ return ( <div className="hero-space-background"> {/* HERO Section with backgroun
           </section>
         </div>
       </div>
-      
+
       {/* Footer Section */}
       <footer className="bg-black text-gray-400 py-8 px-4 mt-20 text-center border-t border-gold">
         <div className="text-sm space-y-3">
