@@ -40,28 +40,10 @@ return () => aboutObserver.disconnect();
 
 }, []);
 
-useEffect(() => { const observer = new IntersectionObserver( (entries) => { entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add('in-view'); } }); }, { threshold: 0.3 } );
-
-cardRefs.current.forEach((ref) => {
-  if (ref) observer.observe(ref);
-});
-
-return () => {
-  cardRefs.current.forEach((ref) => {
-    if (ref) observer.unobserve(ref);
-  });
-};
-
-}, []);
-
-return ( <div className="hero-space-background"> <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-6"> <div className="absolute top-6 right-6 z-50">
-  <Link
-    to="/service-areas"
-    className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded-lg shadow-md"
-  >
-    Cities We Serve
-  </Link>
-</div> <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0" />
+return ( <div className="hero-space-background"> <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-6"> <div className="absolute top-6 right-6 z-50"> <Link
+to="/service-areas"
+className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded-lg shadow-md"
+> Cities We Serve </Link> </div> <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0" />
 
 {/* Motto with Shine */}
     <div className="relative z-10 mt-24">
@@ -113,25 +95,25 @@ return ( <div className="hero-space-background"> <div className="relative bg-gra
     <div className="relative z-10 mt-20 max-w-6xl w-full">
       <h2 className="text-3xl text-gold font-bold mb-6 text-center">How It Works</h2>
       <div className="how-it-works-carousel">
-        <div ref={setCardRef} className="how-card">
+        <div ref={setCardRef} className="how-card bg-[#c0c0c0]">
           <video autoPlay loop muted playsInline className="how-card-video">
             <source src="/videos/step1.mp4" type="video/mp4" />
           </video>
           <h3 className="how-card-title">1. Tap to Start</h3>
         </div>
-        <div ref={setCardRef} className="how-card">
+        <div ref={setCardRef} className="how-card bg-[#c0c0c0]">
           <video autoPlay loop muted playsInline className="how-card-video">
             <source src="/videos/step2.mp4" type="video/mp4" />
           </video>
           <h3 className="how-card-title">2. Add in Seconds</h3>
         </div>
-        <div ref={setCardRef} className="how-card">
+        <div ref={setCardRef} className="how-card bg-[#c0c0c0]">
           <video autoPlay loop muted playsInline className="how-card-video">
             <source src="/videos/step3.mp4" type="video/mp4" />
           </video>
           <h3 className="how-card-title">3. Schedule Instantly</h3>
         </div>
-        <div ref={setCardRef} className="howitworks-badge-card how-card">
+        <div ref={setCardRef} className="howitworks-badge-card how-card bg-[#c0c0c0]">
           <h3 className="badge-title">We Make Space For What Matters.</h3>
           <p className="badge-subtitle">Your Buddies Show Up. You Only Pay When It’s Done.</p>
         </div>
@@ -192,25 +174,24 @@ return ( <div className="hero-space-background"> <div className="relative bg-gra
       </section>
     </div>
   </div>
+
   {/* Footer Section */}
-<footer className="bg-black text-gray-400 py-8 px-4 mt-20 text-center border-t border-gold">
-  <div className="text-sm space-y-3">
-    <Link
-      to="/blog"
-      className="text-gold font-semibold hover:underline block"
-    >
-      📝 Read Our Blog — Junk Removal Tips, Pricing & More
-    </Link>
-    <a href="/faq" className="text-gold hover:underline block">
-  📌 Frequently Asked Questions
-</a>
-    <div className="text-xs text-gray-500">
-      © {new Date().getFullYear()} Junk Buddies. All rights reserved.
+  <footer className="bg-black text-gray-400 py-8 px-4 mt-20 text-center border-t border-gold">
+    <div className="text-sm space-y-3">
+      <Link to="/blog" className="text-gold font-semibold hover:underline block">
+        📝 Read Our Blog — Junk Removal Tips, Pricing & More
+      </Link>
+      <a href="/faq" className="text-gold hover:underline block">
+        📌 Frequently Asked Questions
+      </a>
+      <div className="text-xs text-gray-500">
+        © {new Date().getFullYear()} Junk Buddies. All rights reserved.
+      </div>
     </div>
-  </div>
-</footer>
+  </footer>
 </div>
 
 ); }
 
 export default LandingPage;
+
