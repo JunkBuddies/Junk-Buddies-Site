@@ -47,9 +47,6 @@
   100% { box-shadow: 0 0 30px #FFD700, 0 0 80px #FFD700 inset; }
 }
 
-/* Hero Background */
-
-
 /* Item Card Buttons */
 .item-card-button {
   @apply w-full text-black font-bold rounded-xl shadow-lg relative overflow-hidden transition-transform transform-gpu p-4 text-left;
