@@ -23,7 +23,7 @@ return () => {
 return ( <div className="w-full overflow-hidden"> <div className="hero-earth-bg w-full min-h-screen flex flex-col items-center justify-center text-white text-center relative"> <div className="absolute top-6 right-6 z-50"> <Link
 to="/service-areas"
 className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded-lg shadow-md"
-> Cities We Serve </Link> </div> <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0" />
+> Cities We Serve </Link> </div> 
 
 <div className="relative z-10 mt-24">
       <div className="relative z-10 shine-wrapper">
