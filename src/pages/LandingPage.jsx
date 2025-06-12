@@ -20,7 +20,12 @@ return () => {
 
 }, []);
 
-return ( <div className="w-full overflow-hidden"> <div className="hero-earth-bg w-full min-h-screen flex flex-col items-center justify-center text-white text-center relative"> <div className="absolute top-6 right-6 z-50"> <Link
+return ( <div className="w-full overflow-hidden"> <div className="hero-earth-bg w-full min-h-screen flex flex-col items-center justify-center text-white text-center relative"> {/* Animated GIF overlay */}
+<img
+  src="/images/your-gif.gif"
+  alt="Earth overlay animation"
+  className="absolute top-0 left-0 w-full h-full object-cover z-10 pointer-events-none"
+/><div className="absolute top-6 right-6 z-50"> <Link
 to="/service-areas"
 className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded-lg shadow-md"
 > Cities We Serve </Link> </div> 
