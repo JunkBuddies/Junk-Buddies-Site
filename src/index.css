@@ -514,3 +514,9 @@ body {
   background-color: black;
   }
 }
+.about-reveal.silver {
+  background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 40%, #999999 60%, #e0e0e0 100%);
+  color: #000;
+  border: 2px solid #aaa;
+  box-shadow: 0 0 12px #ccc, 0 0 32px rgba(200, 200, 200, 0.4);
+}
