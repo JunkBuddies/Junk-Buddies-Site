@@ -24,7 +24,7 @@ return ( <div className="w-full overflow-hidden"> <div className="hero-earth-bg 
 <img
   src="/images/Earth-rotation2.gif"
   alt="Rotating Earth Overlay"
-  className="absolute top-0 left-0 w-full h-[50vh] object-cover z-10 pointer-events-none"
+  className="absolute top-[12%] left-1/2 transform -translate-x-1/2 w-[300px] h-[300px] object-contain z-10 pointer-events-none"
 />
 /><div className="absolute top-6 right-6 z-50"> <Link
 to="/service-areas"
