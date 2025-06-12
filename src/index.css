@@ -505,3 +505,12 @@ box-shadow:
 body {
   overflow-x: hidden;
   }
+@layer utilities {
+  .hero-earth-bg {
+    background-image: url('/images/Earth-moon-background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: black;
+  }
+}
