@@ -79,19 +79,19 @@ className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded
     <div className="relative z-10 mt-20 max-w-6xl w-full mx-auto">
       <h2 className="text-3xl text-gold font-bold mb-6 text-center">How It Works</h2>
       <div className="how-it-works-carousel">
-        <div className="how-card floatWaveUp">
+        <div className="how-card floatWaveUp silver">
           <video autoPlay loop muted playsInline className="how-card-video">
             <source src="/videos/step1.mp4" type="video/mp4" />
           </video>
           <h3 className="how-card-title">1. Tap to Start</h3>
         </div>
-        <div className="how-card floatWaveDown">
+        <div className="how-card floatWaveDown silver">
           <video autoPlay loop muted playsInline className="how-card-video">
             <source src="/videos/step2.mp4" type="video/mp4" />
           </video>
           <h3 className="how-card-title">2. Add in Seconds</h3>
         </div>
-        <div className="how-card floatWaveUp">
+        <div className="how-card floatWaveUp silver">
           <video autoPlay loop muted playsInline className="how-card-video">
             <source src="/videos/step3.mp4" type="video/mp4" />
           </video>
