@@ -50,8 +50,7 @@ function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="relative bg-gray-900 text-white flex-grow flex flex-col justify-center items-center text-center px-6">
+    <div className="hero-earth-bg w-full min-h-screen flex flex-col items-center justify-center text-white text-center relative">
         <div className="absolute top-6 right-6 z-50">
           <Link
             to="/service-areas"
