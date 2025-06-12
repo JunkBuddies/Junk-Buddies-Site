@@ -51,53 +51,40 @@ function LandingPage() {
 
   return (
     <div>
-    <div className="hero-earth-bg w-full min-h-screen flex flex-col items-center justify-center text-white text-center relative">
-        <div className="absolute top-6 right-6 z-50">
-          <Link
-            to="/service-areas"
-            className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded-lg shadow-md"
-          >
-            Cities We Serve
-          </Link>
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0" />
-
-        <div className="relative z-10 mt-24">
-          <div className="relative z-10 shine-wrapper">
-            <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
-              <span
-                ref={junkRef}
-                className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk"
-              >
-                Junk
-              </span>
-              <img
-                src="/images/logo-icon.png"
-                alt="Logo"
-                className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
-              />
-              <span
-                ref={buddiesRef}
-                className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies"
-              >
-                Buddies
-              </span>
-            </div>
-          </div>
-          <p className="text-2xl font-semibold tracking-wide mt-4">Making Space For What Matters</p>
-        </div>
-
-        <div className="relative z-10 mt-8 space-y-4">
-          <button onClick={() => navigate('/selection')} className="button-glow">
-            Get Started
-          </button>
-          <button
-            onClick={() => navigate('/selection')}
-            className="bg-white text-black font-bold py-3 px-8 rounded-xl hover:bg-gray-200 transition shadow-lg hover:scale-105"
-          >
-            View Pricing
-          </button>
-        </div>
+    <div className="text-white min-h-screen flex flex-col items-center text-center px-6 bg-gray-900">
+  {/* 🔲 Hero Background Section (wrap this) */}
+  <div className="w-full hero-earth-bg">
+    <div className="relative z-10 pt-24 pb-20 flex flex-col items-center">
+      <div className="absolute top-6 right-6 z-50">
+        <Link
+          to="/service-areas"
+          className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded-lg shadow-md"
+        >
+          Cities We Serve
+        </Link>
+      </div>
+      <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
+        <span ref={junkRef} className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk">
+          Junk
+        </span>
+        <img src="/images/logo-icon.png" alt="Logo" className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain" />
+        <span ref={buddiesRef} className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies">
+          Buddies
+        </span>
+      </div>
+      <p className="text-2xl font-semibold tracking-wide mt-4">Making Space For What Matters</p>
+      <div className="mt-8 space-y-4">
+        <button onClick={() => navigate('/selection')} className="button-glow">
+          Get Started
+        </button>
+        <button
+          onClick={() => navigate('/selection')}
+          className="bg-white text-black font-bold py-3 px-8 rounded-xl hover:bg-gray-200 transition shadow-lg hover:scale-105"
+        >
+          View Pricing
+        </button>
+      </div>
+    </div>
 
         <div className="relative z-10 mt-20 max-w-5xl w-full self-schedule-section">
           <span className="self-schedule-badge">You don’t pay until the job’s done</span>
