@@ -85,6 +85,7 @@ function LandingPage() {
         </button>
       </div>
     </div>
+    </div>
 
         <div className="relative z-10 mt-20 max-w-5xl w-full self-schedule-section">
           <span className="self-schedule-badge">You don’t pay until the job’s done</span>
