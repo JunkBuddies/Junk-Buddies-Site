@@ -71,9 +71,9 @@ className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded
       <p className="self-schedule-text mt-2">
         Why wait for quotes or callbacks? Our self-scheduling tool gives you instant access to upfront pricing — 30% lower than big-brand junk haulers. Pick your items, book your time, and relax. We show up, clean up, and <strong>you only pay when the job is done</strong>.
       </p>
-      <button onClick={() => navigate('/selection')} className="secondary-cta mt-4">
-        Book Instantly
-      </button>
+      <button onClick={() => navigate('/selection')} className="cta-metallic-button mt-4">
+  Book Instantly
+</button>
     </div>
 
     <div className="relative z-10 mt-20 max-w-6xl w-full mx-auto">
@@ -111,9 +111,9 @@ className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded
 
     <div className="relative z-10 mt-20 max-w-6xl w-full mx-auto space-y-20">
       <section
-        ref={aboutRef}
-        className={`bg-gray-800/60 rounded-xl p-6 shadow-lg border-gold border-2 animate-border about-reveal ${aboutInView ? 'in-view' : ''}`}
-      >
+  ref={aboutRef}
+  className={`about-reveal silver ${aboutInView ? 'in-view' : ''}`}
+>
         <h2
           ref={aboutTitleRef}
           className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2"
