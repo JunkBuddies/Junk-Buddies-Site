@@ -23,8 +23,8 @@ return () => {
 return ( <div className="w-full overflow-hidden"> <div className="hero-earth-bg w-full min-h-screen flex flex-col items-center justify-center text-white text-center relative"> {/* Animated GIF overlay */}
 <img
   src="/images/Earth-rotation.gif"
-  alt="Earth overlay animation"
-  className="absolute z-20 top-[10%] left-1/2 transform -translate-x-1/2 w-[280px] sm:w-[320px] md:w-[400px] lg:w-[480px] pointer-events-none"
+  alt="Rotating Earth Overlay"
+  className="absolute top-0 left-0 w-full h-[50vh] object-cover z-10 pointer-events-none"
 />
 /><div className="absolute top-6 right-6 z-50"> <Link
 to="/service-areas"
