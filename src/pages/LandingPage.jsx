@@ -50,8 +50,8 @@ function LandingPage() {
   }, []);
 
   return (
-    <div>
-      <div className="relative bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center text-center px-6">
+    <div className="min-h-screen flex flex-col">
+      <div className="relative bg-gray-900 text-white flex-grow flex flex-col justify-center items-center text-center px-6">
         <div className="absolute top-6 right-6 z-50">
           <Link
             to="/service-areas"
@@ -62,7 +62,6 @@ function LandingPage() {
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-gray-900/80 z-0" />
 
-        {/* Motto with Shine */}
         <div className="relative z-10 mt-24">
           <div className="relative z-10 shine-wrapper">
             <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
@@ -88,7 +87,6 @@ function LandingPage() {
           <p className="text-2xl font-semibold tracking-wide mt-4">Making Space For What Matters</p>
         </div>
 
-        {/* CTA Buttons */}
         <div className="relative z-10 mt-8 space-y-4">
           <button onClick={() => navigate('/selection')} className="button-glow">
             Get Started
@@ -101,7 +99,6 @@ function LandingPage() {
           </button>
         </div>
 
-        {/* Self-Scheduling Section */}
         <div className="relative z-10 mt-20 max-w-5xl w-full self-schedule-section">
           <span className="self-schedule-badge">You don’t pay until the job’s done</span>
           <h2 className="self-schedule-title">Self-Scheduling</h2>
@@ -114,7 +111,6 @@ function LandingPage() {
           </button>
         </div>
 
-        {/* How It Works Floating Cards */}
         <div className="relative z-10 mt-20 max-w-6xl w-full">
           <h2 className="text-3xl text-gold font-bold mb-6 text-center">How It Works</h2>
           <div className="how-it-works-carousel">
@@ -148,7 +144,6 @@ function LandingPage() {
           </div>
         </div>
 
-        {/* About Us Section with Scroll-Triggered Flip Animation */}
         <div className="relative z-10 mt-20 max-w-6xl w-full space-y-20">
           <section
             ref={aboutRef}
@@ -198,8 +193,7 @@ function LandingPage() {
         </div>
       </div>
 
-      {/* Footer Section */}
-      <footer className="bg-black text-gray-400 py-8 px-4 mt-20 text-center border-t border-gold">
+      <footer className="bg-black text-gray-400 py-8 px-4 text-center border-t border-gold">
         <div className="text-sm space-y-3">
           <Link
             to="/blog"
