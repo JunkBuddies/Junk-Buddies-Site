@@ -112,12 +112,12 @@ className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded
     <div className="relative z-10 mt-20 max-w-6xl w-full mx-auto space-y-20">
       <section
   ref={aboutRef}
-  className={`about-reveal silver ${aboutInView ? 'in-view' : ''}`}
+  className={`about-reveal silver text-center ${aboutInView ? 'in-view' : ''}`}
 >
         <h2
-          ref={aboutTitleRef}
-          className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2"
-        >
+  ref={aboutTitleRef}
+  className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2 inline-block mx-auto"
+>
           About Us
         </h2>
         <p ref={aboutParagraphRef} className="text-lg leading-relaxed">
