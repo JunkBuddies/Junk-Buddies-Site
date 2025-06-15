@@ -267,7 +267,7 @@ function LandingPage() {
       </div>
     </div>
   </section>
-
+</div>
 </div>
       </div>
 
