@@ -235,7 +235,6 @@ function LandingPage() {
 
   {/* === TESTIMONIALS === */}
 <section className="w-full mt-20">
-<section className="w-full mt-20">
   <h2 className="text-3xl text-gold font-bold mb-6 text-center">Testimonials</h2>
 
   {/* ROW 1 */}
@@ -280,6 +279,7 @@ function LandingPage() {
 </section>
 </div>
 </div>
+ 
       </div>
 
       <footer className="bg-black text-gray-400 py-8 px-4 text-center border-t border-gold">
