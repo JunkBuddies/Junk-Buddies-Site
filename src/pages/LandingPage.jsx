@@ -212,65 +212,63 @@ function LandingPage() {
             </p>
           </section>
 
-          {/* --- Our Work in Action --- */}
-<section className="mt-20">
-  <h2 className="text-3xl text-gold font-bold mb-6 text-center">Our Work in Action</h2>
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-    <img src="/images/couch-carrying.png" alt="Team carrying a couch" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
-    <img src="/images/team-sunset.png" alt="Junk Buddies team at sunset" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
-    <img src="/images/truck-fleet.png" alt="Fleet of Junk Buddies trucks" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
-    <img src="/images/demolition-crew.png" alt="Junk Buddies team at a demolition site" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
-  </div>
-</section>
+          {/* === Our Work in Action & Testimonials WRAPPED IN A SINGLE BACKGROUND === */}
+<div className="relative z-10 w-full bg-gray-900 py-20 px-4">
 
-          <div className="mt-10 flex justify-center">
-            <button
-              onClick={() => navigate('/selection')}
-              className="cta-metallic-button"
-            >
-              Select Items in Seconds
-            </button>
-          </div>
-
-          {/* --- Testimonials Infinite Silver Carousel --- */}
-<section className="mt-24 overflow-hidden relative w-full bg-[#0b0b0b] py-12">
-  <h2 className="text-3xl text-gold font-bold mb-10 text-center">Testimonials</h2>
-
-  {/* ROW 1 */}
-  <div className="marquee-row">
-    <div className="marquee-content marquee-rtl">
-      {[
-        "⭐️⭐️⭐️⭐️⭐️ Needed a quick garage cleanout, Junk Buddies were in and out same day. — Lauren S.",
-        "⭐️⭐️⭐️⭐️⭐️ So easy to book and upfront about pricing, will use again! — Mike D.",
-        "⭐️⭐️⭐️⭐️⭐️ Fast, polite, and left the area spotless. Highly recommend. — Emily W.",
-        "⭐️⭐️⭐️⭐️⭐️ Transparent and affordable, no hidden fees! — Chris T.",
-        "⭐️⭐️⭐️⭐️⭐️ Best junk removal experience, great crew! — Ashley R.",
-      ].map((review, idx) => (
-        <div key={idx} className="silver-badge">
-          {review}
-        </div>
-      ))}
+  {/* Our Work in Action */}
+  <section className="max-w-6xl w-full mx-auto">
+    <h2 className="text-3xl text-gold font-bold mb-6 text-center">Our Work in Action</h2>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <img src="/images/couch-carrying.png" alt="Team carrying a couch" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
+      <img src="/images/team-sunset.png" alt="Team at sunset" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
+      <img src="/images/truck-fleet.png" alt="Truck fleet" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
+      <img src="/images/demolition-crew.png" alt="Demolition crew" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
     </div>
+  </section>
+
+  {/* CTA Below Work In Action */}
+  <div className="mt-10 flex justify-center">
+    <button onClick={() => navigate('/selection')} className="cta-metallic-button">
+      Select Items in Seconds
+    </button>
   </div>
 
-  {/* ROW 2 */}
-  <div className="marquee-row mt-6">
-    <div className="marquee-content marquee-rtl delay">
-      {[
-        "⭐️⭐️⭐️⭐️⭐️ They cleared old furniture quickly & very fair price! — Daniel M.",
-        "⭐️⭐️⭐️⭐️⭐️ Excellent team, on time, and super friendly. — Maria G.",
-        "⭐️⭐️⭐️⭐️⭐️ Booking online was smooth, instant quote was accurate. — Peter H.",
-        "⭐️⭐️⭐️⭐️⭐️ 5 stars, they even swept up after. — Tiffany L.",
-        "⭐️⭐️⭐️⭐️⭐️ Quick response, easy to work with. — Kevin B.",
-      ].map((review, idx) => (
-        <div key={idx} className="silver-badge">
-          {review}
+  {/* Testimonials */}
+  <section className="w-full mt-20">
+    <h2 className="text-3xl text-gold font-bold mb-6 text-center">Testimonials</h2>
+    <div className="relative w-full overflow-hidden">
+      <div className="flex space-x-6 animate-marquee-rightToLeft">
+        {/* === REAL REVIEWS (replace with yours) === */}
+        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
+          ⭐⭐⭐⭐⭐ Needed a quick garage clean out, Junk Buddies handled it fast and affordable.
         </div>
-      ))}
+        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
+          ⭐⭐⭐⭐⭐ Excellent team, on time, and super friendly crew.
+        </div>
+        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
+          ⭐⭐⭐⭐⭐ Booking was easy, price upfront, no surprises!
+        </div>
+        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
+          ⭐⭐⭐⭐⭐ Cleaned my backyard shed out same day — lifesaver!
+        </div>
+        {/* Duplicate for smooth loop */}
+        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
+          ⭐⭐⭐⭐⭐ Needed a quick garage clean out, Junk Buddies handled it fast and affordable.
+        </div>
+        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
+          ⭐⭐⭐⭐⭐ Excellent team, on time, and super friendly crew.
+        </div>
+        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
+          ⭐⭐⭐⭐⭐ Booking was easy, price upfront, no surprises!
+        </div>
+        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
+          ⭐⭐⭐⭐⭐ Cleaned my backyard shed out same day — lifesaver!
+        </div>
+      </div>
     </div>
-  </div>
-</section>
-        </div>
+  </section>
+
+</div>
       </div>
 
       <footer className="bg-black text-gray-400 py-8 px-4 text-center border-t border-gold">
