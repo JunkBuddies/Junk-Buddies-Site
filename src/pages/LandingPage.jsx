@@ -97,24 +97,24 @@ function LandingPage() {
 
         {/* CTA BUTTONS */}
         <div className="relative z-10 mt-8 flex flex-col items-center space-y-4">
-          <div className="flex flex-wrap justify-center gap-4">
-            <button
-              onClick={() => navigate('/selection')}
-              className="cta-metallic-button"
-            >
-              Get Started
-            </button>
-            <button
-              onClick={() => navigate('/selection')}
-              className="bg-white text-black font-bold py-3 px-8 rounded-xl hover:bg-gray-200 transition shadow-lg hover:scale-105"
-            >
-              View Pricing
-            </button>
-          </div>
-          <a href="tel:3465936080" className="cta-metallic-button inline-block">
-            Same-Day Pickup
-          </a>
-        </div>
+  <div className="flex flex-wrap justify-center gap-4">
+    <button
+      onClick={() => navigate('/selection')}
+      className="cta-metallic-button"
+    >
+      Get Started
+    </button>
+    <button
+      onClick={() => navigate('/itemized')}
+      className="silver-button"
+    >
+      Instant Pricing
+    </button>
+  </div>
+  <a href="tel:3465936080" className="cta-metallic-button inline-block">
+    Same-Day Pickup
+  </a>
+</div>
       </div>
 
       {/* REQUIRE SERVICE TODAY BAR */}
