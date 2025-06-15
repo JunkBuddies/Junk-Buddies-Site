@@ -212,31 +212,16 @@ function LandingPage() {
             </p>
           </section>
 
-          <section className="bg-gray-800/60 rounded-xl p-6 shadow-lg">
-            <h2 className="text-3xl text-gold font-bold mb-4 border-b border-gold pb-2">
-              Testimonials
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white text-black p-6 rounded-xl shadow-lg border-l-4 border-gold relative">
-                <p className="italic text-lg">
-                  “They were quick, friendly, and cleaned everything perfectly.
-                  Highly recommend!”
-                </p>
-                <span className="block mt-4 font-semibold text-right">
-                  - Alex R.
-                </span>
-              </div>
-              <div className="bg-white text-black p-6 rounded-xl shadow-lg border-l-4 border-gold relative">
-                <p className="italic text-lg">
-                  “Excellent service and easy scheduling. They really came
-                  through for us.”
-                </p>
-                <span className="block mt-4 font-semibold text-right">
-                  - Jamie L.
-                </span>
-              </div>
-            </div>
-          </section>
+          {/* --- Our Work in Action --- */}
+<section className="mt-20">
+  <h2 className="text-3xl text-gold font-bold mb-6 text-center">Our Work in Action</h2>
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <img src="/images/couch-carrying.png" alt="Team carrying a couch" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
+    <img src="/images/team-sunset.png" alt="Junk Buddies team at sunset" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
+    <img src="/images/truck-fleet.png" alt="Fleet of Junk Buddies trucks" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
+    <img src="/images/demolition-crew.png" alt="Junk Buddies team at a demolition site" className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform" />
+  </div>
+</section>
 
           <div className="mt-10 flex justify-center">
             <button
@@ -247,33 +232,44 @@ function LandingPage() {
             </button>
           </div>
 
-          <section>
-            <h2 className="text-3xl text-gold font-bold mb-6 text-center">
-              Our Work in Action
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <img
-                src="/images/couch-carrying.png"
-                alt="Team carrying a couch"
-                className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
-              />
-              <img
-                src="/images/team-sunset.png"
-                alt="Junk Buddies team at sunset"
-                className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
-              />
-              <img
-                src="/images/truck-fleet.png"
-                alt="Fleet of Junk Buddies trucks"
-                className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
-              />
-              <img
-                src="/images/demolition-crew.png"
-                alt="Junk Buddies team at a demolition site"
-                className="rounded-full w-full h-36 object-cover border-4 border-gold hover:scale-105 transition-transform"
-              />
-            </div>
-          </section>
+          {/* --- Testimonials Infinite Silver Carousel --- */}
+<section className="mt-24 overflow-hidden relative w-full bg-[#0b0b0b] py-12">
+  <h2 className="text-3xl text-gold font-bold mb-10 text-center">Testimonials</h2>
+
+  {/* ROW 1 */}
+  <div className="marquee-row">
+    <div className="marquee-content marquee-rtl">
+      {[
+        "⭐️⭐️⭐️⭐️⭐️ Needed a quick garage cleanout, Junk Buddies were in and out same day. — Lauren S.",
+        "⭐️⭐️⭐️⭐️⭐️ So easy to book and upfront about pricing, will use again! — Mike D.",
+        "⭐️⭐️⭐️⭐️⭐️ Fast, polite, and left the area spotless. Highly recommend. — Emily W.",
+        "⭐️⭐️⭐️⭐️⭐️ Transparent and affordable, no hidden fees! — Chris T.",
+        "⭐️⭐️⭐️⭐️⭐️ Best junk removal experience, great crew! — Ashley R.",
+      ].map((review, idx) => (
+        <div key={idx} className="silver-badge">
+          {review}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* ROW 2 */}
+  <div className="marquee-row mt-6">
+    <div className="marquee-content marquee-rtl delay">
+      {[
+        "⭐️⭐️⭐️⭐️⭐️ They cleared old furniture quickly & very fair price! — Daniel M.",
+        "⭐️⭐️⭐️⭐️⭐️ Excellent team, on time, and super friendly. — Maria G.",
+        "⭐️⭐️⭐️⭐️⭐️ Booking online was smooth, instant quote was accurate. — Peter H.",
+        "⭐️⭐️⭐️⭐️⭐️ 5 stars, they even swept up after. — Tiffany L.",
+        "⭐️⭐️⭐️⭐️⭐️ Quick response, easy to work with. — Kevin B.",
+      ].map((review, idx) => (
+        <div key={idx} className="silver-badge">
+          {review}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
         </div>
       </div>
 
