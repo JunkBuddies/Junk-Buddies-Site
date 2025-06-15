@@ -235,24 +235,46 @@ function LandingPage() {
 
   {/* === TESTIMONIALS === */}
 <section className="w-full mt-20">
+<section className="w-full mt-20">
   <h2 className="text-3xl text-gold font-bold mb-6 text-center">Testimonials</h2>
+
+  {/* ROW 1 */}
   <div className="marquee-row">
     <div className="marquee-content marquee-rtl">
-      {/* Real Reviews - Duplicate set for loop */}
-      <div className="silver-badge">⭐⭐⭐⭐⭐ Needed a quick garage clean out, Junk Buddies handled it fast and affordable.</div>
-      <div className="silver-badge">⭐⭐⭐⭐⭐ Excellent team, on time, and super friendly crew.</div>
-      <div className="silver-badge">⭐⭐⭐⭐⭐ Booking was easy, price upfront, no surprises!</div>
-      <div className="silver-badge">⭐⭐⭐⭐⭐ Cleaned my backyard shed out same day — lifesaver!</div>
-      <div className="silver-badge">⭐⭐⭐⭐⭐ Helped me clear out my storage unit fast — highly recommend.</div>
-      <div className="silver-badge">⭐⭐⭐⭐⭐ Fair price, hardworking crew, left everything spotless.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Needed a quick garage clean out — fast and affordable.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Excellent team, on time, super friendly crew.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Booking was easy, upfront price, no surprises!</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Backyard shed cleaned same day — lifesaver!</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Cleared out my storage unit quick — highly recommend.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Fair price, hardworking crew, left spotless.</div>
 
-      {/* Duplicate for seamless looping */}
-      <div className="silver-badge">⭐⭐⭐⭐⭐ Needed a quick garage clean out, Junk Buddies handled it fast and affordable.</div>
-      <div className="silver-badge">⭐⭐⭐⭐⭐ Excellent team, on time, and super friendly crew.</div>
-      <div className="silver-badge">⭐⭐⭐⭐⭐ Booking was easy, price upfront, no surprises!</div>
-      <div className="silver-badge">⭐⭐⭐⭐⭐ Cleaned my backyard shed out same day — lifesaver!</div>
-      <div className="silver-badge">⭐⭐⭐⭐⭐ Helped me clear out my storage unit fast — highly recommend.</div>
-      <div className="silver-badge">⭐⭐⭐⭐⭐ Fair price, hardworking crew, left everything spotless.</div>
+      {/* Duplicate for loop */}
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Needed a quick garage clean out — fast and affordable.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Excellent team, on time, super friendly crew.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Booking was easy, upfront price, no surprises!</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Backyard shed cleaned same day — lifesaver!</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Cleared out my storage unit quick — highly recommend.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Fair price, hardworking crew, left spotless.</div>
+    </div>
+  </div>
+
+  {/* ROW 2 - staggered */}
+  <div className="marquee-row mt-6">
+    <div className="marquee-content marquee-rtl delay">
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Fast booking, showed up on time, awesome service.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ They removed my old furniture in no time.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Price was better than the big guys — will use again!</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Easy online quote, no hidden fees, great crew.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Same-day pickup — these guys hustle!</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Highly recommend Junk Buddies to everyone I know.</div>
+
+      {/* Duplicate for loop */}
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Fast booking, showed up on time, awesome service.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ They removed my old furniture in no time.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Price was better than the big guys — will use again!</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Easy online quote, no hidden fees, great crew.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Same-day pickup — these guys hustle!</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Highly recommend Junk Buddies to everyone I know.</div>
     </div>
   </div>
 </section>
