@@ -128,28 +128,24 @@ function LandingPage() {
       </div>
 
       <div className="relative z-10 bg-gray-900 px-6 pt-16 pb-0">
-        <div className="max-w-5xl w-full mx-auto self-schedule-section">
-          <span className="self-schedule-badge">
-            You don’t pay until the job’s done
-          </span>
-          <h2 className="self-schedule-title">Self-Scheduling</h2>
-          <h3 className="text-xl text-white font-semibold mb-2">
-            For Guaranteed Instant Pricing
-          </h3>
-          <p className="self-schedule-text mt-2">
-            Why wait for quotes or callbacks? Our self-scheduling tool gives you
-            instant access to upfront pricing — 30% lower than big-brand junk
-            haulers. Pick your items, book your time, and relax. We show up,
-            clean up, and <strong>you only pay when the job is done</strong>.
-          </p>
-          <button
-            onClick={() => navigate('/selection')}
-            className="cta-metallic-button mt-4"
-          >
-            Book Instantly
-          </button>
-        </div>
-
+        <div className="max-w-5xl w-full mx-auto self-schedule-section text-center">
+  <span className="self-schedule-badge">
+    You don’t pay until the job’s done
+  </span>
+  <h2 className="self-schedule-title">Self-Scheduling</h2>
+  <h3 className="text-xl text-white font-semibold mb-2">
+    For Guaranteed Instant Pricing
+  </h3>
+  <p className="self-schedule-text mt-2">
+    Why wait for quotes or callbacks? Our self-scheduling tool gives you instant access to upfront pricing — 30% lower than big-brand junk haulers. Pick your items, book your time, and relax. We show up, clean up, and <strong>you only pay when the job is done</strong>.
+  </p>
+  <button
+    onClick={() => navigate('/selection')}
+    className="cta-metallic-button mt-4 inline-block"
+  >
+    Book Instantly
+  </button>
+</div>
         <div className="relative z-10 mt-20 max-w-6xl w-full mx-auto">
           <h2 className="text-3xl text-gold font-bold mb-6 text-center">
             How It Works
