@@ -233,40 +233,29 @@ function LandingPage() {
     </button>
   </div>
 
-  {/* Testimonials */}
-  <section className="w-full mt-20">
-    <h2 className="text-3xl text-gold font-bold mb-6 text-center">Testimonials</h2>
-    <div className="relative w-full overflow-hidden">
-      <div className="flex space-x-6 animate-marquee-rightToLeft">
-        {/* === REAL REVIEWS (replace with yours) === */}
-        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
-          ⭐⭐⭐⭐⭐ Needed a quick garage clean out, Junk Buddies handled it fast and affordable.
-        </div>
-        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
-          ⭐⭐⭐⭐⭐ Excellent team, on time, and super friendly crew.
-        </div>
-        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
-          ⭐⭐⭐⭐⭐ Booking was easy, price upfront, no surprises!
-        </div>
-        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
-          ⭐⭐⭐⭐⭐ Cleaned my backyard shed out same day — lifesaver!
-        </div>
-        {/* Duplicate for smooth loop */}
-        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
-          ⭐⭐⭐⭐⭐ Needed a quick garage clean out, Junk Buddies handled it fast and affordable.
-        </div>
-        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
-          ⭐⭐⭐⭐⭐ Excellent team, on time, and super friendly crew.
-        </div>
-        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
-          ⭐⭐⭐⭐⭐ Booking was easy, price upfront, no surprises!
-        </div>
-        <div className="min-w-max bg-gradient-to-br from-gray-200 to-gray-100 border border-gray-400 rounded-xl px-6 py-4 shadow-lg metallic-card">
-          ⭐⭐⭐⭐⭐ Cleaned my backyard shed out same day — lifesaver!
-        </div>
-      </div>
+  {/* === TESTIMONIALS === */}
+<section className="w-full mt-20">
+  <h2 className="text-3xl text-gold font-bold mb-6 text-center">Testimonials</h2>
+  <div className="marquee-row">
+    <div className="marquee-content marquee-rtl">
+      {/* Real Reviews - Duplicate set for loop */}
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Needed a quick garage clean out, Junk Buddies handled it fast and affordable.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Excellent team, on time, and super friendly crew.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Booking was easy, price upfront, no surprises!</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Cleaned my backyard shed out same day — lifesaver!</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Helped me clear out my storage unit fast — highly recommend.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Fair price, hardworking crew, left everything spotless.</div>
+
+      {/* Duplicate for seamless looping */}
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Needed a quick garage clean out, Junk Buddies handled it fast and affordable.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Excellent team, on time, and super friendly crew.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Booking was easy, price upfront, no surprises!</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Cleaned my backyard shed out same day — lifesaver!</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Helped me clear out my storage unit fast — highly recommend.</div>
+      <div className="silver-badge">⭐⭐⭐⭐⭐ Fair price, hardworking crew, left everything spotless.</div>
     </div>
-  </section>
+  </div>
+</section>
 </div>
 </div>
       </div>
