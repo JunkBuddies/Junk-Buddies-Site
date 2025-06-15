@@ -520,7 +520,7 @@ body {
   border: 2px solid #aaa;
   box-shadow: 0 0 12px #ccc, 0 0 32px rgba(200, 200, 200, 0.4);
 }
-/* === Marquee keyframes RIGHT TO LEFT === */
+/* Marquee Right to Left keyframe */
 @keyframes marqueeRTL {
   0% { transform: translateX(0%); }
   100% { transform: translateX(-50%); }
@@ -529,10 +529,12 @@ body {
 .marquee-row {
   overflow: hidden;
   white-space: nowrap;
+  width: 100%;
 }
 
 .marquee-content {
   display: inline-flex;
+  gap: 2rem; /* better than margin-right for fluid gaps */
 }
 
 .marquee-rtl {
@@ -540,13 +542,13 @@ body {
 }
 
 .marquee-rtl.delay {
-  animation-delay: 20s; /* stagger second row for wave effect */
+  animation-delay: 20s; /* stagger for wave effect */
 }
 
-/* === Silver Badge with Metallic Shine === */
+/* Silver Badge fully responsive */
 .silver-badge {
   display: inline-block;
-  margin-right: 2rem;
+  flex-shrink: 0;
   background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 40%, #999999 60%, #e0e0e0 100%);
   background-size: 300% 300%;
   border: 2px solid #777;
@@ -558,8 +560,10 @@ body {
   padding: 1rem 1.5rem;
   color: #000;
   font-weight: 500;
-  min-width: 250px;
+  min-width: 200px;
   max-width: 300px;
+  white-space: normal; /* wrap text! */
+  word-break: break-word; /* break long words */
   transition: transform 0.3s;
 }
 
