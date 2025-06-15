@@ -100,7 +100,7 @@ function LandingPage() {
           <div className="flex flex-wrap justify-center gap-4">
             <button
               onClick={() => navigate('/selection')}
-              className="button-glow"
+              className="cta-metallic-button"
             >
               Get Started
             </button>
@@ -117,17 +117,16 @@ function LandingPage() {
         </div>
       </div>
 
-      {/* CALL BAR BELOW BACKGROUND */}
-      <div className="w-full text-center text-lg text-white py-6 bg-black/50">
-        Require service today? Call us directly for immediate scheduling — your Same-Day Pickup is just a call away.
-        <div className="mt-4">
-          <a href="tel:3465936080" className="cta-metallic-button inline-block">
-            Call Now
-          </a>
-        </div>
+      {/* REQUIRE SERVICE TODAY BAR */}
+      <div className="w-full text-center text-lg text-white py-10 px-6 about-reveal silver">
+        <p className="text-xl mb-4">
+          Require service today? Call us directly for immediate scheduling — your Same-Day Pickup is just a call away.
+        </p>
+        <a href="tel:3465936080" className="cta-metallic-button inline-block">
+          Call Now
+        </a>
       </div>
 
-      {/* REST OF PAGE */}
       <div className="relative z-10 bg-gray-900 px-6 pt-16 pb-0">
         <div className="max-w-5xl w-full mx-auto self-schedule-section">
           <span className="self-schedule-badge">
@@ -138,8 +137,10 @@ function LandingPage() {
             For Guaranteed Instant Pricing
           </h3>
           <p className="self-schedule-text mt-2">
-            Why wait for quotes or callbacks? Our self-scheduling tool gives you instant access to upfront pricing — 30% lower than big-brand junk haulers. Pick your items, book your time, and relax. We show up, clean up, and{' '}
-            <strong>you only pay when the job is done</strong>.
+            Why wait for quotes or callbacks? Our self-scheduling tool gives you
+            instant access to upfront pricing — 30% lower than big-brand junk
+            haulers. Pick your items, book your time, and relax. We show up,
+            clean up, and <strong>you only pay when the job is done</strong>.
           </p>
           <button
             onClick={() => navigate('/selection')}
@@ -205,9 +206,13 @@ function LandingPage() {
               About Us
             </h2>
             <p ref={aboutParagraphRef} className="text-lg leading-relaxed">
-              <strong>Built in Houston. Driven by Hustle. Trusted by Thousands.</strong>
-              <br /><br />
-              At Junk Buddies, we do more than haul junk—we make room for progress. Born and built in Houston, our crew combines precision, speed, and respect for your space to deliver next-level cleanouts. Whether it’s a single item or a full property refresh, we show up with hustle, heart, and zero excuses. Your space, your schedule, our muscle.
+              <strong>Built in Houston. Driven by Hustle. Trusted by Thousands.</strong><br /><br />
+              At Junk Buddies, we do more than haul junk—we make room for
+              progress. Born and built in Houston, our crew combines precision,
+              speed, and respect for your space to deliver next-level cleanouts.
+              Whether it’s a single item or a full property refresh, we show up
+              with hustle, heart, and zero excuses. Your space, your schedule,
+              our muscle.
             </p>
           </section>
 
@@ -218,15 +223,21 @@ function LandingPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white text-black p-6 rounded-xl shadow-lg border-l-4 border-gold relative">
                 <p className="italic text-lg">
-                  “They were quick, friendly, and cleaned everything perfectly. Highly recommend!”
+                  “They were quick, friendly, and cleaned everything perfectly.
+                  Highly recommend!”
                 </p>
-                <span className="block mt-4 font-semibold text-right">- Alex R.</span>
+                <span className="block mt-4 font-semibold text-right">
+                  - Alex R.
+                </span>
               </div>
               <div className="bg-white text-black p-6 rounded-xl shadow-lg border-l-4 border-gold relative">
                 <p className="italic text-lg">
-                  “Excellent service and easy scheduling. They really came through for us.”
+                  “Excellent service and easy scheduling. They really came
+                  through for us.”
                 </p>
-                <span className="block mt-4 font-semibold text-right">- Jamie L.</span>
+                <span className="block mt-4 font-semibold text-right">
+                  - Jamie L.
+                </span>
               </div>
             </div>
           </section>
@@ -272,7 +283,10 @@ function LandingPage() {
 
       <footer className="bg-black text-gray-400 py-8 px-4 text-center border-t border-gold">
         <div className="text-sm space-y-3">
-          <Link to="/blog" className="text-gold font-semibold hover:underline block">
+          <Link
+            to="/blog"
+            className="text-gold font-semibold hover:underline block"
+          >
             📝 Read Our Blog — Junk Removal Tips, Pricing & More
           </Link>
           <a href="/faq" className="text-gold hover:underline block">
