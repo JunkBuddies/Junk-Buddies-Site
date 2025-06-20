@@ -21,39 +21,51 @@ setFormData(updated);
 
 };
 
-const handleSubmit = (e) => { e.preventDefault();
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-const orderNumber = `JB-${Date.now().toString().slice(-6)}`;
-const year = new Date().getFullYear();
-const formattedDate = new Date(formData.date).toLocaleDateString('en-US');
+  // Clean plain text list for your work order
+  const itemsTextList = cart
+    .map((item) => `${item.name}: $${item.price.toFixed(2)}`)
+    .join('\n');
 
-const itemsListHtml = cart.length
-  ? `<ul>${cart.map(item => `<li><strong>${item.name}</strong>: $${item.price.toFixed(2)}</li>`).join('')}</ul>`
-  : 'No items selected.';
+  // HTML bullet list for customer confirmation (clean, no double $)
+  const itemsHtmlList = cart
+    .map((item) => `<li>${item.name}: ${item.price.toFixed(2)}</li>`)
+    .join('');
 
-const itemsListPlain = cart.length
-  ? cart.map(item => `• ${item.name}: $${item.price.toFixed(2)}`).join('\n')
-  : 'No items selected.';
+  const templateParams = {
+    ...formData,
+    // For customer confirmation — clean HTML list, no extra $
+    itemsHtml: `<ul>${itemsHtmlList}</ul>`,
+    // For your work order — plain text list
+    itemsText: itemsTextList,
+    // Use customer’s real email for your copy
+    customerEmail: formData.email,
+    // Clean total, single $
+    total: `$${finalPrice.toFixed(2)}`
+  };
 
-const templateParams = {
-  ...formData,
-  date: formattedDate,
-  orderNumber,
-  year,
-  items: itemsListHtml,
-  itemsPlain: itemsListPlain,
-  total: finalPrice.toFixed(2)
-};
-
-emailjs.send('JunkBuddies.info', 'Junk_Buddies_Booking', templateParams, 'QCl4Akw_LZ3T8IvUd')
-  .then(() => navigate('/confirmation'))
-  .catch(error => alert('Email error: ' + error.text));
-
-emailjs.send('JunkBuddies.info', 'template_57eij3s', {
-  ...templateParams,
-  email: 'JunkBuddies.info@gmail.com'
-}, 'QCl4Akw_LZ3T8IvUd');
-
+  // Send to CUSTOMER
+  emailjs
+    .send('JunkBuddies.info', 'Junk_Buddies_Booking', templateParams, 'QCl4Akw_LZ3T8IvUd')
+    .then(() => {
+      // Send to YOU — uses itemsText & customerEmail
+      return emailjs.send(
+        'JunkBuddies.info',
+        'template_57eij3s',
+        {
+          ...templateParams,
+          items: templateParams.itemsText, // plain text version
+          email: templateParams.customerEmail // real customer email
+        },
+        'QCl4Akw_LZ3T8IvUd'
+      );
+    })
+    .then(() => {
+      navigate('/confirmation');
+    })
+    .catch((error) => alert('Email error: ' + error.text));
 };
 
 return ( <div className="bg-black text-white min-h-screen p-6"> <h1 className="text-3xl text-gold font-bold mb-6 text-center">Book Junk Pickup - Pay nothing now</h1>
