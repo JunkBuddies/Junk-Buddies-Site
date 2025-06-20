@@ -26,25 +26,20 @@ const handleSubmit = (e) => {
 
   // Clean plain text list for your work order
   const itemsTextList = cart
-    .map((item) => `${item.name}: $${item.price.toFixed(2)}`)
-    .join('\n');
+  .map((item) => `${item.name}: $${item.price.toFixed(2)}`)
+  .join('\n');
 
-  // HTML bullet list for customer confirmation (clean, no double $)
-  const itemsHtmlList = cart
-    .map((item) => `<li>${item.name}: ${item.price.toFixed(2)}</li>`)
-    .join('');
+const itemsHtmlList = `<ul>${cart
+  .map((item) => `<li><strong>${item.name}</strong>: $${item.price.toFixed(2)}</li>`)
+  .join('')}</ul>`;
 
-  const templateParams = {
-    ...formData,
-    // For customer confirmation — clean HTML list, no extra $
-    itemsHtml: `<ul>${itemsHtmlList}</ul>`,
-    // For your work order — plain text list
-    itemsText: itemsTextList,
-    // Use customer’s real email for your copy
-    customerEmail: formData.email,
-    // Clean total, single $
-    total: `$${finalPrice.toFixed(2)}`
-  };
+const templateParams = {
+  ...formData,
+  itemsHtml: itemsHtmlList,   // For customer email (nicely formatted)
+  itemsText: itemsTextList,   // For your admin copy (plain text)
+  customerEmail: formData.email,
+  total: `$${finalPrice.toFixed(2)}`
+};
 
   // Send to CUSTOMER
   emailjs
