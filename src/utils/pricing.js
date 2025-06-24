@@ -11,53 +11,56 @@ export function calculatePrice(cart) {
   const totalItemPrice = cart.reduce((sum, item) => sum + item.price, 0);
   const highestItemPrice = cart.reduce((max, item) => Math.max(max, item.price), 0);
 
-  // Single high-value item exception
+  // ✅ Single high-value item exception
   if (cart.length === 1 && highestItemPrice > quarterLoadPrice) {
     return { finalPrice: highestItemPrice, totalVolume };
   }
 
-  if (totalVolume === 0) {
-    return { finalPrice: 0, totalVolume };
-  }
-
+  // ✅ Under 1/4 load logic
   if (totalVolume < quarterLoadThreshold) {
     const volumePrice = totalVolume * pricePerPoint;
-
-    if (volumePrice > quarterLoadPrice) {
-      return { finalPrice: volumePrice, totalVolume };
-    }
-
-    return {
-      finalPrice: Math.min(
-        Math.max(minimumPrice, totalItemPrice),
-        quarterLoadPrice
-      ),
-      totalVolume
-    };
-  }
-
-  // Volume-based pricing with rounding-down discount if within 10 pts
-  const fullLoads = Math.floor(totalVolume / fullLoadPoints);
-  const remainder = totalVolume % fullLoadPoints;
-  let remainderCost = remainder * pricePerPoint;
-
-  const tiers = [
-    { label: '1/4', point: quarterLoadThreshold, price: 250 },
-    { label: '1/2', point: fullLoadPoints * 0.5, price: 500 },
-    { label: '3/4', point: fullLoadPoints * 0.75, price: 750 },
-    { label: 'Full', point: fullLoadPoints, price: 1000 }
-  ];
-
-  for (const tier of tiers) {
-    const tierAbsolute = fullLoads * fullLoadPoints + tier.point;
-    if (totalVolume > tier.point && totalVolume <= tierAbsolute + 10) {
+    if (totalItemPrice < quarterLoadPrice) {
       return {
-        finalPrice: fullLoads * 1000 + tier.price,
+        finalPrice: Math.max(minimumPrice, totalItemPrice),
+        totalVolume
+      };
+    } else {
+      return {
+        finalPrice: volumePrice,
         totalVolume
       };
     }
   }
 
+  // ✅ Updated: tier rounding for FIRST truck ONLY
+  const fullLoads = Math.floor(totalVolume / fullLoadPoints);
+  const remainder = totalVolume % fullLoadPoints;
+  let remainderCost = remainder * pricePerPoint;
+
+  if (fullLoads === 0) {
+    const tiers = [
+      { label: '1/4', point: quarterLoadThreshold, price: 250 },
+      { label: '1/2', point: fullLoadPoints * 0.5, price: 500 },
+      { label: '3/4', point: fullLoadPoints * 0.75, price: 750 },
+      { label: 'Full', point: fullLoadPoints, price: 1000 }
+    ];
+
+    for (const tier of tiers) {
+      if (totalVolume > tier.point && totalVolume <= tier.point + 10) {
+        return {
+          finalPrice: tier.price,
+          totalVolume
+        };
+      }
+    }
+
+    return {
+      finalPrice: remainderCost,
+      totalVolume
+    };
+  }
+
+  // ✅ Trucks 2+ => no tier snap: just cubic price
   return {
     finalPrice: fullLoads * 1000 + remainderCost,
     totalVolume
