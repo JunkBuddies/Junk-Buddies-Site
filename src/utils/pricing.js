@@ -1,17 +1,14 @@
-// File: src/utils/pricing.js
-
-export const fullLoadPoints = 550;
-export const pricePerPoint = 1.82;
-export const minimumPrice = 100;
-export const quarterLoadThreshold = fullLoadPoints * 0.25; // 137.5
-export const quarterLoadPrice = 250;
-
 export function calculatePrice(cart) {
   const totalVolume = cart.reduce((sum, item) => sum + item.volume, 0);
   const totalItemPrice = cart.reduce((sum, item) => sum + item.price, 0);
   const highestItemPrice = cart.reduce((max, item) => Math.max(max, item.price), 0);
 
   const volumePrice = totalVolume * pricePerPoint;
+
+  // ✅ NEW: If cart is empty, total must be zero
+  if (totalVolume === 0) {
+    return { finalPrice: 0, totalVolume };
+  }
 
   // ✅ 1) Single high-value item rule
   if (cart.length === 1 && highestItemPrice > quarterLoadPrice) {
@@ -40,7 +37,6 @@ export function calculatePrice(cart) {
   const remainder = totalVolume % fullLoadPoints;
   const remainderCost = remainder * pricePerPoint;
 
-  // Only first truck gets tier rounding
   if (fullLoads === 0) {
     const tiers = [
       { point: quarterLoadThreshold, price: 250 },
@@ -58,20 +54,8 @@ export function calculatePrice(cart) {
     }
   }
 
-  // ✅ Multiple trucks: pure cubic price, no tier rounding
   return {
     finalPrice: fullLoads * 1000 + remainderCost,
     totalVolume
   };
-}
-
-export function getLoadLabel(volume) {
-  if (volume === 0) return 'Empty';
-  const loadNum = Math.floor(volume / fullLoadPoints) + 1;
-  const segment = volume % fullLoadPoints;
-  if (segment === 0) return `Load ${loadNum}`;
-  if (segment <= fullLoadPoints * 0.25) return `Load ${loadNum} - 1/4`;
-  if (segment <= fullLoadPoints * 0.5) return `Load ${loadNum} - 1/2`;
-  if (segment <= fullLoadPoints * 0.75) return `Load ${loadNum} - 3/4`;
-  return `Load ${loadNum} - Full`;
 }
