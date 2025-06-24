@@ -60,48 +60,55 @@ function SchedulePage() {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    // Order Number and Year for both emails
-    const orderNumber = `JB-${Math.floor(100000 + Math.random() * 900000)}`;
-    const year = new Date().getFullYear();
+  // ✅ 1) Generate random order number
+  const orderNumber = `JB-${Math.floor(100000 + Math.random() * 900000)}`;
 
-    const itemsTextList = cart
-      .map((item) => `${item.name}: $${item.price.toFixed(2)}`)
-      .join('\n');
+  // ✅ 2) Make items list for plain text (for admin)
+  const itemsTextList = cart
+    .map((item) => `${item.name}: $${item.price.toFixed(2)}`)
+    .join('\n');
 
-    const itemsHtmlList = `<ul>${cart
-      .map((item) => `<li><strong>${item.name}</strong>: $${item.price.toFixed(2)}</li>`)
-      .join('')}</ul>`;
+  // ✅ 3) Make items list for HTML (for customer)
+  const itemsHtmlList = `<ul>${cart
+    .map((item) => `<li><strong>${item.name}</strong>: $${item.price.toFixed(2)}</li>`)
+    .join('')}</ul>`;
 
-    const templateParams = {
-      ...formData,
-      items: itemsHtmlList,      // for CUSTOMER — uses {{items}}
-      itemsText: itemsTextList,  // for YOUR work order
-      total: `$${finalPrice.toFixed(2)}`,
-      orderNumber,
-      year
-    };
-
-    emailjs
-      .send('JunkBuddies.info', 'Junk_Buddies_Booking', templateParams, 'QCl4Akw_LZ3T8IvUd')
-      .then(() => {
-        return emailjs.send(
-          'JunkBuddies.info',
-          'template_57eij3s',
-          {
-            ...templateParams,
-            items: templateParams.itemsText, // plain text
-            email: formData.email // customer's real email
-          },
-          'QCl4Akw_LZ3T8IvUd'
-        );
-      })
-      .then(() => {
-        navigate('/confirmation');
-      })
-      .catch((error) => alert('Email error: ' + error.text));
+  // ✅ 4) Package parameters
+  const templateParams = {
+    ...formData,
+    orderNumber,                  // ✅ include order number
+    itemsHtml: itemsHtmlList,     // ✅ formatted for customer
+    itemsText: itemsTextList,     // ✅ plain for admin
+    customerEmail: formData.email,
+    total: `$${finalPrice.toFixed(2)}`
   };
+
+  // ✅ 5) Send to CUSTOMER — pass `items` as HTML version
+  emailjs
+    .send('JunkBuddies.info', 'Junk_Buddies_Booking', {
+      ...templateParams,
+      items: templateParams.itemsHtml  // 👈 for customer template use {{items}}
+    }, 'QCl4Akw_LZ3T8IvUd')
+    .then(() => {
+      // ✅ 6) Send to YOU (admin) — pass `items` as plain text
+      return emailjs.send(
+        'JunkBuddies.info',
+        'template_57eij3s',
+        {
+          ...templateParams,
+          items: templateParams.itemsText, // 👈 plain text for admin template
+          email: templateParams.customerEmail // customer’s real email
+        },
+        'QCl4Akw_LZ3T8IvUd'
+      );
+    })
+    .then(() => {
+      navigate('/confirmation');
+    })
+    .catch((error) => alert('Email error: ' + error.text));
+};
 
   return (
     <div className="bg-black text-white min-h-screen p-6">
