@@ -1,3 +1,5 @@
+// File: src/utils/pricing.js
+
 export const fullLoadPoints = 550;
 export const pricePerPoint = 1.82;
 export const minimumPrice = 100;
@@ -9,23 +11,23 @@ export function calculatePrice(cart) {
   const totalItemPrice = cart.reduce((sum, item) => sum + item.price, 0);
   const highestItemPrice = cart.reduce((max, item) => Math.max(max, item.price), 0);
 
-  // Single high-value item exception stays the same
+  const volumePrice = totalVolume * pricePerPoint;
+
+  // ✅ 1) Single high-value item rule
   if (cart.length === 1 && highestItemPrice > quarterLoadPrice) {
     return { finalPrice: highestItemPrice, totalVolume };
   }
 
-  // Corrected logic for UNDER 1/4 load
+  // ✅ 2) For under 1/4 load: 
   if (totalVolume < quarterLoadThreshold) {
-    const volumePrice = totalVolume * pricePerPoint;
-
-    if (totalItemPrice < quarterLoadPrice) {
-      // If total item price is still under 250 → pick min or item price
+    if (totalItemPrice < quarterLoadPrice && volumePrice < quarterLoadPrice) {
+      // both below: use max(minimum, item price)
       return {
         finalPrice: Math.max(minimumPrice, totalItemPrice),
         totalVolume
       };
     } else {
-      // If total item price crosses 250 → switch to volume pricing immediately
+      // either crosses: switch fully to cubic price
       return {
         finalPrice: volumePrice,
         totalVolume
@@ -33,21 +35,19 @@ export function calculatePrice(cart) {
     }
   }
 
-  // Above 1/4 load logic:
-  // First truck uses tier rounding
+  // ✅ 3) For 1/4 and up:
   const fullLoads = Math.floor(totalVolume / fullLoadPoints);
   const remainder = totalVolume % fullLoadPoints;
   const remainderCost = remainder * pricePerPoint;
 
+  // Only first truck gets tier rounding
   if (fullLoads === 0) {
-    // Tier snap logic for first truck only
     const tiers = [
-      { label: '1/4', point: quarterLoadThreshold, price: 250 },
-      { label: '1/2', point: fullLoadPoints * 0.5, price: 500 },
-      { label: '3/4', point: fullLoadPoints * 0.75, price: 750 },
-      { label: 'Full', point: fullLoadPoints, price: 1000 }
+      { point: quarterLoadThreshold, price: 250 },
+      { point: fullLoadPoints * 0.5, price: 500 },
+      { point: fullLoadPoints * 0.75, price: 750 },
+      { point: fullLoadPoints, price: 1000 }
     ];
-
     for (const tier of tiers) {
       if (totalVolume > tier.point && totalVolume <= tier.point + 10) {
         return {
@@ -56,18 +56,13 @@ export function calculatePrice(cart) {
         };
       }
     }
-
-    return {
-      finalPrice: remainderCost,
-      totalVolume
-    };
-  } else {
-    // Multiple trucks: no tier snap, pure volume-based pricing
-    return {
-      finalPrice: fullLoads * 1000 + remainderCost,
-      totalVolume
-    };
   }
+
+  // ✅ Multiple trucks: pure cubic price, no tier rounding
+  return {
+    finalPrice: fullLoads * 1000 + remainderCost,
+    totalVolume
+  };
 }
 
 export function getLoadLabel(volume) {
