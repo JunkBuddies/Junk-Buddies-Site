@@ -1,3 +1,4 @@
+export const fullLoadPoints = 550;
 export function calculatePrice(cart) {
   const totalVolume = cart.reduce((sum, item) => sum + item.volume, 0);
   const totalItemPrice = cart.reduce((sum, item) => sum + item.price, 0);
