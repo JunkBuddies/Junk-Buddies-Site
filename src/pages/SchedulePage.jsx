@@ -1,11 +1,11 @@
-// File: src/pages/SchedulePage.jsx
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import emailjs from 'emailjs-com';
 import { useCart } from '../context/CartContext';
 import { calculatePrice } from '../utils/pricing';
 import { FaChevronDown } from 'react-icons/fa';
+import { db } from '../lib/firebase';
+import { collection, addDoc, Timestamp } from 'firebase/firestore';
 
 const generatePresetDates = () => {
   const presets = [];
@@ -59,67 +59,60 @@ function SchedulePage() {
     setFormData(updated);
   };
 
-  const handleSubmit = (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // ✅ 1) Generate random order number
-  const orderNumber = `JB-${Math.floor(100000 + Math.random() * 900000)}`;
+    const orderNumber = `JB-${Math.floor(100000 + Math.random() * 900000)}`;
 
-  // ✅ 2) Make items list for plain text (for admin)
-  const itemsTextList = cart
-    .map((item) => `${item.name}: $${item.price.toFixed(2)}`)
-    .join('\n');
+    const itemsTextList = cart.map((item) => `${item.name}: $${item.price.toFixed(2)}`).join('\n');
+    const itemsHtmlList = `<ul>${cart.map((item) => `<li><strong>${item.name}</strong>: $${item.price.toFixed(2)}</li>`).join('')}</ul>`;
 
-  // ✅ 3) Make items list for HTML (for customer)
-  const itemsHtmlList = `<ul>${cart
-    .map((item) => `<li><strong>${item.name}</strong>: $${item.price.toFixed(2)}</li>`)
-    .join('')}</ul>`;
+    const templateParams = {
+      ...formData,
+      orderNumber,
+      itemsHtml: itemsHtmlList,
+      itemsText: itemsTextList,
+      customerEmail: formData.email,
+      total: `$${finalPrice.toFixed(2)}`
+    };
 
-  // ✅ 4) Package parameters
-  const templateParams = {
-    ...formData,
-    orderNumber,                  // ✅ include order number
-    itemsHtml: itemsHtmlList,     // ✅ formatted for customer
-    itemsText: itemsTextList,     // ✅ plain for admin
-    customerEmail: formData.email,
-    total: `$${finalPrice.toFixed(2)}`
-  };
+    try {
+      // Write to Firestore
+      await addDoc(collection(db, 'jobs'), {
+        ...formData,
+        orderNumber,
+        items: cart,
+        total: finalPrice,
+        createdAt: Timestamp.now()
+      });
 
-  // ✅ 5) Send to CUSTOMER — pass `items` as HTML version
-  emailjs
-    .send('JunkBuddies.info', 'Junk_Buddies_Booking', {
-      ...templateParams,
-      items: templateParams.itemsHtml  // 👈 for customer template use {{items}}
-    }, 'QCl4Akw_LZ3T8IvUd')
-    .then(() => {
-      // ✅ 6) Send to YOU (admin) — pass `items` as plain text
-      return emailjs.send(
+      // Email to customer
+      await emailjs.send(
         'JunkBuddies.info',
-        'template_57eij3s',
-        {
-          ...templateParams,
-          items: templateParams.itemsText, // 👈 plain text for admin template
-          email: templateParams.customerEmail // customer’s real email
-        },
+        'Junk_Buddies_Booking',
+        { ...templateParams, items: templateParams.itemsHtml },
         'QCl4Akw_LZ3T8IvUd'
       );
-    })
-    .then(() => {
+
+      // Email to admin
+      await emailjs.send(
+        'JunkBuddies.info',
+        'template_57eij3s',
+        { ...templateParams, items: templateParams.itemsText, email: templateParams.customerEmail },
+        'QCl4Akw_LZ3T8IvUd'
+      );
+
       navigate('/confirmation');
-    })
-    .catch((error) => alert('Email error: ' + error.text));
-};
+    } catch (error) {
+      alert('Error submitting booking: ' + error.message);
+    }
+  };
 
   return (
     <div className="bg-black text-white min-h-screen p-6">
-      <h1 className="text-3xl text-gold font-bold mb-6 text-center">
-        Book Junk Pickup - Pay nothing now
-      </h1>
-
+      <h1 className="text-3xl text-gold font-bold mb-6 text-center">Book Junk Pickup - Pay nothing now</h1>
       <div className="mt-4 mb-6 flex justify-center">
-        <div className="compare-badge-silver">
-          No Upfront Payment Required
-        </div>
+        <div className="compare-badge-silver">No Upfront Payment Required</div>
       </div>
 
       <form onSubmit={handleSubmit} className="max-w-lg mx-auto space-y-4">
