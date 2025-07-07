@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import emailjs from 'emailjs-com';
@@ -59,54 +60,73 @@ function SchedulePage() {
     setFormData(updated);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Your Google Geocoding API Key
+const GEOCODING_API_KEY = 'AIzaSyDhTqTTtFZBl16tZCB5z2B987T7wyIs8I0';
 
-    const orderNumber = `JB-${Math.floor(100000 + Math.random() * 900000)}`;
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const itemsTextList = cart.map((item) => `${item.name}: $${item.price.toFixed(2)}`).join('\n');
-    const itemsHtmlList = `<ul>${cart.map((item) => `<li><strong>${item.name}</strong>: $${item.price.toFixed(2)}</li>`).join('')}</ul>`;
+  const orderNumber = `JB-${Math.floor(100000 + Math.random() * 900000)}`;
 
-    const templateParams = {
+  const itemsTextList = cart.map((item) => `${item.name}: $${item.price.toFixed(2)}`).join('\n');
+  const itemsHtmlList = `<ul>${cart.map((item) => `<li><strong>${item.name}</strong>: $${item.price.toFixed(2)}</li>`).join('')}</ul>`;
+
+  const templateParams = {
+    ...formData,
+    orderNumber,
+    itemsHtml: itemsHtmlList,
+    itemsText: itemsTextList,
+    customerEmail: formData.email,
+    total: `$${finalPrice.toFixed(2)}`
+  };
+
+  try {
+    // 1. Call Geocoding API to get latitude and longitude
+    const geocodeResponse = await axios.get(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(formData.address)}&key=${GEOCODING_API_KEY}`
+    );
+
+    const location = geocodeResponse.data.results[0]?.geometry?.location;
+    if (!location) {
+      throw new Error('Unable to find location for the given address.');
+    }
+
+    const { lat, lng } = location;
+
+    // 2. Write the job data to Firestore with real coordinates
+    await addDoc(collection(db, 'jobs'), {
       ...formData,
       orderNumber,
-      itemsHtml: itemsHtmlList,
-      itemsText: itemsTextList,
-      customerEmail: formData.email,
-      total: `$${finalPrice.toFixed(2)}`
-    };
+      items: cart,
+      total: finalPrice,
+      City: formData.address.split(',')[0], // Deriving city from address
+      Latitude: lat,
+      Longitude: lng,
+      createdAt: Timestamp.now()
+    });
 
-    try {
-      // Write to Firestore
-      await addDoc(collection(db, 'jobs'), {
-        ...formData,
-        orderNumber,
-        items: cart,
-        total: finalPrice,
-        createdAt: Timestamp.now()
-      });
+    // 3. Send Email to Customer
+    await emailjs.send(
+      'JunkBuddies.info',
+      'Junk_Buddies_Booking',
+      { ...templateParams, items: templateParams.itemsHtml },
+      'QCl4Akw_LZ3T8IvUd'
+    );
 
-      // Email to customer
-      await emailjs.send(
-        'JunkBuddies.info',
-        'Junk_Buddies_Booking',
-        { ...templateParams, items: templateParams.itemsHtml },
-        'QCl4Akw_LZ3T8IvUd'
-      );
+    // 4. Send Email to Admin
+    await emailjs.send(
+      'JunkBuddies.info',
+      'template_57eij3s',
+      { ...templateParams, items: templateParams.itemsText, email: templateParams.customerEmail },
+      'QCl4Akw_LZ3T8IvUd'
+    );
 
-      // Email to admin
-      await emailjs.send(
-        'JunkBuddies.info',
-        'template_57eij3s',
-        { ...templateParams, items: templateParams.itemsText, email: templateParams.customerEmail },
-        'QCl4Akw_LZ3T8IvUd'
-      );
+    navigate('/confirmation');
+  } catch (error) {
+    alert('Error submitting booking: ' + error.message);
+  }
+};
 
-      navigate('/confirmation');
-    } catch (error) {
-      alert('Error submitting booking: ' + error.message);
-    }
-  };
 
   return (
     <div className="bg-black text-white min-h-screen p-6">
