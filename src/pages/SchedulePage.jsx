@@ -82,17 +82,11 @@ const handleSubmit = async (e) => {
 
   try {
     // 1. Call Geocoding API to get latitude and longitude
-    const geocodeResponse = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(formData.address)}&key=${GEOCODING_API_KEY}`
-    );
+    const location = {
+  lat: 29.7604,
+  lng: -95.3698
+};
 
-    const location = geocodeResponse.data.results[0]?.geometry?.location;
-    console.log(geocodeResponse.data);
-    if (!location) {
-      throw new Error('Unable to find location for the given address.');
-    }
-
-    const { lat, lng } = location;
 
     // 2. Write the job data to Firestore with real coordinates
     await addDoc(collection(db, 'jobs'), {
