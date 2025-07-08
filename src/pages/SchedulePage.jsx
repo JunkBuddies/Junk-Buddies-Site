@@ -60,7 +60,7 @@ function SchedulePage() {
     setFormData(updated);
   };
 
- const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
 
   const orderNumber = `JB-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -78,14 +78,19 @@ function SchedulePage() {
   };
 
   try {
-    // 1. Use hardcoded Houston coordinates for now
-    const location = {
-      lat: 29.7604,
-      lng: -95.3698
-    };
+    // 1. Call Geocoding API to get latitude and longitude
+    const geocodeResponse = await axios.get(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(formData.address)}&key=${GEOCODING_API_KEY}`
+    );
+
+    const location = geocodeResponse.data.results[0]?.geometry?.location;
+    if (!location) {
+      throw new Error('Unable to find location for the given address.');
+    }
+
     const { lat, lng } = location;
 
-    // 2. Write the job data to Firestore
+    // 2. Write the job data to Firestore with real coordinates
     await addDoc(collection(db, 'jobs'), {
       ...formData,
       orderNumber,
