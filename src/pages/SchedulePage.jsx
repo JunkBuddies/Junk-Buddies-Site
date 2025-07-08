@@ -61,7 +61,7 @@ function SchedulePage() {
   };
 
   // Your Google Geocoding API Key
-const GEOCODING_API_KEY = 'AIzaSyDhTqTTtFZBl16tZCB5z2B987T7wyIs8I0';
+const GEOCODING_API_KEY = 'AIzaSyATgzi3inC_jld8GBJqG9zB8Dusx9qSOkY';
 
 const handleSubmit = async (e) => {
   e.preventDefault();
