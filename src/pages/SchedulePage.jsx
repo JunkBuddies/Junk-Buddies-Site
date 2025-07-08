@@ -59,7 +59,7 @@ function SchedulePage() {
 
     setFormData(updated);
   };
-
+const GEOCODING_API_KEY = 'AIzaSyATgzi3inC_jld8GBJqG9zB8Dusx9qSOkY';
 const handleSubmit = async (e) => {
   e.preventDefault();
 
