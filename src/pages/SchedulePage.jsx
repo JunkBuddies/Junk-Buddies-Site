@@ -60,10 +60,7 @@ function SchedulePage() {
     setFormData(updated);
   };
 
-  // Your Google Geocoding API Key
-const GEOCODING_API_KEY = 'AIzaSyATgzi3inC_jld8GBJqG9zB8Dusx9qSOkY';
-
-const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
   e.preventDefault();
 
   const orderNumber = `JB-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -81,20 +78,20 @@ const handleSubmit = async (e) => {
   };
 
   try {
-    // 1. Call Geocoding API to get latitude and longitude
+    // 1. Use hardcoded Houston coordinates for now
     const location = {
-  lat: 29.7604,
-  lng: -95.3698
-};
+      lat: 29.7604,
+      lng: -95.3698
+    };
+    const { lat, lng } = location;
 
-
-    // 2. Write the job data to Firestore with real coordinates
+    // 2. Write the job data to Firestore
     await addDoc(collection(db, 'jobs'), {
       ...formData,
       orderNumber,
       items: cart,
       total: finalPrice,
-      City: formData.address.split(',')[0], // Deriving city from address
+      City: formData.address.split(',')[0],
       Latitude: lat,
       Longitude: lng,
       createdAt: Timestamp.now()
