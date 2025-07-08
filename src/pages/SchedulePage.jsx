@@ -87,6 +87,7 @@ const handleSubmit = async (e) => {
     );
 
     const location = geocodeResponse.data.results[0]?.geometry?.location;
+    console.log(geocodeResponse.data);
     if (!location) {
       throw new Error('Unable to find location for the given address.');
     }
