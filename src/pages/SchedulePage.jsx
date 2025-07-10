@@ -36,7 +36,10 @@ function SchedulePage() {
     name: '',
     email: '',
     phone: '',
-    address: '',
+    street: '',
+city: '',
+state: '',
+zip: '',
     date: '',
     time: '',
     customDateFormatted: ''
@@ -79,9 +82,12 @@ const handleSubmit = async (e) => {
 
   try {
     // 1. Call Geocoding API to get latitude and longitude
-    const geocodeResponse = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(formData.address)}&key=${GEOCODING_API_KEY}`
-    );
+    const fullAddress = `${formData.street}, ${formData.city}, ${formData.state} ${formData.zip}`;
+
+const geocodeResponse = await axios.get(
+  `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fullAddress)}&key=${GEOCODING_API_KEY}`
+);
+
 
     const location = geocodeResponse.data.results[0]?.geometry?.location;
     if (!location) {
@@ -136,7 +142,45 @@ const handleSubmit = async (e) => {
         <input className="w-full p-3 rounded-xl text-black" type="text" name="name" placeholder="Your Name" required onChange={handleChange} />
         <input className="w-full p-3 rounded-xl text-black" type="email" name="email" placeholder="Your Email" required onChange={handleChange} />
         <input className="w-full p-3 rounded-xl text-black" type="tel" name="phone" placeholder="Your Phone Number" required onChange={handleChange} />
-        <input className="w-full p-3 rounded-xl text-black" type="text" name="address" placeholder="Pickup Address" required onChange={handleChange} />
+        <div className="flex flex-wrap gap-4">
+  <input
+    type="text"
+    name="street"
+    placeholder="Street"
+    required
+    onChange={handleChange}
+    className="flex-1 min-w-[150px] p-3 rounded-xl text-black"
+  />
+  <input
+    type="text"
+    name="city"
+    placeholder="City"
+    required
+    onChange={handleChange}
+    className="w-[140px] p-3 rounded-xl text-black"
+  />
+  <select
+    name="state"
+    required
+    onChange={handleChange}
+    className="w-[100px] p-3 rounded-xl text-black"
+  >
+    <option value="">State</option>
+    <option value="TX">TX</option>
+    <option value="LA">LA</option>
+    <option value="OK">OK</option>
+    {/* Add more as needed */}
+  </select>
+  <input
+    type="text"
+    name="zip"
+    placeholder="ZIP"
+    required
+    onChange={handleChange}
+    className="w-[100px] p-3 rounded-xl text-black"
+  />
+</div>
+
 
         <div className="space-y-3">
           <label className="block font-semibold">Select Date:</label>
