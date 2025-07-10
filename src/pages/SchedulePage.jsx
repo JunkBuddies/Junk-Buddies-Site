@@ -98,15 +98,20 @@ const geocodeResponse = await axios.get(
 
     // 2. Write the job data to Firestore with real coordinates
     await addDoc(collection(db, 'jobs'), {
-      ...formData,
-      orderNumber,
-      items: cart,
-      total: finalPrice,
-      City: formData.address.split(',')[0],
-      Latitude: lat,
-      Longitude: lng,
-      createdAt: Timestamp.now()
-    });
+  ...formData,
+  orderNumber,
+  items: cart,
+  total: finalPrice,
+  fullAddress: `${formData.street}, ${formData.city}, ${formData.state} ${formData.zip}`,
+  street: formData.street,
+  city: formData.city,
+  state: formData.state,
+  zip: formData.zip,
+  Latitude: lat,
+  Longitude: lng,
+  createdAt: Timestamp.now()
+});
+
 
     // 3. Send Email to Customer
     await emailjs.send(
@@ -167,9 +172,6 @@ const geocodeResponse = await axios.get(
   >
     <option value="">State</option>
     <option value="TX">TX</option>
-    <option value="LA">LA</option>
-    <option value="OK">OK</option>
-    {/* Add more as needed */}
   </select>
   <input
     type="text"
