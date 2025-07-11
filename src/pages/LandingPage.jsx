@@ -282,22 +282,49 @@ function LandingPage() {
  
       </div>
 
-      <footer className="bg-black text-gray-400 py-8 px-4 text-center border-t border-gold">
-        <div className="text-sm space-y-3">
-          <Link
-            to="/blog"
-            className="text-gold font-semibold hover:underline block"
-          >
-            📝 Read Our Blog — Junk Removal Tips, Pricing & More
-          </Link>
-          <a href="/faq" className="text-gold hover:underline block">
-            📌 Frequently Asked Questions
-          </a>
-          <div className="text-xs text-gray-500">
-            © {new Date().getFullYear()} Junk Buddies. All rights reserved.
-          </div>
-        </div>
-      </footer>
+     <footer className="bg-black text-gray-400 py-10 px-6 text-center border-t border-gold">
+  <div className="max-w-7xl mx-auto space-y-6">
+    {/* Blog and FAQ */}
+    <div className="space-y-2">
+      <Link to="/blog" className="text-gold font-semibold hover:underline block">
+        📝 Read Our Blog — Junk Removal Tips, Pricing & More
+      </Link>
+      <Link to="/faq" className="text-gold hover:underline block">
+        📌 Frequently Asked Questions
+      </Link>
+    </div>
+
+    {/* City Links Grid */}
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 text-sm text-white pt-6 border-t border-gold mt-4">
+      <Link to="/Alvin" className="hover:underline">Alvin, TX</Link>
+      <Link to="/Baytown" className="hover:underline">Baytown, TX</Link>
+      <Link to="/Channelview" className="hover:underline">Channelview, TX</Link>
+      <Link to="/Cypress" className="hover:underline">Cypress, TX</Link>
+      <Link to="/Deer-Park" className="hover:underline">Deer Park, TX</Link>
+      <Link to="/Friendswood" className="hover:underline">Friendswood, TX</Link>
+      <Link to="/Houston" className="hover:underline">Houston, TX</Link>
+      <Link to="/Humble" className="hover:underline">Humble, TX</Link>
+      <Link to="/Katy" className="hover:underline">Katy, TX</Link>
+      <Link to="/La-Porte" className="hover:underline">La Porte, TX</Link>
+      <Link to="/League-City" className="hover:underline">League City, TX</Link>
+      <Link to="/Missouri-City" className="hover:underline">Missouri City, TX</Link>
+      <Link to="/Pasadena" className="hover:underline">Pasadena, TX</Link>
+      <Link to="/Pearland" className="hover:underline">Pearland, TX</Link>
+      <Link to="/Richmond" className="hover:underline">Richmond, TX</Link>
+      <Link to="/Rosenberg" className="hover:underline">Rosenberg, TX</Link>
+      <Link to="/Spring" className="hover:underline">Spring, TX</Link>
+      <Link to="/Sugar-Land" className="hover:underline">Sugar Land, TX</Link>
+      <Link to="/The-Woodlands" className="hover:underline">The Woodlands, TX</Link>
+      <Link to="/Tomball" className="hover:underline">Tomball, TX</Link>
+    </div>
+
+    {/* Copyright */}
+    <div className="text-xs text-gray-500 pt-6 border-t border-gold">
+      © {new Date().getFullYear()} Junk Buddies LLC. All rights reserved.
+    </div>
+  </div>
+</footer>
+
     </div>
   );
 }
