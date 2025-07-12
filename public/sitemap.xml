@@ -52,25 +52,24 @@
   </url>
 
   <!-- Enhanced City Pages (Steroid layout) -->
-  <url><loc>https://www.junkbuddies.info/cities/Houston</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Alvin</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Baytown</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Channelview</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Cypress</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Deer-Park</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Friendswood</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Humble</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Katy</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/La-Porte</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/League-City</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Missouri-City</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Pasadena</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Pearland</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Richmond</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Rosenberg</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Spring</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Sugar-Land</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/The-Woodlands</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-  <url><loc>https://www.junkbuddies.info/cities/Tomball</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
-
+ <url><loc>https://www.junkbuddies.info/service-areas/houston</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/alvin</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/baytown</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/channelview</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/cypress</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/deer-park</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/friendswood</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/humble</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/katy</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/la-porte</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/league-city</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/missouri-city</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/pasadena</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/pearland</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/richmond</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/rosenberg</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/spring</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/sugar-land</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/the-woodlands</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+<url><loc>https://www.junkbuddies.info/service-areas/tomball</loc><lastmod>2025-07-11</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
 </urlset>
