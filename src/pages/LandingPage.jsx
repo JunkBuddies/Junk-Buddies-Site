@@ -296,27 +296,28 @@ function LandingPage() {
 
     {/* City Links Grid */}
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 text-sm text-white pt-6 border-t border-gold mt-4">
-      <Link to="/Alvin" className="hover:underline">Alvin, TX</Link>
-      <Link to="/Baytown" className="hover:underline">Baytown, TX</Link>
-      <Link to="/Channelview" className="hover:underline">Channelview, TX</Link>
-      <Link to="/Cypress" className="hover:underline">Cypress, TX</Link>
-      <Link to="/Deer-Park" className="hover:underline">Deer Park, TX</Link>
-      <Link to="/Friendswood" className="hover:underline">Friendswood, TX</Link>
-      <Link to="/Houston" className="hover:underline">Houston, TX</Link>
-      <Link to="/Humble" className="hover:underline">Humble, TX</Link>
-      <Link to="/Katy" className="hover:underline">Katy, TX</Link>
-      <Link to="/La-Porte" className="hover:underline">La Porte, TX</Link>
-      <Link to="/League-City" className="hover:underline">League City, TX</Link>
-      <Link to="/Missouri-City" className="hover:underline">Missouri City, TX</Link>
-      <Link to="/Pasadena" className="hover:underline">Pasadena, TX</Link>
-      <Link to="/Pearland" className="hover:underline">Pearland, TX</Link>
-      <Link to="/Richmond" className="hover:underline">Richmond, TX</Link>
-      <Link to="/Rosenberg" className="hover:underline">Rosenberg, TX</Link>
-      <Link to="/Spring" className="hover:underline">Spring, TX</Link>
-      <Link to="/Sugar-Land" className="hover:underline">Sugar Land, TX</Link>
-      <Link to="/The-Woodlands" className="hover:underline">The Woodlands, TX</Link>
-      <Link to="/Tomball" className="hover:underline">Tomball, TX</Link>
-    </div>
+  <Link to="/cities/Alvin" className="hover:underline">Alvin, TX</Link>
+  <Link to="/cities/Baytown" className="hover:underline">Baytown, TX</Link>
+  <Link to="/cities/Channelview" className="hover:underline">Channelview, TX</Link>
+  <Link to="/cities/Cypress" className="hover:underline">Cypress, TX</Link>
+  <Link to="/cities/Deer-Park" className="hover:underline">Deer Park, TX</Link>
+  <Link to="/cities/Friendswood" className="hover:underline">Friendswood, TX</Link>
+  <Link to="/cities/Houston" className="hover:underline">Houston, TX</Link>
+  <Link to="/cities/Humble" className="hover:underline">Humble, TX</Link>
+  <Link to="/cities/Katy" className="hover:underline">Katy, TX</Link>
+  <Link to="/cities/La-Porte" className="hover:underline">La Porte, TX</Link>
+  <Link to="/cities/League-City" className="hover:underline">League City, TX</Link>
+  <Link to="/cities/Missouri-City" className="hover:underline">Missouri City, TX</Link>
+  <Link to="/cities/Pasadena" className="hover:underline">Pasadena, TX</Link>
+  <Link to="/cities/Pearland" className="hover:underline">Pearland, TX</Link>
+  <Link to="/cities/Richmond" className="hover:underline">Richmond, TX</Link>
+  <Link to="/cities/Rosenberg" className="hover:underline">Rosenberg, TX</Link>
+  <Link to="/cities/Spring" className="hover:underline">Spring, TX</Link>
+  <Link to="/cities/Sugar-Land" className="hover:underline">Sugar Land, TX</Link>
+  <Link to="/cities/The-Woodlands" className="hover:underline">The Woodlands, TX</Link>
+  <Link to="/cities/Tomball" className="hover:underline">Tomball, TX</Link>
+</div>
+
 
     {/* Copyright */}
     <div className="text-xs text-gray-500 pt-6 border-t border-gold">
