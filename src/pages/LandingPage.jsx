@@ -296,26 +296,26 @@ function LandingPage() {
 
     {/* City Links Grid */}
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 text-sm text-white pt-6 border-t border-gold mt-4">
-  <Link to="/cities/Alvin" className="hover:underline">Alvin, TX</Link>
-  <Link to="/cities/Baytown" className="hover:underline">Baytown, TX</Link>
-  <Link to="/cities/Channelview" className="hover:underline">Channelview, TX</Link>
-  <Link to="/cities/Cypress" className="hover:underline">Cypress, TX</Link>
-  <Link to="/cities/Deer-Park" className="hover:underline">Deer Park, TX</Link>
-  <Link to="/cities/Friendswood" className="hover:underline">Friendswood, TX</Link>
-  <Link to="/cities/Houston" className="hover:underline">Houston, TX</Link>
-  <Link to="/cities/Humble" className="hover:underline">Humble, TX</Link>
-  <Link to="/cities/Katy" className="hover:underline">Katy, TX</Link>
-  <Link to="/cities/La-Porte" className="hover:underline">La Porte, TX</Link>
-  <Link to="/cities/League-City" className="hover:underline">League City, TX</Link>
-  <Link to="/cities/Missouri-City" className="hover:underline">Missouri City, TX</Link>
-  <Link to="/cities/Pasadena" className="hover:underline">Pasadena, TX</Link>
-  <Link to="/cities/Pearland" className="hover:underline">Pearland, TX</Link>
-  <Link to="/cities/Richmond" className="hover:underline">Richmond, TX</Link>
-  <Link to="/cities/Rosenberg" className="hover:underline">Rosenberg, TX</Link>
-  <Link to="/cities/Spring" className="hover:underline">Spring, TX</Link>
-  <Link to="/cities/Sugar-Land" className="hover:underline">Sugar Land, TX</Link>
-  <Link to="/cities/The-Woodlands" className="hover:underline">The Woodlands, TX</Link>
-  <Link to="/cities/Tomball" className="hover:underline">Tomball, TX</Link>
+<Link to="/service-areas/houston">Houston</Link>
+<Link to="/service-areas/katy">Katy</Link>
+<Link to="/service-areas/sugar-land">Sugar Land</Link>
+<Link to="/service-areas/pearland">Pearland</Link>
+<Link to="/service-areas/cypress">Cypress</Link>
+<Link to="/service-areas/spring">Spring</Link>
+<Link to="/service-areas/humble">Humble</Link>
+<Link to="/service-areas/missouri-city">Missouri City</Link>
+<Link to="/service-areas/pasadena">Pasadena</Link>
+<Link to="/service-areas/the-woodlands">The Woodlands</Link>
+<Link to="/service-areas/league-city">League City</Link>
+<Link to="/service-areas/baytown">Baytown</Link>
+<Link to="/service-areas/friendswood">Friendswood</Link>
+<Link to="/service-areas/channelview">Channelview</Link>
+<Link to="/service-areas/richmond">Richmond</Link>
+<Link to="/service-areas/rosenberg">Rosenberg</Link>
+<Link to="/service-areas/tomball">Tomball</Link>
+<Link to="/service-areas/alvin">Alvin</Link>
+<Link to="/service-areas/deer-park">Deer Park</Link>
+<Link to="/service-areas/la-porte">La Porte</Link>
 </div>
 
 
