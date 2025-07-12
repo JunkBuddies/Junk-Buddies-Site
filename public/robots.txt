@@ -1,35 +1,38 @@
 User-agent: *
 Disallow:
 
-# Sitemaps
+# Primary Sitemap Location
 Sitemap: https://www.junkbuddies.info/sitemap.xml
 
-# Crawlers Guidance
+# Explicit Allowances (for clarity and priority routes)
 Allow: /
 Allow: /selection
+Allow: /load-size
+Allow: /itemized
 Allow: /schedule
 Allow: /confirmation
 Allow: /blog
+Allow: /blog/*
 Allow: /faq
-Allow: /cities
-Allow: /cities/*
+Allow: /service-areas
+Allow: /service-areas/*
 Allow: /images/
 Allow: /static/
 
-# Crawl Delay for aggressive bots (optional)
+# Optional Crawl Rate Control
 # Crawl-delay: 2
 
-# Googlebot-Specific Directives (optional but useful)
+# Googlebot – Full Access
 User-agent: Googlebot
 Disallow:
 Allow: /
 
-# Bingbot
+# Bingbot – Full Access
 User-agent: Bingbot
 Disallow:
 Allow: /
 
-# Archive.org and AI scrapers (optional block)
+# Disallowed Bots
 User-agent: ia_archiver
 Disallow: /
 
