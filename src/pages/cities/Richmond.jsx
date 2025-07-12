@@ -56,15 +56,15 @@ const Richmond = () => {
             Long Meadow Farms, Pecan Grove, Sunset Grove, Club at Falcon Point, Aliana, Richmond Downtown, Riverpark, Mustang Lakes, and more.
           </p>
           <p className="text-sm text-gray-500 mt-2">
-            Serving Richmond and surrounding ZIPs: 77406, 77407, 77469, 77441, 77471, 77476, 77494, 77485, 77417, 77423, 77464, 77461, 77430, 77545, 77420
+            Serving ZIPs: 77406, 77407, 77469, 77441, 77471, 77476, 77494, 77485, 77417, 77423, 77464, 77461, 77430, 77545, 77420
           </p>
         </div>
 
         {/* Embedded Google Map */}
         <div className="w-full rounded-xl overflow-hidden shadow-lg">
           <iframe
-            title="Richmond TX Junk Removal Map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d... Richmond coordinates ..."
+            title="Richmond TX Map"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d139694.46932846936!2d-95.86689369347467!3d29.586139253666863!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8641293cc0197b01%3A0x2b16828a07055f8f!2sRichmond%2C%20TX!5e0!3m2!1sen!2sus!4v1720734510000!5m2!1sen!2sus"
             width="100%"
             height="350"
             style={{ border: 0 }}
@@ -121,3 +121,4 @@ const Richmond = () => {
 };
 
 export default Richmond;
+
