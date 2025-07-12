@@ -1,0 +1,40 @@
+User-agent: *
+Disallow:
+
+# Sitemaps
+Sitemap: https://www.junkbuddies.info/sitemap.xml
+
+# Crawlers Guidance
+Allow: /
+Allow: /selection
+Allow: /schedule
+Allow: /confirmation
+Allow: /blog
+Allow: /faq
+Allow: /cities
+Allow: /cities/*
+Allow: /images/
+Allow: /static/
+
+# Crawl Delay for aggressive bots (optional)
+# Crawl-delay: 2
+
+# Googlebot-Specific Directives (optional but useful)
+User-agent: Googlebot
+Disallow:
+Allow: /
+
+# Bingbot
+User-agent: Bingbot
+Disallow:
+Allow: /
+
+# Archive.org and AI scrapers (optional block)
+User-agent: ia_archiver
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
