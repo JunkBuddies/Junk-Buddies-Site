@@ -104,6 +104,7 @@ else if (formData.time === '12:00 PM – 5:00 PM') timeOfDay = 'Afternoon';
 else if (formData.time === '5:00 PM – 9:00 PM') timeOfDay = 'Evening';
     await addDoc(collection(db, 'jobs'), {
   ...formData,
+  timeOfDay,
   orderNumber,
   items: cart,
   total: finalPrice,
