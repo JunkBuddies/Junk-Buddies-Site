@@ -97,6 +97,11 @@ const geocodeResponse = await axios.get(
     const { lat, lng } = location;
 
     // 2. Write the job data to Firestore with real coordinates
+    // 👇 Add this just before saving to Firestore
+let timeOfDay = '';
+if (formData.time === '7:00 AM – 12:00 PM') timeOfDay = 'Morning';
+else if (formData.time === '12:00 PM – 5:00 PM') timeOfDay = 'Afternoon';
+else if (formData.time === '5:00 PM – 9:00 PM') timeOfDay = 'Evening';
     await addDoc(collection(db, 'jobs'), {
   ...formData,
   orderNumber,
@@ -229,7 +234,7 @@ const geocodeResponse = await axios.get(
         <div>
           <label className="block mb-2 font-semibold">Select Time Window:</label>
           <div className="grid grid-cols-3 gap-4">
-            {[{ label: 'Morning', time: '8:00 AM – 11:00 AM' }, { label: 'Afternoon', time: '12:00 PM – 3:00 PM' }, { label: 'Evening', time: '4:00 PM – 7:00 PM' }].map(({ label, time }) => (
+            {[{ label: 'Morning', time: '7:00 AM – 12:00 PM' }, { label: 'Afternoon', time: '12:00 PM – 5:00 PM' }, { label: 'Evening', time: '5:00 PM – 9:00 PM' }].map(({ label, time }) => (
               <button
                 key={time}
                 type="button"
