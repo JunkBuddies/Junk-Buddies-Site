@@ -1,27 +1,26 @@
 // File: api/smart-selector.js
-
-import OpenAI from "openai";
-import { db } from "../src/lib/firebase.js"; // adjust path if different
-import { collection, addDoc } from "firebase/firestore";
+const OpenAI = require("openai");
+const { db } = require("../src/lib/firebase.js");
+const { collection, addDoc } = require("firebase/firestore");
 
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // Set in Vercel Environment Variables
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    const { text, itemData, leadInfo } = req.body;
+    const { text, itemData, lead } = req.body; // FIXED: match frontend
 
-    // --- 1) Save lead info (even partial) into Firestore ---
-    if (leadInfo && (leadInfo.name || leadInfo.phone)) {
+    // --- Save lead info (even partial) ---
+    if (lead && (lead.name || lead.phone)) {
       try {
         await addDoc(collection(db, "leadCaptures"), {
-          name: leadInfo.name || "",
-          phone: leadInfo.phone || "",
+          name: lead.name || "",
+          phone: lead.phone || "",
           enteredAt: new Date(),
         });
       } catch (err) {
@@ -29,7 +28,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // --- 2) Generate Smart Selector matches via OpenAI ---
+    // --- Ask OpenAI to parse items ---
     const prompt = `
 Match the following items against this master list (match closest names):
 ${JSON.stringify(itemData)}
@@ -58,7 +57,7 @@ Return ONLY JSON:
     const aiText = completion.output[0].content[0].text.trim();
     const parsed = JSON.parse(aiText);
 
-    // --- 3) Save unlisted items into Firestore for review ---
+    // --- Save any unlisted items ---
     const unlistedItems = parsed.filter((i) => i.category === "unlisted");
     for (const item of unlistedItems) {
       try {
@@ -77,4 +76,4 @@ Return ONLY JSON:
     console.error("Smart Selector API error:", err);
     return res.status(500).json({ error: err.message });
   }
-}
+};
