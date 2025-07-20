@@ -1,10 +1,9 @@
-// File: /api/smart-selector.js
 import OpenAI from "openai";
-import { db } from "../lib/firebase"; 
+import { db } from "../src/lib/firebase"; // adjust if path differs
 import { collection, addDoc } from "firebase/firestore";
 
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY, // Set in Vercel dashboard
 });
 
 export default async function handler(req, res) {
@@ -15,31 +14,31 @@ export default async function handler(req, res) {
   const { text, itemData, lead } = req.body;
 
   try {
-    // --- Auto-save lead info (name/phone) to Firestore ---
-    if (lead) {
+    // 1. Save any lead info immediately (even if incomplete)
+    if (lead?.name || lead?.phone) {
       await addDoc(collection(db, "leadCaptures"), {
         name: lead.name || "",
         phone: lead.phone || "",
-        timestamp: Date.now(),
+        timestamp: new Date(),
       });
     }
 
-    // If no text to process (just saving lead), return success early
+    // If no items to process, just respond OK (for lead-only saves)
     if (!text) {
-      return res.status(200).json({ message: "Lead captured" });
+      return res.status(200).json({ savedLead: true });
     }
 
-    // --- AI Matching Logic for Items ---
+    // 2. Process AI matching
     const prompt = `
 Match the following items against this list (match closest names):
 ${JSON.stringify(itemData)}
 
 User list: "${text}"
 
-For any items NOT found, estimate Small (8 cu ft, $50), Medium (12 cu ft, $70), or Large (20 cu ft, $100).
-Label those as "Miscellaneous".
+For any items NOT found, estimate Small (8 cu ft, $50), Medium (12 cu ft, $70), or Large (20 cu ft, $100). 
+Label those as "unlisted".
 
-Return ONLY a JSON array, no text, like:
+Return ONLY a JSON array, no extra text, with:
 [
   { "name": "...", "price": 100, "estimatedVolume": 20, "category": "known/unlisted" }
 ]
@@ -54,16 +53,18 @@ Return ONLY a JSON array, no text, like:
     const aiText = completion.output[0].content[0].text.trim();
     const parsed = JSON.parse(aiText);
 
-    // Log unlisted items separately
+    // 3. Log unlisted items to Firestore for review
     const unlisted = parsed.filter((i) => i.category === "unlisted");
     for (const item of unlisted) {
-      await addDoc(collection(db, "unlistedItems"), item);
+      await addDoc(collection(db, "unlistedItems"), {
+        ...item,
+        timestamp: new Date(),
+      });
     }
 
     res.status(200).json(parsed);
   } catch (err) {
-    console.error("Smart Selector API error:", err);
+    console.error("Smart Selector error:", err);
     res.status(500).json({ error: err.message });
   }
 }
-
