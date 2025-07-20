@@ -1,12 +1,8 @@
-
-
-// File: api/smart-selector.js
-
+// File: /api/smart-selector.js
 import OpenAI from "openai";
-import { db } from "../src/lib/firebase.js"; // adjust if your firebase.js is in a different path
+import { db } from "../lib/firebase"; 
 import { collection, addDoc } from "firebase/firestore";
 
-// Initialize OpenAI with API key from Vercel env vars
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -16,24 +12,34 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { customerName, customerPhone, text, itemData } = req.body;
-
-  if (!customerPhone || !text) {
-    return res.status(400).json({ error: "Missing phone number or item text." });
-  }
+  const { text, itemData, lead } = req.body;
 
   try {
-    // AI prompt to match items and estimate unknowns
+    // --- Auto-save lead info (name/phone) to Firestore ---
+    if (lead) {
+      await addDoc(collection(db, "leadCaptures"), {
+        name: lead.name || "",
+        phone: lead.phone || "",
+        timestamp: Date.now(),
+      });
+    }
+
+    // If no text to process (just saving lead), return success early
+    if (!text) {
+      return res.status(200).json({ message: "Lead captured" });
+    }
+
+    // --- AI Matching Logic for Items ---
     const prompt = `
 Match the following items against this list (match closest names):
 ${JSON.stringify(itemData)}
 
-User provided list: "${text}"
+User list: "${text}"
 
-For any items NOT found, estimate Small (8 cu ft, $50), Medium (12 cu ft, $70), or Large (20 cu ft, $100). 
-Label those as "unlisted".
+For any items NOT found, estimate Small (8 cu ft, $50), Medium (12 cu ft, $70), or Large (20 cu ft, $100).
+Label those as "Miscellaneous".
 
-Return ONLY a JSON array, no other text:
+Return ONLY a JSON array, no text, like:
 [
   { "name": "...", "price": 100, "estimatedVolume": 20, "category": "known/unlisted" }
 ]
@@ -46,25 +52,18 @@ Return ONLY a JSON array, no other text:
     });
 
     const aiText = completion.output[0].content[0].text.trim();
-    const parsedItems = JSON.parse(aiText);
+    const parsed = JSON.parse(aiText);
 
-    // Save customer lead to Firestore
-    await addDoc(collection(db, "leads"), {
-      name: customerName || "Unknown",
-      phone: customerPhone,
-      itemsRequested: text,
-      timestamp: new Date(),
-    });
-
-    // Save unlisted items for review
-    const unlisted = parsedItems.filter((i) => i.category === "unlisted");
+    // Log unlisted items separately
+    const unlisted = parsed.filter((i) => i.category === "unlisted");
     for (const item of unlisted) {
       await addDoc(collection(db, "unlistedItems"), item);
     }
 
-    res.status(200).json(parsedItems);
+    res.status(200).json(parsed);
   } catch (err) {
     console.error("Smart Selector API error:", err);
     res.status(500).json({ error: err.message });
   }
 }
+
