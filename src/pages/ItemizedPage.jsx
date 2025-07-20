@@ -36,21 +36,19 @@ function ItemizedPage() {
 
   // Show Smart Selector popup after 3 seconds
   useEffect(() => {
-    const timer = setTimeout(() => setShowSmartSelectorNotice(true), 3000);
+    const timer = setTimeout(() => {
+      setShowSmartSelectorNotice(true);
+    }, 3000);
     return () => clearTimeout(timer);
   }, []);
 
-  // Auto-save lead info (always send placeholder text/itemData so API doesn’t error)
+  // Auto-save lead info (partial or full) into backend
   useEffect(() => {
     if (leadName || leadPhone) {
       fetch('/api/smart-selector', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: "",
-          itemData: [],
-          lead: { name: leadName, phone: leadPhone },
-        }),
+        body: JSON.stringify({ leadInfo: { name: leadName, phone: leadPhone } }),
       }).catch((err) => console.error('Lead auto-save failed:', err));
     }
   }, [leadName, leadPhone]);
@@ -74,22 +72,28 @@ function ItemizedPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: userText,
-          itemData, // full list is still used for AI matching
-          lead: { name: leadName, phone: leadPhone },
+          itemData,
+          leadInfo: { name: leadName, phone: leadPhone },
         }),
       });
       const data = await res.json();
 
-      setCart((prev) => [...prev, ...data]);
-      setDiscountApplied(true);
-
-      setChatMessages((prev) => [
-        ...prev,
-        {
-          sender: 'bot',
-          text: `Got it! I've added ${data.length} items to your cart. You’re saving 10%.`,
-        },
-      ]);
+      if (Array.isArray(data)) {
+        setCart((prev) => [...prev, ...data]);
+        setDiscountApplied(true);
+        setChatMessages((prev) => [
+          ...prev,
+          {
+            sender: 'bot',
+            text: `Got it! I've added ${data.length} items to your cart. You’re saving 10%.`,
+          },
+        ]);
+      } else {
+        setChatMessages((prev) => [
+          ...prev,
+          { sender: 'bot', text: 'Something went wrong. Please try again.' },
+        ]);
+      }
     } catch (err) {
       console.error('Smart Selector failed:', err);
       setChatMessages((prev) => [
@@ -98,6 +102,7 @@ function ItemizedPage() {
       ]);
     }
   }
+
     const itemData = [               
     {
   category: 'Beds & Bedroom Furniture',
@@ -464,231 +469,253 @@ function ItemizedPage() {
 ];
 
  const filteredData = itemData.map((section) => ({
-    ...section,
-    items: section.items.filter((item) =>
-      item.name.toLowerCase().includes(search.toLowerCase())
-    ),
-  }));
+  ...section,
+  items: section.items.filter((item) =>
+    item.name.toLowerCase().includes(search.toLowerCase())
+  ),
+}));
 
-  return (
-    <div className="bg-black text-white min-h-screen p-6 pb-32">
-      <style>{pulseGlowStyle}</style>
+return (
+  <div className="bg-black text-white min-h-screen p-6 pb-32">
+    <style>{pulseGlowStyle}</style>
 
-      {/* Page Title */}
-      <h1 className="text-4xl mb-6 text-center font-bold">
-        <span className="text-white">Manually Select Junk</span>{' '}
-        <span
-          className="px-2 py-1 border-2 rounded-lg animate-pulse-glow"
-          style={{ borderColor: '#FFD700', color: '#FFD700' }}
-        >
-          or Add with Smart Select! (Save 10%)
-        </span>
-      </h1>
+    {/* Page Title */}
+    <h1 className="text-4xl mb-6 text-center font-bold">
+      <span className="text-white">Manually Select Junk</span>{' '}
+      <span
+        className="px-2 py-1 border-2 rounded-lg animate-pulse-glow"
+        style={{ borderColor: '#FFD700', color: '#FFD700' }}
+      >
+        or Add with Smart Select! (Save 10%)
+      </span>
+    </h1>
 
-      {/* Smart Selector Popup */}
-      {showSmartSelectorNotice && !showChat && (
-        <div
-          className="fixed bottom-6 right-6 bg-black text-white border-2 rounded-xl p-4 shadow-xl animate-pulse-glow cursor-pointer z-50 max-w-xs"
-          style={{ borderColor: '#FFD700' }}
-          onClick={() => setShowChat(true)}
-        >
-          <h3 className="font-bold text-gold text-lg mb-1">
-            Quick Add with Smart Select — Save 10%
-          </h3>
-          <p className="text-sm">Let me build your list in seconds. Tap to start.</p>
+    {/* Smart Selector Popup */}
+    {showSmartSelectorNotice && !showChat && (
+      <div
+        className="fixed bottom-6 right-6 bg-black text-white border-2 rounded-xl p-4 shadow-xl animate-pulse-glow cursor-pointer z-50 max-w-xs"
+        style={{ borderColor: '#FFD700' }}
+        onClick={() => setShowChat(true)}
+      >
+        <h3 className="font-bold text-gold text-lg mb-1">
+          Quick Add with Smart Select — Save 10%
+        </h3>
+        <p className="text-sm">Let me build your list in seconds. Tap to start.</p>
+      </div>
+    )}
+
+    {/* Smart Selector Chat Drawer */}
+    {showChat && (
+      <div className="fixed bottom-0 right-0 w-full sm:w-96 h-2/3 bg-gray-900 border-l border-gold z-50 flex flex-col">
+        <div className="flex justify-between items-center p-4 border-b border-gold">
+          <h2 className="text-gold font-bold">Junk Buddies Smart Selector</h2>
+          <button onClick={() => setShowChat(false)} className="text-white hover:text-gold">
+            ✕
+          </button>
         </div>
-      )}
-
-      {/* Smart Selector Chat Drawer */}
-      {showChat && (
-        <div className="fixed bottom-0 right-0 w-full sm:w-96 h-2/3 bg-gray-900 border-l border-gold z-50 flex flex-col">
-          <div className="flex justify-between items-center p-4 border-b border-gold">
-            <h2 className="text-gold font-bold">Junk Buddies Smart Selector</h2>
-            <button onClick={() => setShowChat(false)} className="text-white hover:text-gold">
-              ✕
-            </button>
-          </div>
-          {/* Lead Info Fields */}
-          <div className="p-4 space-y-3 text-sm">
-            <input
-              type="text"
-              placeholder="Your Name"
-              className="w-full p-2 mb-2 bg-gray-800 text-white border border-gold rounded"
-              value={leadName}
-              onChange={(e) => setLeadName(e.target.value)}
-            />
-            <input
-              type="tel"
-              placeholder="Your Phone"
-              className="w-full p-2 mb-2 bg-gray-800 text-white border border-gold rounded"
-              value={leadPhone}
-              onChange={(e) => setLeadPhone(e.target.value)}
-            />
-          </div>
-          {/* Chat Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 text-sm">
-            {chatMessages.map((msg, idx) => (
-              <p key={idx} className={msg.sender === 'user' ? 'text-blue-300' : 'text-gray-300'}>
-                {msg.text}
-              </p>
-            ))}
-          </div>
-          {/* Text Input */}
-          <textarea
-            className="w-full p-2 bg-gray-800 text-white border-t border-gold"
-            placeholder="Type your items (e.g., sofa, 2 TVs, treadmill)..."
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSmartSelectorInput(e.target.value);
-                e.target.value = '';
-              }
-            }}
+        {/* Lead Info Fields */}
+        <div className="p-4 space-y-3 text-sm">
+          <input
+            type="text"
+            placeholder="Your Name"
+            className="w-full p-2 mb-2 bg-gray-800 text-white border border-gold rounded"
+            value={leadName}
+            onChange={(e) => setLeadName(e.target.value)}
+          />
+          <input
+            type="tel"
+            placeholder="Your Phone"
+            className="w-full p-2 mb-2 bg-gray-800 text-white border border-gold rounded"
+            value={leadPhone}
+            onChange={(e) => setLeadPhone(e.target.value)}
           />
         </div>
-      )}
-
-      {/* Badges + Search Bar */}
-      <div className="mb-6 max-w-2xl mx-auto">
-        <div className="mt-4 mb-6 flex flex-wrap justify-center gap-3">
-          <div className="compare-badge-silver">You Don’t Pay Until the Job Is Done</div>
-          <div className="compare-badge-silver">Compare Prices Instantly in Cart</div>
+        {/* Chat Messages */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 text-sm">
+          {chatMessages.map((msg, idx) => (
+            <p key={idx} className={msg.sender === 'user' ? 'text-blue-300' : 'text-gray-300'}>
+              {msg.text}
+            </p>
+          ))}
         </div>
-        <input
-          type="text"
-          placeholder="Search items..."
-          className="w-full p-3 rounded-xl text-black"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+        {/* Text Input */}
+        <textarea
+          className="w-full p-2 bg-gray-800 text-white border-t border-gold"
+          placeholder="Type your items (e.g., sofa, 2 TVs, treadmill)..."
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleSmartSelectorInput(e.target.value);
+              e.target.value = '';
+            }
+          }}
         />
       </div>
+    )}
 
-      {/* Item List */}
-      {filteredData.map((section, idx) =>
-        section.items.length > 0 ? (
-          <div key={idx} className="mb-10">
-            <h2 className="text-2xl text-gold mb-4">{section.category}</h2>
-            <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {section.items.map((item, i) => (
-                <button
-                  key={i}
-                  className="item-card-button"
-                  onClick={() => addToCart(item)}
-                >
-                  <div className="item-card-button-text">
-                    <p className="font-semibold">{item.name}</p>
-                  </div>
-                </button>
-              ))}
-            </div>
+    {/* Badges + Search Bar */}
+    <div className="mb-6 max-w-2xl mx-auto">
+      <div className="mt-4 mb-6 flex flex-wrap justify-center gap-3">
+        <div className="compare-badge-silver">You Don’t Pay Until the Job Is Done</div>
+        <div className="compare-badge-silver">Compare Prices Instantly in Cart</div>
+      </div>
+      <input
+        type="text"
+        placeholder="Search items..."
+        className="w-full p-3 rounded-xl text-black"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+    </div>
+
+    {/* Item List */}
+    {filteredData.map((section, idx) =>
+      section.items.length > 0 ? (
+        <div key={idx} className="mb-10">
+          <h2 className="text-2xl text-gold mb-4">{section.category}</h2>
+          <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {section.items.map((item, i) => (
+              <button
+                key={i}
+                className="item-card-button"
+                onClick={() => addToCart(item)}
+              >
+                <div className="item-card-button-text">
+                  <p className="font-semibold">{item.name}</p>
+                </div>
+              </button>
+            ))}
           </div>
-        ) : null
-      )}
-
-      {/* Floating Schedule Button */}
-      {!cartVisible && (
-        <button
-          className="fixed bottom-20 right-6 button-glow z-40"
-          onClick={() =>
-            navigate('/schedule', { state: { cart, total: totalWithDiscount, volume: totalVolume } })
-          }
-        >
-          Schedule Pickup
-        </button>
-      )}
-
-      {/* Cart Section */}
-      <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gold p-4">
-        <div
-          className="flex justify-between items-center cursor-pointer"
-          onClick={() => setCartVisible(!cartVisible)}
-        >
-          <p className="text-gold text-lg font-bold">
-            View Cart ({cart.length}) — Total: ${totalWithDiscount.toFixed(2)}
-          </p>
-          <span className={`transform transition-transform ${cartVisible ? 'rotate-180' : ''}`}>
-            ▼
-          </span>
         </div>
+      ) : null
+    )}
 
-        {cartVisible && (
-          <div className="mt-4 flex flex-col md:flex-row justify-between items-start gap-4">
-            <div className="flex-1 max-h-40 overflow-y-auto pr-2 w-full">
-              {cart.length === 0 ? (
-                <p className="italic text-gray-400">Your cart is empty.</p>
-              ) : (
-                <ul>
-                  {cart.map((item, idx) => (
-                    <li key={idx} className="flex justify-between items-center text-sm mb-1">
-                      {item.name}: ${item.price.toFixed(2)}
-                      <button
-                        onClick={() => removeFromCart(idx)}
-                        className="text-red-500 text-xs ml-2 hover:underline"
-                      >
-                        Remove
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+    {/* Floating Schedule Button */}
+    {!cartVisible && (
+      <button
+        className="fixed bottom-20 right-6 button-glow z-40"
+        onClick={() =>
+          navigate('/schedule', {
+            state: {
+              cart,
+              total: totalWithDiscount,
+              volume: totalVolume,
+              leadName,
+              leadPhone,
+            },
+          })
+        }
+      >
+        Schedule Pickup
+      </button>
+    )}
 
-            <div className="flex flex-col items-center gap-2 w-full md:w-auto">
-              <div className="truck-fill-container">
-                <div className="truck-fill-bar" style={{ width: `${Math.min(truckFillPercent, 100)}%` }} />
-              </div>
-              <p className="text-xs text-yellow-400 mt-1">Truck is {Math.round(truckFillPercent)}% full</p>
-              <p className="text-yellow-400 text-sm font-semibold">Estimated Load Tier: {loadLabel}</p>
-              {discountApplied && (
-                <p className="text-green-400 text-sm">Discount Applied: -${discountAmount.toFixed(2)}</p>
-              )}
-              <p className="font-bold">Final Price: ${totalWithDiscount.toFixed(2)}</p>
-              <button
-                className="button-glow w-full"
-                onClick={() =>
-                  navigate('/schedule', { state: { cart, total: totalWithDiscount, volume: totalVolume } })
-                }
-              >
-                Schedule Now
-              </button>
-              <button
-                className="underline text-sm text-blue-300 mt-1"
-                onClick={() => setShowComparison(true)}
-              >
-                Compare to other junk removal companies
-              </button>
-            </div>
-          </div>
-        )}
+    {/* Cart Section */}
+    <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gold p-4">
+      <div
+        className="flex justify-between items-center cursor-pointer"
+        onClick={() => setCartVisible(!cartVisible)}
+      >
+        <p className="text-gold text-lg font-bold">
+          View Cart ({cart.length}) — Total: ${totalWithDiscount.toFixed(2)}
+        </p>
+        <span className={`transform transition-transform ${cartVisible ? 'rotate-180' : ''}`}>
+          ▼
+        </span>
       </div>
 
-      {/* Price Comparison Modal */}
-      {showComparison && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
-          <div className="bg-white text-black p-6 rounded-xl max-w-md w-full">
-            <h3 className="text-xl font-bold mb-4 text-center">Price Comparison</h3>
-            <ul className="text-sm mb-4 space-y-1">
-              <li>• LoadUp (estimated): ${Math.round(totalWithDiscount * 1.1)}</li>
-              <li>• College Hunks (estimated): ${Math.round(totalWithDiscount * 1.2)}</li>
-              <li>• 1-800-GOT-JUNK (estimated): ${Math.round(totalWithDiscount * 1.3)}</li>
-            </ul>
-            <p className="text-green-700 font-bold text-center">
-              *Prices are estimated and may vary by location.
+      {cartVisible && (
+        <div className="mt-4 flex flex-col md:flex-row justify-between items-start gap-4">
+          <div className="flex-1 max-h-40 overflow-y-auto pr-2 w-full">
+            {cart.length === 0 ? (
+              <p className="italic text-gray-400">Your cart is empty.</p>
+            ) : (
+              <ul>
+                {cart.map((item, idx) => (
+                  <li key={idx} className="flex justify-between items-center text-sm mb-1">
+                    {item.name}: ${item.price.toFixed(2)}
+                    <button
+                      onClick={() => removeFromCart(idx)}
+                      className="text-red-500 text-xs ml-2 hover:underline"
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="flex flex-col items-center gap-2 w-full md:w-auto">
+            <div className="truck-fill-container">
+              <div
+                className="truck-fill-bar"
+                style={{ width: `${Math.min(truckFillPercent, 100)}%` }}
+              />
+            </div>
+            <p className="text-xs text-yellow-400 mt-1">
+              Truck is {Math.round(truckFillPercent)}% full
             </p>
-            <p className="text-green-700 font-bold text-center mt-2">
-              You’re likely saving with Junk Buddies!
+            <p className="text-yellow-400 text-sm font-semibold">
+              Estimated Load Tier: {loadLabel}
             </p>
+            {discountApplied && (
+              <p className="text-green-400 text-sm">
+                Discount Applied: -${discountAmount.toFixed(2)}
+              </p>
+            )}
+            <p className="font-bold">Final Price: ${totalWithDiscount.toFixed(2)}</p>
             <button
-              className="mt-4 px-4 py-2 bg-gold text-black font-semibold rounded"
-              onClick={() => setShowComparison(false)}
+              className="button-glow w-full"
+              onClick={() =>
+                navigate('/schedule', {
+                  state: {
+                    cart,
+                    total: totalWithDiscount,
+                    volume: totalVolume,
+                    leadName,
+                    leadPhone,
+                  },
+                })
+              }
             >
-              Close
+              Schedule Now
+            </button>
+            <button
+              className="underline text-sm text-blue-300 mt-1"
+              onClick={() => setShowComparison(true)}
+            >
+              Compare to other junk removal companies
             </button>
           </div>
         </div>
       )}
     </div>
-  );
-}
 
-export default ItemizedPage;
+    {/* Price Comparison Modal */}
+    {showComparison && (
+      <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
+        <div className="bg-white text-black p-6 rounded-xl max-w-md w-full">
+          <h3 className="text-xl font-bold mb-4 text-center">Price Comparison</h3>
+          <ul className="text-sm mb-4 space-y-1">
+            <li>• LoadUp (estimated): ${Math.round(totalWithDiscount * 1.1)}</li>
+            <li>• College Hunks (estimated): ${Math.round(totalWithDiscount * 1.2)}</li>
+            <li>• 1-800-GOT-JUNK (estimated): ${Math.round(totalWithDiscount * 1.3)}</li>
+          </ul>
+          <p className="text-green-700 font-bold text-center">
+            *Prices are estimated and may vary by location.
+          </p>
+          <p className="text-green-700 font-bold text-center mt-2">
+            You’re likely saving with Junk Buddies!
+          </p>
+          <button
+            className="mt-4 px-4 py-2 bg-gold text-black font-semibold rounded"
+            onClick={() => setShowComparison(false)}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+);
