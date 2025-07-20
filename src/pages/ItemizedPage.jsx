@@ -14,9 +14,8 @@ function ItemizedPage() {
   const [showChat, setShowChat] = useState(false);
   const [discountApplied, setDiscountApplied] = useState(false);
   const [chatMessages, setChatMessages] = useState([]);
-  const [customerName, setCustomerName] = useState('');
-  const [customerPhone, setCustomerPhone] = useState('');
-  const [infoSubmitted, setInfoSubmitted] = useState(false);
+  const [leadName, setLeadName] = useState('');
+  const [leadPhone, setLeadPhone] = useState('');
   const navigate = useNavigate();
 
   const addToCart = (item) => setCart([...cart, item]);
@@ -43,6 +42,17 @@ function ItemizedPage() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Auto-save lead info whenever name/phone changes
+  useEffect(() => {
+    if (leadName || leadPhone) {
+      fetch('/api/smart-selector', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lead: { name: leadName, phone: leadPhone } }),
+      }).catch((err) => console.error('Lead auto-save failed:', err));
+    }
+  }, [leadName, leadPhone]);
+
   const pulseGlowStyle = `
     @keyframes glowPulse {
       0% { border-color: #FFD700; box-shadow: 0 0 10px #FFD700; }
@@ -54,26 +64,13 @@ function ItemizedPage() {
     }
   `;
 
-  // Handles AI list building & lead capture
   async function handleSmartSelectorInput(userText) {
-    if (!infoSubmitted) {
-      setChatMessages((prev) => [
-        ...prev,
-        { sender: 'bot', text: 'Please enter your name and phone first to claim your 10% discount.' },
-      ]);
-      return;
-    }
     setChatMessages((prev) => [...prev, { sender: 'user', text: userText }]);
     try {
       const res = await fetch('/api/smart-selector', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          customerName,
-          customerPhone,
-          text: userText,
-          itemData,
-        }),
+        body: JSON.stringify({ text: userText, itemData }),
       });
       const data = await res.json();
 
@@ -95,7 +92,6 @@ function ItemizedPage() {
       ]);
     }
   }
-
     const itemData = [               
     {
   category: 'Beds & Bedroom Furniture',
@@ -461,7 +457,7 @@ function ItemizedPage() {
 }
 ];
 
-  const filteredData = itemData.map((section) => ({
+ const filteredData = itemData.map((section) => ({
     ...section,
     items: section.items.filter((item) =>
       item.name.toLowerCase().includes(search.toLowerCase())
@@ -483,7 +479,7 @@ function ItemizedPage() {
         </span>
       </h1>
 
-      {/* Smart Selector Popup */}
+      {/* Smart Selector Notification */}
       {showSmartSelectorNotice && !showChat && (
         <div
           className="fixed bottom-6 right-6 bg-black text-white border-2 rounded-xl p-4 shadow-xl animate-pulse-glow cursor-pointer z-50 max-w-xs"
@@ -493,9 +489,7 @@ function ItemizedPage() {
           <h3 className="font-bold text-gold text-lg mb-1">
             Quick Add with Smart Select — Save 10%
           </h3>
-          <p className="text-sm">
-            Let me build your list in seconds. Tap to start.
-          </p>
+          <p className="text-sm">Let me build your list in seconds. Tap to start.</p>
         </div>
       )}
 
@@ -508,87 +502,48 @@ function ItemizedPage() {
               ✕
             </button>
           </div>
-
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 text-sm">
-            {!infoSubmitted ? (
-              <>
-                <p className="text-gray-300">
-                  To unlock 10% off, enter your name & phone below. We'll confirm your discount instantly.
-                </p>
-                <input
-                  type="text"
-                  placeholder="Your Name"
-                  className="w-full p-2 mt-2 bg-gray-800 text-white border border-gold rounded"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                />
-                <input
-                  type="tel"
-                  placeholder="Your Phone Number"
-                  className="w-full p-2 mt-2 bg-gray-800 text-white border border-gold rounded"
-                  value={customerPhone}
-                  onChange={(e) => setCustomerPhone(e.target.value)}
-                />
-                <button
-                  className="button-glow w-full mt-3"
-                  onClick={() => {
-                    if (customerName && customerPhone) {
-                      setInfoSubmitted(true);
-                      setDiscountApplied(true);
-                      setChatMessages((prev) => [
-                        ...prev,
-                        { sender: 'bot', text: `Thanks ${customerName}! Your 10% discount is active. Tell me what to add (e.g., sofa, 2 TVs).` },
-                      ]);
-                    } else {
-                      setChatMessages((prev) => [
-                        ...prev,
-                        { sender: 'bot', text: 'Please fill out both fields to unlock your discount.' },
-                      ]);
-                    }
-                  }}
-                >
-                  Unlock Discount & Continue
-                </button>
-              </>
-            ) : (
-              <>
-                {chatMessages.map((msg, idx) => (
-                  <p
-                    key={idx}
-                    className={msg.sender === 'user' ? 'text-blue-300' : 'text-gray-300'}
-                  >
-                    {msg.text}
-                  </p>
-                ))}
-              </>
-            )}
-          </div>
-
-          {infoSubmitted && (
-            <textarea
-              className="w-full p-2 bg-gray-800 text-white border-t border-gold"
-              placeholder="Type your items (e.g., sofa, treadmill, 2 TVs)..."
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSmartSelectorInput(e.target.value);
-                  e.target.value = '';
-                }
-              }}
+          <div className="p-4 space-y-3 text-sm">
+            <input
+              type="text"
+              placeholder="Your Name"
+              className="w-full p-2 mb-2 bg-gray-800 text-white border border-gold rounded"
+              value={leadName}
+              onChange={(e) => setLeadName(e.target.value)}
             />
-          )}
+            <input
+              type="tel"
+              placeholder="Your Phone"
+              className="w-full p-2 mb-2 bg-gray-800 text-white border border-gold rounded"
+              value={leadPhone}
+              onChange={(e) => setLeadPhone(e.target.value)}
+            />
+          </div>
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 text-sm">
+            {chatMessages.map((msg, idx) => (
+              <p key={idx} className={msg.sender === 'user' ? 'text-blue-300' : 'text-gray-300'}>
+                {msg.text}
+              </p>
+            ))}
+          </div>
+          <textarea
+            className="w-full p-2 bg-gray-800 text-white border-t border-gold"
+            placeholder="Type your items (e.g., sofa, 2 TVs, treadmill)..."
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSmartSelectorInput(e.target.value);
+                e.target.value = '';
+              }
+            }}
+          />
         </div>
       )}
 
       {/* Badges + Search */}
       <div className="mb-6 max-w-2xl mx-auto">
         <div className="mt-4 mb-6 flex flex-wrap justify-center gap-3">
-          <div className="compare-badge-silver">
-            You Don’t Pay Until the Job Is Done
-          </div>
-          <div className="compare-badge-silver">
-            Compare Prices Instantly in Cart
-          </div>
+          <div className="compare-badge-silver">You Don’t Pay Until the Job Is Done</div>
+          <div className="compare-badge-silver">Compare Prices Instantly in Cart</div>
         </div>
         <input
           type="text"
@@ -599,7 +554,7 @@ function ItemizedPage() {
         />
       </div>
 
-      {/* Item List */}
+      {/* Item list (unchanged) */}
       {filteredData.map((section, idx) =>
         section.items.length > 0 ? (
           <div key={idx} className="mb-10">
@@ -626,9 +581,7 @@ function ItemizedPage() {
         <button
           className="fixed bottom-20 right-6 button-glow z-40"
           onClick={() =>
-            navigate('/schedule', {
-              state: { cart, total: totalWithDiscount, volume: totalVolume },
-            })
+            navigate('/schedule', { state: { cart, total: totalWithDiscount, volume: totalVolume } })
           }
         >
           Schedule Pickup
@@ -644,9 +597,7 @@ function ItemizedPage() {
           <p className="text-gold text-lg font-bold">
             View Cart ({cart.length}) — Total: ${totalWithDiscount.toFixed(2)}
           </p>
-          <span
-            className={`transform transition-transform ${cartVisible ? 'rotate-180' : ''}`}
-          >
+          <span className={`transform transition-transform ${cartVisible ? 'rotate-180' : ''}`}>
             ▼
           </span>
         </div>
@@ -659,10 +610,7 @@ function ItemizedPage() {
               ) : (
                 <ul>
                   {cart.map((item, idx) => (
-                    <li
-                      key={idx}
-                      className="flex justify-between items-center text-sm mb-1"
-                    >
+                    <li key={idx} className="flex justify-between items-center text-sm mb-1">
                       {item.name}: ${item.price.toFixed(2)}
                       <button
                         onClick={() => removeFromCart(idx)}
@@ -678,31 +626,18 @@ function ItemizedPage() {
 
             <div className="flex flex-col items-center gap-2 w-full md:w-auto">
               <div className="truck-fill-container">
-                <div
-                  className="truck-fill-bar"
-                  style={{ width: `${Math.min(truckFillPercent, 100)}%` }}
-                />
+                <div className="truck-fill-bar" style={{ width: `${Math.min(truckFillPercent, 100)}%` }} />
               </div>
-              <p className="text-xs text-yellow-400 mt-1">
-                Truck is {Math.round(truckFillPercent)}% full
-              </p>
-              <p className="text-yellow-400 text-sm font-semibold">
-                Estimated Load Tier: {loadLabel}
-              </p>
+              <p className="text-xs text-yellow-400 mt-1">Truck is {Math.round(truckFillPercent)}% full</p>
+              <p className="text-yellow-400 text-sm font-semibold">Estimated Load Tier: {loadLabel}</p>
               {discountApplied && (
-                <p className="text-green-400 text-sm">
-                  Discount Applied: -${discountAmount.toFixed(2)}
-                </p>
+                <p className="text-green-400 text-sm">Discount Applied: -${discountAmount.toFixed(2)}</p>
               )}
-              <p className="font-bold">
-                Final Price: ${totalWithDiscount.toFixed(2)}
-              </p>
+              <p className="font-bold">Final Price: ${totalWithDiscount.toFixed(2)}</p>
               <button
                 className="button-glow w-full"
                 onClick={() =>
-                  navigate('/schedule', {
-                    state: { cart, total: totalWithDiscount, volume: totalVolume },
-                  })
+                  navigate('/schedule', { state: { cart, total: totalWithDiscount, volume: totalVolume } })
                 }
               >
                 Schedule Now
@@ -722,9 +657,7 @@ function ItemizedPage() {
       {showComparison && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
           <div className="bg-white text-black p-6 rounded-xl max-w-md w-full">
-            <h3 className="text-xl font-bold mb-4 text-center">
-              Price Comparison
-            </h3>
+            <h3 className="text-xl font-bold mb-4 text-center">Price Comparison</h3>
             <ul className="text-sm mb-4 space-y-1">
               <li>• LoadUp (estimated): ${Math.round(totalWithDiscount * 1.1)}</li>
               <li>• College Hunks (estimated): ${Math.round(totalWithDiscount * 1.2)}</li>
