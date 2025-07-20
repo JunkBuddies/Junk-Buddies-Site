@@ -13,6 +13,7 @@ function ItemizedPage() {
   const [showSmartSelectorNotice, setShowSmartSelectorNotice] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [discountApplied, setDiscountApplied] = useState(false);
+  const [chatMessages, setChatMessages] = useState([]);
   const navigate = useNavigate();
 
   const addToCart = (item) => setCart([...cart, item]);
@@ -48,6 +49,35 @@ function ItemizedPage() {
       animation: glowPulse 1.5s infinite ease-in-out;
     }
   `;
+
+  async function handleSmartSelectorInput(userText) {
+    setChatMessages((prev) => [...prev, { sender: 'user', text: userText }]);
+    try {
+      const res = await fetch('/api/smart-selector', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: userText, itemData }),
+      });
+      const data = await res.json();
+
+      setCart((prev) => [...prev, ...data]);
+      setDiscountApplied(true);
+
+      setChatMessages((prev) => [
+        ...prev,
+        {
+          sender: 'bot',
+          text: `Got it! I've added ${data.length} items to your cart. You’re saving 10%.`,
+        },
+      ]);
+    } catch (err) {
+      console.error('Smart Selector failed:', err);
+      setChatMessages((prev) => [
+        ...prev,
+        { sender: 'bot', text: 'Something went wrong. Please try again.' },
+      ]);
+    }
+  }
     const itemData = [               
     {
   category: 'Beds & Bedroom Furniture',
@@ -413,7 +443,7 @@ function ItemizedPage() {
 }
 ];
 
-const filteredData = itemData.map((section) => ({
+ const filteredData = itemData.map((section) => ({
     ...section,
     items: section.items.filter((item) =>
       item.name.toLowerCase().includes(search.toLowerCase())
@@ -435,7 +465,7 @@ const filteredData = itemData.map((section) => ({
         </span>
       </h1>
 
-      {/* Smart Selector Notification */}
+      {/* Smart Selector Popup */}
       {showSmartSelectorNotice && !showChat && (
         <div
           className="fixed bottom-6 right-6 bg-black text-white border-2 rounded-xl p-4 shadow-xl animate-pulse-glow cursor-pointer z-50 max-w-xs"
@@ -459,22 +489,23 @@ const filteredData = itemData.map((section) => ({
             </button>
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-3 text-sm">
-            <p className="text-gray-300">
-              Hi, I’m Junk Buddies Smart Selector. Want me to build your list and lock in 10% off?
-            </p>
-            <button
-              className="button-glow w-full"
-              onClick={() => setDiscountApplied(true)}
-            >
-              Yes, Claim 10% & Start
-            </button>
-            <button
-              className="underline text-gray-400 hover:text-gold"
-              onClick={() => setDiscountApplied(false)}
-            >
-              Maybe Later
-            </button>
+            {chatMessages.map((msg, idx) => (
+              <p key={idx} className={msg.sender === 'user' ? 'text-blue-300' : 'text-gray-300'}>
+                {msg.text}
+              </p>
+            ))}
           </div>
+          <textarea
+            className="w-full p-2 bg-gray-800 text-white border-t border-gold"
+            placeholder="Type your items (e.g., sofa, 2 TVs, treadmill)..."
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSmartSelectorInput(e.target.value);
+                e.target.value = '';
+              }
+            }}
+          />
         </div>
       )}
 
@@ -493,7 +524,7 @@ const filteredData = itemData.map((section) => ({
         />
       </div>
 
-      {/* Item list */}
+      {/* Item list remains as-is */}
       {filteredData.map((section, idx) =>
         section.items.length > 0 ? (
           <div key={idx} className="mb-10">
@@ -515,15 +546,7 @@ const filteredData = itemData.map((section) => ({
         ) : null
       )}
 
-      {/* Pricing Guide */}
-      <p className="text-sm text-gray-400 mt-4">
-        Not sure what it’ll cost overall?{' '}
-        <Link to="/blog/how-much-does-junk-removal-cost" className="text-gold underline hover:text-white">
-          Check out our no-surprise pricing guide
-        </Link>.
-      </p>
-
-      {/* Floating Schedule Button (outside cart) */}
+      {/* Floating Schedule Button */}
       {!cartVisible && (
         <button
           className="fixed bottom-20 right-6 button-glow z-40"
