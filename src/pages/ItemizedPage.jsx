@@ -1,7 +1,7 @@
 // File: src/pages/ItemizedPage.jsx
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { calculatePrice, getLoadLabel, fullLoadPoints } from '../utils/pricing';
 
@@ -36,19 +36,21 @@ function ItemizedPage() {
 
   // Show Smart Selector popup after 3 seconds
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSmartSelectorNotice(true);
-    }, 3000);
+    const timer = setTimeout(() => setShowSmartSelectorNotice(true), 3000);
     return () => clearTimeout(timer);
   }, []);
 
-  // Auto-save lead info whenever name/phone changes
+  // Auto-save lead info (always send placeholder text/itemData so API doesn’t error)
   useEffect(() => {
     if (leadName || leadPhone) {
       fetch('/api/smart-selector', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lead: { name: leadName, phone: leadPhone } }),
+        body: JSON.stringify({
+          text: "",
+          itemData: [],
+          lead: { name: leadName, phone: leadPhone },
+        }),
       }).catch((err) => console.error('Lead auto-save failed:', err));
     }
   }, [leadName, leadPhone]);
@@ -70,7 +72,11 @@ function ItemizedPage() {
       const res = await fetch('/api/smart-selector', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: userText, itemData }),
+        body: JSON.stringify({
+          text: userText,
+          itemData, // full list is still used for AI matching
+          lead: { name: leadName, phone: leadPhone },
+        }),
       });
       const data = await res.json();
 
@@ -479,7 +485,7 @@ function ItemizedPage() {
         </span>
       </h1>
 
-      {/* Smart Selector Notification */}
+      {/* Smart Selector Popup */}
       {showSmartSelectorNotice && !showChat && (
         <div
           className="fixed bottom-6 right-6 bg-black text-white border-2 rounded-xl p-4 shadow-xl animate-pulse-glow cursor-pointer z-50 max-w-xs"
@@ -502,6 +508,7 @@ function ItemizedPage() {
               ✕
             </button>
           </div>
+          {/* Lead Info Fields */}
           <div className="p-4 space-y-3 text-sm">
             <input
               type="text"
@@ -518,6 +525,7 @@ function ItemizedPage() {
               onChange={(e) => setLeadPhone(e.target.value)}
             />
           </div>
+          {/* Chat Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3 text-sm">
             {chatMessages.map((msg, idx) => (
               <p key={idx} className={msg.sender === 'user' ? 'text-blue-300' : 'text-gray-300'}>
@@ -525,6 +533,7 @@ function ItemizedPage() {
               </p>
             ))}
           </div>
+          {/* Text Input */}
           <textarea
             className="w-full p-2 bg-gray-800 text-white border-t border-gold"
             placeholder="Type your items (e.g., sofa, 2 TVs, treadmill)..."
@@ -539,7 +548,7 @@ function ItemizedPage() {
         </div>
       )}
 
-      {/* Badges + Search */}
+      {/* Badges + Search Bar */}
       <div className="mb-6 max-w-2xl mx-auto">
         <div className="mt-4 mb-6 flex flex-wrap justify-center gap-3">
           <div className="compare-badge-silver">You Don’t Pay Until the Job Is Done</div>
@@ -554,7 +563,7 @@ function ItemizedPage() {
         />
       </div>
 
-      {/* Item list (unchanged) */}
+      {/* Item List */}
       {filteredData.map((section, idx) =>
         section.items.length > 0 ? (
           <div key={idx} className="mb-10">
@@ -588,7 +597,7 @@ function ItemizedPage() {
         </button>
       )}
 
-      {/* Fixed Cart Section */}
+      {/* Cart Section */}
       <div className="fixed bottom-0 left-0 right-0 bg-black border-t border-gold p-4">
         <div
           className="flex justify-between items-center cursor-pointer"
