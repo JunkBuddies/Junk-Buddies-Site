@@ -1,26 +1,27 @@
 // File: api/smart-selector.js
-const OpenAI = require("openai");
-const { db } = require("../src/lib/firebase.js");
-const { collection, addDoc } = require("firebase/firestore");
+
+import OpenAI from "openai";
+import { db } from "../src/lib/firebase.js"; // adjust path if your firebase.js is elsewhere
+import { collection, addDoc } from "firebase/firestore";
 
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY, // Make sure this is set in Vercel
 });
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    const { text, itemData, lead } = req.body; // FIXED: match frontend
+    const { text, itemData, leadInfo } = req.body;
 
-    // --- Save lead info (even partial) ---
-    if (lead && (lead.name || lead.phone)) {
+    // --- 1) Save lead info (even partial) into Firestore ---
+    if (leadInfo && (leadInfo.name || leadInfo.phone)) {
       try {
         await addDoc(collection(db, "leadCaptures"), {
-          name: lead.name || "",
-          phone: lead.phone || "",
+          name: leadInfo.name || "",
+          phone: leadInfo.phone || "",
           enteredAt: new Date(),
         });
       } catch (err) {
@@ -28,7 +29,7 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    // --- Ask OpenAI to parse items ---
+    // --- 2) Build GPT prompt ---
     const prompt = `
 Match the following items against this master list (match closest names):
 ${JSON.stringify(itemData)}
@@ -42,7 +43,7 @@ For any items NOT found, estimate size:
 
 Label unknowns as "unlisted".
 
-Return ONLY JSON:
+Return ONLY a JSON array, no extra text, like:
 [
   { "name": "Item", "price": 100, "estimatedVolume": 20, "category": "known/unlisted" }
 ]
@@ -54,10 +55,25 @@ Return ONLY JSON:
       max_tokens: 800,
     });
 
-    const aiText = completion.output[0].content[0].text.trim();
-    const parsed = JSON.parse(aiText);
+    // --- 3) Handle and sanitize GPT output ---
+    let aiText = "";
+    try {
+      aiText = completion.output[0].content[0].text.trim();
+      console.log("AI RAW OUTPUT:", aiText); // Debugging output
+    } catch (e) {
+      console.error("No AI text returned:", e);
+      return res.status(500).json({ error: "AI returned no response" });
+    }
 
-    // --- Save any unlisted items ---
+    let parsed;
+    try {
+      parsed = JSON.parse(aiText);
+    } catch (e) {
+      console.error("JSON parse error:", e, "Raw output:", aiText);
+      return res.status(500).json({ error: "AI returned invalid JSON" });
+    }
+
+    // --- 4) Save unlisted items into Firestore for review ---
     const unlistedItems = parsed.filter((i) => i.category === "unlisted");
     for (const item of unlistedItems) {
       try {
@@ -76,4 +92,4 @@ Return ONLY JSON:
     console.error("Smart Selector API error:", err);
     return res.status(500).json({ error: err.message });
   }
-};
+}
