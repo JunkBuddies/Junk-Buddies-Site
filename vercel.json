@@ -2,6 +2,9 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "env": {
+    "OPENAI_API_KEY": "@openai_api_key"
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -12,6 +15,11 @@
       "destination": "/index.html"
     }
   ],
+  "functions": {
+    "api/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
   "headers": [
     {
       "source": "/sitemap.xml",
