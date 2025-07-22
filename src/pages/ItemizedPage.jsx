@@ -458,8 +458,6 @@ function ItemizedPage() {
 }
 ];
 
-const itemData = [/* FULL structured list remains here */];
-
   const filteredData = itemData.map((section) => ({
     ...section,
     items: section.items.filter((item) =>
