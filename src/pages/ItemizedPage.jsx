@@ -57,52 +57,43 @@ function ItemizedPage() {
     }
   `;
 
-  async function handleSmartSelectorInput(userText) {
-    if (!userText.trim()) return; // skip blanks
+async function handleSmartSelectorInput(userText) {
+  if (!userText.trim()) return;
 
-    setChatMessages((prev) => [...prev, { sender: "user", text: userText }]);
-    try {
-     // Reduce payload for AI (names only, no prices/volumes)
-const slimmedData = itemData.map((cat) => ({
-  category: cat.category,
-  items: cat.items.map((i) => i.name),
-}));
+  setChatMessages((prev) => [...prev, { sender: "user", text: userText }]);
 
-// Only send user messages to avoid repeating bot text
-const userHistory = chatMessages.filter((m) => m.sender === "user");
+  try {
+    const res = await fetch("/api/smart-selector", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: [...chatMessages, { sender: "user", text: userText }],
+        // Removed itemData to prevent overload
+        leadInfo: { name: leadName, phone: leadPhone, submitted: false },
+      }),
+    });
 
-const res = await fetch("/api/smart-selector", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    messages: [...userHistory, { sender: "user", text: userText }],
-    itemData: slimmedData,
-    leadInfo: { name: leadName, phone: leadPhone, submitted: false },
-  }),
-});
+    const data = await res.json();
+    setChatMessages((prev) => [...prev, { sender: "bot", text: data.reply }]);
 
-
-      const data = await res.json();
-      setChatMessages((prev) => [...prev, { sender: "bot", text: data.reply }]);
-
-      if (Array.isArray(data.cartItems) && data.cartItems.length) {
-        // Avoid duplicate cart items
-        const newItems = data.cartItems.filter(
-          (i) => !cart.some((c) => c.name === i.name)
-        );
-        if (newItems.length) {
-          setCart((prev) => [...prev, ...newItems]);
-          setDiscountApplied(true);
-        }
+    if (Array.isArray(data.cartItems) && data.cartItems.length) {
+      const newItems = data.cartItems.filter(
+        (i) => !cart.some((c) => c.name === i.name)
+      );
+      if (newItems.length) {
+        setCart((prev) => [...prev, ...newItems]);
+        setDiscountApplied(true);
       }
-    } catch (err) {
-      console.error("AI Chat error:", err);
-      setChatMessages((prev) => [
-        ...prev,
-        { sender: "bot", text: "AI is unavailable. Try again shortly." },
-      ]);
     }
+  } catch (err) {
+    console.error("AI Chat error:", err);
+    setChatMessages((prev) => [
+      ...prev,
+      { sender: "bot", text: "AI is unavailable. Try again shortly." },
+    ]);
   }
+}
+
     const itemData = [               
     {
   category: 'Beds & Bedroom Furniture',
