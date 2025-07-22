@@ -62,15 +62,25 @@ function ItemizedPage() {
 
     setChatMessages((prev) => [...prev, { sender: "user", text: userText }]);
     try {
-      const res = await fetch("/api/smart-selector", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: [...chatMessages, { sender: "user", text: userText }],
-          itemData,
-          leadInfo: { name: leadName, phone: leadPhone, submitted: false },
-        }),
-      });
+     // Reduce payload for AI (names only, no prices/volumes)
+const slimmedData = itemData.map((cat) => ({
+  category: cat.category,
+  items: cat.items.map((i) => i.name),
+}));
+
+// Only send user messages to avoid repeating bot text
+const userHistory = chatMessages.filter((m) => m.sender === "user");
+
+const res = await fetch("/api/smart-selector", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    messages: [...userHistory, { sender: "user", text: userText }],
+    itemData: slimmedData,
+    leadInfo: { name: leadName, phone: leadPhone, submitted: false },
+  }),
+});
+
 
       const data = await res.json();
       setChatMessages((prev) => [...prev, { sender: "bot", text: data.reply }]);
