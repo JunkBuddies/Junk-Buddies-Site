@@ -1,11 +1,10 @@
 // File: api/smart-selector.js
-
 import OpenAI from "openai";
-import { db } from "../src/lib/firebase.js"; // adjust path if your firebase.js is elsewhere
+import { db } from "../src/lib/firebase.js";
 import { collection, addDoc } from "firebase/firestore";
 
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // Make sure this is set in Vercel
+  apiKey: process.env.OPENAI_API_KEY, // Make sure it's set in Vercel env vars
 });
 
 export default async function handler(req, res) {
@@ -14,9 +13,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { text, itemData, leadInfo } = req.body;
+    const { messages, itemData, leadInfo } = req.body;
 
-    // --- 1) Save lead info (even partial) into Firestore ---
+    // --- 1) Save lead info (partial OK) ---
     if (leadInfo && (leadInfo.name || leadInfo.phone)) {
       try {
         await addDoc(collection(db, "leadCaptures"), {
@@ -29,57 +28,54 @@ export default async function handler(req, res) {
       }
     }
 
-    // --- 2) Build GPT prompt ---
+    // --- 2) Build conversational prompt ---
     const prompt = `
-Match the following items against this master list (match closest names):
+You are Junk Buddies' AI assistant. Help users build a junk removal list.
+- Greet politely.
+- Parse items mentioned.
+- Match against this master list:
 ${JSON.stringify(itemData)}
 
-User list: "${text}"
+Rules:
+- If a user lists something NOT in the list, mark it as "unlisted" and give it a rough size (Small 8 cu ft $50, Medium 12 cu ft $70, Large 20 cu ft $100).
+- Always summarize items added and give a running total.
+- Speak conversationally, one short response at a time.
+- Do NOT dump JSON to the user; only return conversational text.
 
-For any items NOT found, estimate size:
-- Small (8 cu ft, $50)
-- Medium (12 cu ft, $70)
-- Large (20 cu ft, $100)
+Your job is to:
+1. Continue the conversation.
+2. Build the final cart (return separately in JSON for frontend).
 
-Label unknowns as "unlisted".
-
-Return ONLY a JSON array, no extra text, like:
-[
-  { "name": "Item", "price": 100, "estimatedVolume": 20, "category": "known/unlisted" }
-]
+Current conversation: ${JSON.stringify(messages)}
+Return ONLY JSON object like:
+{
+  "reply": "text response to show user",
+  "cartItems": [ { "name": "Item", "price": 100, "volume": 20, "category": "known/unlisted" } ]
+}
 `;
 
+    // --- 3) Call GPT to generate response ---
     const completion = await client.responses.create({
       model: "gpt-4.1",
       input: prompt,
-      max_tokens: 800,
+      max_tokens: 700,
     });
 
-    // --- 3) Handle and sanitize GPT output ---
-    let aiText = "";
-    try {
-      aiText = completion.output[0].content[0].text.trim();
-      console.log("AI RAW OUTPUT:", aiText); // Debugging output
-    } catch (e) {
-      console.error("No AI text returned:", e);
-      return res.status(500).json({ error: "AI returned no response" });
-    }
-
+    const output = completion.output[0].content[0].text.trim();
     let parsed;
     try {
-      parsed = JSON.parse(aiText);
-    } catch (e) {
-      console.error("JSON parse error:", e, "Raw output:", aiText);
-      return res.status(500).json({ error: "AI returned invalid JSON" });
+      parsed = JSON.parse(output);
+    } catch (err) {
+      console.error("Failed to parse AI output:", output);
+      parsed = { reply: "Sorry, I couldn't process that. Try again?", cartItems: [] };
     }
 
-    // --- 4) Save unlisted items into Firestore for review ---
-    const unlistedItems = parsed.filter((i) => i.category === "unlisted");
+    // --- 4) Save unlisted items for review ---
+    const unlistedItems = parsed.cartItems.filter((i) => i.category === "unlisted");
     for (const item of unlistedItems) {
       try {
         await addDoc(collection(db, "unlistedItems"), {
           ...item,
-          userList: text,
           loggedAt: new Date(),
         });
       } catch (err) {
@@ -93,3 +89,4 @@ Return ONLY a JSON array, no extra text, like:
     return res.status(500).json({ error: err.message });
   }
 }
+
