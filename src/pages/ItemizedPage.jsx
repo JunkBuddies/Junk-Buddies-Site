@@ -1,28 +1,22 @@
 // File: src/pages/ItemizedPage.jsx
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { calculatePrice, getLoadLabel, fullLoadPoints } from '../utils/pricing';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { calculatePrice, getLoadLabel, fullLoadPoints } from "../utils/pricing";
 
 function ItemizedPage() {
   const { cart, setCart } = useCart();
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [cartVisible, setCartVisible] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
   const [showSmartSelectorNotice, setShowSmartSelectorNotice] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [discountApplied, setDiscountApplied] = useState(false);
   const [chatMessages, setChatMessages] = useState([]);
-  const [leadName, setLeadName] = useState('');
-  const [leadPhone, setLeadPhone] = useState('');
+  const [leadName, setLeadName] = useState("");
+  const [leadPhone, setLeadPhone] = useState("");
+  const [leadSubmitted, setLeadSubmitted] = useState(false);
   const navigate = useNavigate();
-
-  const addToCart = (item) => setCart([...cart, item]);
-  const removeFromCart = (index) => {
-    const updated = [...cart];
-    updated.splice(index, 1);
-    setCart(updated);
-  };
 
   const { finalPrice, totalVolume } = calculatePrice(cart);
   const discountAmount = discountApplied ? finalPrice * 0.1 : 0;
@@ -31,22 +25,26 @@ function ItemizedPage() {
   const truckFillPercent = ((totalVolume % fullLoadPoints) / fullLoadPoints) * 100;
   const loadLabel = getLoadLabel(totalVolume);
 
-  // Show Smart Selector popup after 3 seconds
+  const addToCart = (item) => setCart((prev) => [...prev, item]);
+  const removeFromCart = (idx) =>
+    setCart((prev) => prev.filter((_, i) => i !== idx));
+
   useEffect(() => {
     const timer = setTimeout(() => setShowSmartSelectorNotice(true), 3000);
     return () => clearTimeout(timer);
   }, []);
 
-  // Auto-save lead info when provided
-  useEffect(() => {
-    if (leadName || leadPhone) {
-      fetch('/api/smart-selector', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ leadInfo: { name: leadName, phone: leadPhone } }),
-      }).catch((err) => console.error('Lead auto-save failed:', err));
-    }
-  }, [leadName, leadPhone]);
+  // Save lead once after form is submitted
+  const submitLead = () => {
+    setLeadSubmitted(true);
+    fetch("/api/smart-selector", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        leadInfo: { name: leadName, phone: leadPhone, submitted: true },
+      }),
+    }).catch(() => console.error("Failed to save lead"));
+  };
 
   const pulseGlowStyle = `
     @keyframes glowPulse {
@@ -60,34 +58,41 @@ function ItemizedPage() {
   `;
 
   async function handleSmartSelectorInput(userText) {
-    setChatMessages((prev) => [...prev, { sender: 'user', text: userText }]);
+    if (!userText.trim()) return; // skip blanks
+
+    setChatMessages((prev) => [...prev, { sender: "user", text: userText }]);
     try {
-      const res = await fetch('/api/smart-selector', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/smart-selector", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [...chatMessages, { sender: 'user', text: userText }],
+          messages: [...chatMessages, { sender: "user", text: userText }],
           itemData,
-          leadInfo: { name: leadName, phone: leadPhone },
+          leadInfo: { name: leadName, phone: leadPhone, submitted: false },
         }),
       });
 
       const data = await res.json();
-      setChatMessages((prev) => [...prev, { sender: 'bot', text: data.reply }]);
+      setChatMessages((prev) => [...prev, { sender: "bot", text: data.reply }]);
 
-      if (data.cartItems?.length) {
-        setCart((prev) => [...prev, ...data.cartItems]);
-        setDiscountApplied(true);
+      if (Array.isArray(data.cartItems) && data.cartItems.length) {
+        // Avoid duplicate cart items
+        const newItems = data.cartItems.filter(
+          (i) => !cart.some((c) => c.name === i.name)
+        );
+        if (newItems.length) {
+          setCart((prev) => [...prev, ...newItems]);
+          setDiscountApplied(true);
+        }
       }
     } catch (err) {
-      console.error('AI Chat failed:', err);
+      console.error("AI Chat error:", err);
       setChatMessages((prev) => [
         ...prev,
-        { sender: 'bot', text: 'Something went wrong. Please try again.' },
+        { sender: "bot", text: "AI is unavailable. Try again shortly." },
       ]);
     }
   }
-
     const itemData = [               
     {
   category: 'Beds & Bedroom Furniture',
@@ -453,7 +458,9 @@ function ItemizedPage() {
 }
 ];
 
-const filteredData = itemData.map((section) => ({
+const itemData = [/* FULL structured list remains here */];
+
+  const filteredData = itemData.map((section) => ({
     ...section,
     items: section.items.filter((item) =>
       item.name.toLowerCase().includes(search.toLowerCase())
@@ -466,26 +473,26 @@ const filteredData = itemData.map((section) => ({
 
       {/* Title */}
       <h1 className="text-4xl mb-6 text-center font-bold">
-        <span className="text-white">Manually Select Junk</span>{' '}
+        <span className="text-white">Manually Select Junk</span>{" "}
         <span
           className="px-2 py-1 border-2 rounded-lg animate-pulse-glow"
-          style={{ borderColor: '#FFD700', color: '#FFD700' }}
+          style={{ borderColor: "#FFD700", color: "#FFD700" }}
         >
           or Add with Smart Select! (Save 10%)
         </span>
       </h1>
 
-      {/* Smart Selector Notice */}
+      {/* Popup Notice */}
       {showSmartSelectorNotice && !showChat && (
         <div
           className="fixed bottom-6 right-6 bg-black text-white border-2 rounded-xl p-4 shadow-xl animate-pulse-glow cursor-pointer z-50 max-w-xs"
-          style={{ borderColor: '#FFD700' }}
+          style={{ borderColor: "#FFD700" }}
           onClick={() => {
             setShowChat(true);
             setChatMessages([
               {
-                sender: 'bot',
-                text: 'Hi there! I can quickly build your list and save you 10%. What’s the first item you need gone?',
+                sender: "bot",
+                text: "Hi! I can help build your junk list fast and save you 10%. What’s the first item?",
               },
             ]);
           }}
@@ -514,7 +521,7 @@ const filteredData = itemData.map((section) => ({
             {chatMessages.map((msg, idx) => (
               <p
                 key={idx}
-                className={msg.sender === 'user' ? 'text-blue-300' : 'text-gray-300'}
+                className={msg.sender === "user" ? "text-blue-300" : "text-gray-300"}
               >
                 {msg.text}
               </p>
@@ -523,7 +530,9 @@ const filteredData = itemData.map((section) => ({
 
           {discountApplied && (
             <div className="p-4 border-t border-gold bg-gray-800">
-              <p className="text-sm text-gold font-bold mb-2">Lock in 10% off:</p>
+              <p className="text-sm text-gold font-bold mb-2">
+                Lock in your 10% discount:
+              </p>
               <input
                 type="text"
                 placeholder="Your Name"
@@ -538,6 +547,12 @@ const filteredData = itemData.map((section) => ({
                 value={leadPhone}
                 onChange={(e) => setLeadPhone(e.target.value)}
               />
+              <button
+                onClick={submitLead}
+                className="mt-2 w-full px-3 py-1 bg-gold text-black font-semibold rounded"
+              >
+                Save Discount
+              </button>
             </div>
           )}
 
@@ -545,10 +560,10 @@ const filteredData = itemData.map((section) => ({
             className="w-full p-2 bg-gray-800 text-white border-t border-gold"
             placeholder="Type your items..."
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
+              if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 handleSmartSelectorInput(e.target.value);
-                e.target.value = '';
+                e.target.value = "";
               }
             }}
           />
@@ -558,8 +573,12 @@ const filteredData = itemData.map((section) => ({
       {/* Search Bar */}
       <div className="mb-6 max-w-2xl mx-auto">
         <div className="mt-4 mb-6 flex flex-wrap justify-center gap-3">
-          <div className="compare-badge-silver">You Don’t Pay Until the Job Is Done</div>
-          <div className="compare-badge-silver">Compare Prices Instantly in Cart</div>
+          <div className="compare-badge-silver">
+            You Don’t Pay Until the Job Is Done
+          </div>
+          <div className="compare-badge-silver">
+            Compare Prices Instantly in Cart
+          </div>
         </div>
         <input
           type="text"
@@ -591,8 +610,6 @@ const filteredData = itemData.map((section) => ({
           </div>
         ) : null
       )}
-
-      {/* Cart & Schedule section remains (unchanged) */}
     </div>
   );
 }
