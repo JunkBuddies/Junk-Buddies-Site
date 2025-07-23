@@ -3,7 +3,7 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "env": {
-    "OPENAI_API_KEY": "@openai_api_key"
+    "OPENAI_API_KEY": "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"
   },
   "rewrites": [
     {
