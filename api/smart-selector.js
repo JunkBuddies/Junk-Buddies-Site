@@ -3,9 +3,13 @@ import OpenAI from "openai";
 import { db } from "../src/lib/firebase.js";
 import { collection, addDoc } from "firebase/firestore";
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // Make sure it's set in Vercel env vars
-});
+// --- Ensure API key is loaded correctly ---
+const apiKey = process.env.OPENAI_API_KEY;
+if (!apiKey) {
+  console.error("ERROR: Missing OPENAI_API_KEY. Check your Vercel Environment Variables.");
+}
+
+const client = new OpenAI({ apiKey });
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -62,7 +66,7 @@ Return ONLY this JSON (no extra text outside):
       max_tokens: 600,
     });
 
-    const output = completion.output[0].content[0].text.trim();
+    const output = completion.output?.[0]?.content?.[0]?.text?.trim() || "";
 
     let parsed;
     try {
