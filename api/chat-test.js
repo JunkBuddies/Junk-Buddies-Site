@@ -1,21 +1,29 @@
-// File: /api/chat-test.js
+// File: api/chat-test.js
 import OpenAI from "openai";
-
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // Pulls from Vercel env vars (secure)
-});
 
 export default async function handler(req, res) {
   try {
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+      return res.status(500).json({ error: "OPENAI_API_KEY is missing" });
+    }
+
+    const client = new OpenAI({ apiKey });
+
     const completion = await client.responses.create({
       model: "gpt-4o-mini",
-      input: "Say hello! This is a test from Junk Buddies site.",
+      input: "Say: Hello, Junk Buddies AI is connected!",
     });
 
-    const reply = completion.output_text || "No response from AI.";
+    const reply = completion?.output?.[0]?.content?.[0]?.text || "No response";
+
     res.status(200).json({ success: true, reply });
-  } catch (err) {
-    console.error("Chat Test API error:", err);
-    res.status(500).json({ success: false, error: "Failed to contact OpenAI" });
+  } catch (error) {
+    console.error("Chat Test Error:", error);
+    res.status(500).json({
+      error: "Function failed",
+      details: error.message,
+    });
   }
 }
