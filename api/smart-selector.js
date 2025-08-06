@@ -2,7 +2,7 @@
 import OpenAI from "openai";
 import { db } from "../src/lib/firebase.js";
 import { collection, addDoc } from "firebase/firestore";
-import itemData from "../src/data/itemData.js"; // ✅ Import your full structured item list
+import itemData from "../src/data/itemData.js"; // ✅ Centralized item list import
 
 // --- Ensure API key is loaded correctly ---
 const apiKey = process.env.OPENAI_API_KEY;
@@ -48,7 +48,7 @@ Rules:
   • Large (20 cu ft, $100)
 - Always summarize items and show a running total.
 - Respond in short, natural sentences (no JSON formatting in the user-facing reply).
-- Return only the following JSON:
+- Return only the following JSON (no markdown, no extra text):
 
 {
   "reply": "short friendly response",
@@ -66,7 +66,7 @@ Conversation so far: ${JSON.stringify(messages)}
       input: prompt,
     });
 
-    const output = completion.output_text?.trim() || ""; // ✅ Safer text extraction
+    const output = completion.output_text?.trim() || "";
 
     let parsed;
     try {
@@ -79,7 +79,7 @@ Conversation so far: ${JSON.stringify(messages)}
       };
     }
 
-    // --- 4) Save unlisted items ---
+    // --- 4) Save unlisted items for review ---
     const unlisted = parsed.cartItems.filter((i) => i.category === "unlisted");
     for (const item of unlisted) {
       try {
