@@ -58,43 +58,51 @@ function ItemizedPage() {
     }
   `;
 
-  // Handle Smart Selector chat input
-  async function handleSmartSelectorInput(userText) {
-    if (!userText.trim()) return;
+// Handle Smart Selector chat input
+async function handleSmartSelectorInput(userText) {
+  if (!userText.trim()) return;
 
-    setChatMessages((prev) => [...prev, { sender: "user", text: userText }]);
+  const newMessage = { sender: "user", text: userText };
+  const updatedMessages = [...chatMessages, newMessage];
 
-    try {
-      const res = await fetch("https://smartselector-nbclj4qvoq-uc.a.run.app", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: [...chatMessages, { sender: "user", text: userText }],
-          // Removed itemData to prevent overload — handled server-side
-          leadInfo: { name: leadName, phone: leadPhone, submitted: false },
-        }),
-      });
+  setChatMessages(updatedMessages);
 
-      const data = await res.json();
-      setChatMessages((prev) => [...prev, { sender: "bot", text: data.reply }]);
+  try {
+    const res = await fetch("https://smartselector-nbclj4qvoq-uc.a.run.app", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: updatedMessages,
+        leadInfo: {
+          name: leadName,
+          phone: leadPhone,
+          submitted: false,
+        },
+      }),
+    });
 
-      if (Array.isArray(data.cartItems) && data.cartItems.length) {
-        const newItems = data.cartItems.filter(
-          (i) => !cart.some((c) => c.name === i.name)
-        );
-        if (newItems.length) {
-          setCart((prev) => [...prev, ...newItems]);
-          setDiscountApplied(true);
-        }
+    const data = await res.json();
+
+    setChatMessages((prev) => [...prev, { sender: "bot", text: data.reply || "Got it!" }]);
+
+    if (Array.isArray(data.cartItems) && data.cartItems.length) {
+      const newItems = data.cartItems.filter(
+        (i) => !cart.some((c) => c.name === i.name)
+      );
+      if (newItems.length) {
+        setCart((prev) => [...prev, ...newItems]);
+        setDiscountApplied(true);
       }
-    } catch (err) {
-      console.error("AI Chat error:", err);
-      setChatMessages((prev) => [
-        ...prev,
-        { sender: "bot", text: "AI is unavailable. Try again shortly." },
-      ]);
     }
+  } catch (err) {
+    console.error("AI Chat error:", err);
+    setChatMessages((prev) => [
+      ...prev,
+      { sender: "bot", text: "AI is unavailable. Try again shortly." },
+    ]);
   }
+}
+
 
   const filteredData = itemData.map((section) => ({
   ...section,
