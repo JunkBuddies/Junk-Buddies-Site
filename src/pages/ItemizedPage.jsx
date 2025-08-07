@@ -38,7 +38,7 @@ function ItemizedPage() {
   // Save lead once after form is submitted
   const submitLead = () => {
     setLeadSubmitted(true);
-    fetch("/api/smart-selector", {
+   fetch("https://smartselector-nbclj4qvoq-uc.a.run.app", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -65,7 +65,7 @@ function ItemizedPage() {
     setChatMessages((prev) => [...prev, { sender: "user", text: userText }]);
 
     try {
-      const res = await fetch("/api/smart-selector", {
+      const res = await fetch("https://smartselector-nbclj4qvoq-uc.a.run.app", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
