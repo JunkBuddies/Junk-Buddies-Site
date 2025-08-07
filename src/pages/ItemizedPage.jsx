@@ -248,4 +248,8 @@ return (
     )}
   </div>
 );
+  }
+
+export default ItemizedPage;
+
 
