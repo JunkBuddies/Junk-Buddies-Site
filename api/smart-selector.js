@@ -1,100 +1,71 @@
-// File: api/smart-selector.js
-import OpenAI from "openai";
-import { db } from "../src/lib/firebase.js";
-import { collection, addDoc } from "firebase/firestore";
-import itemData from "../src/data/itemData.js"; // ✅ Centralized item list import
+// app/selection/page.jsx
 
-// --- Ensure API key is loaded correctly ---
-const apiKey = process.env.OPENAI_API_KEY;
-if (!apiKey) {
-  console.error("❌ ERROR: Missing OPENAI_API_KEY. Check your environment variables.");
-}
+'use client';
+import { useState } from 'react';
 
-const client = new OpenAI({ apiKey });
+export default function SmartSelector() {
+  const [items, setItems] = useState([]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  const handleSelect = async () => {
+    setLoading(true);
+    setError(null);
 
-  try {
-    const { messages, leadInfo } = req.body;
-
-    // --- 1) Save lead info only once ---
-    if (leadInfo?.submitted && (leadInfo.name || leadInfo.phone)) {
-      try {
-        await addDoc(collection(db, "leadCaptures"), {
-          name: leadInfo.name || "",
-          phone: leadInfo.phone || "",
-          enteredAt: new Date(),
-        });
-      } catch (err) {
-        console.error("❌ Lead save failed:", err);
-      }
-    }
-
-    // --- 2) Build AI prompt ---
-    const prompt = `
-You are Junk Buddies' AI assistant. Help users quickly build a junk removal list.
-
-- Always greet politely if chat is empty.
-- Match items to this master list:
-${JSON.stringify(itemData)}
-
-Rules:
-- If an item isn't in the list, classify as "unlisted" and assign:
-  • Small (8 cu ft, $50)
-  • Medium (12 cu ft, $70)
-  • Large (20 cu ft, $100)
-- Always summarize items and show a running total.
-- Respond in short, natural sentences (no JSON formatting in the user-facing reply).
-- Return only the following JSON (no markdown, no extra text):
-
-{
-  "reply": "short friendly response",
-  "cartItems": [
-    { "name": "Item Name", "price": 100, "volume": 20, "category": "known/unlisted" }
-  ]
-}
-
-Conversation so far: ${JSON.stringify(messages)}
-`;
-
-    // --- 3) Call OpenAI ---
-    const completion = await client.responses.create({
-      model: "gpt-4.1",
-      input: prompt,
-    });
-
-    const output = completion.output_text?.trim() || "";
-
-    let parsed;
     try {
-      parsed = JSON.parse(output);
-    } catch {
-      console.error("❌ Bad AI response:", output);
-      parsed = {
-        reply: "Sorry, I didn’t get that. Could you rephrase?",
-        cartItems: [],
-      };
-    }
+      const response = await fetch('https://smartselector-nbclj4qvoq-uc.a.run.app', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ input }),
+      });
 
-    // --- 4) Save unlisted items for review ---
-    const unlisted = parsed.cartItems.filter((i) => i.category === "unlisted");
-    for (const item of unlisted) {
-      try {
-        await addDoc(collection(db, "unlistedItems"), {
-          ...item,
-          loggedAt: new Date(),
-        });
-      } catch (err) {
-        console.error("❌ Failed to log unlisted item:", err);
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
       }
-    }
 
-    return res.status(200).json(parsed);
-  } catch (err) {
-    console.error("❌ Smart Selector API error:", err);
-    return res.status(500).json({ error: "AI service failed." });
-  }
+      const data = await response.json();
+      setItems(data.items || []);
+    } catch (err) {
+      setError(err.message || 'An unexpected error occurred.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto py-12 px-4">
+      <h1 className="text-2xl font-bold mb-4">Smart Junk Item Selector</h1>
+      <textarea
+        className="w-full h-32 p-3 border rounded mb-4"
+        placeholder="Describe the junk items here..."
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+      />
+      <button
+        onClick={handleSelect}
+        className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
+        disabled={loading}
+      >
+        {loading ? 'Analyzing...' : 'Select Items'}
+      </button>
+
+      {error && (
+        <p className="text-red-500 mt-4">{error}</p>
+      )}
+
+      {items.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold mb-2">Detected Items:</h2>
+          <ul className="list-disc pl-6 space-y-1">
+            {items.map((item, index) => (
+              <li key={index} className="text-gray-800">{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
 }
