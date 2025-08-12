@@ -5,13 +5,12 @@ import { useCart } from "../context/CartContext";
 import { calculatePrice, getLoadLabel, fullLoadPoints } from "../utils/pricing";
 import itemData from "../data/itemData";
 
-const SMART_SELECTOR_URL = "/api/smart-selector"; // <<— now calling your Vercel API
+const SMART_SELECTOR_URL = "/api/smart-selector";
 
 function ItemizedPage() {
   const { cart, setCart } = useCart();
   const [search, setSearch] = useState("");
   const [cartVisible, setCartVisible] = useState(false);
-  const [showComparison, setShowComparison] = useState(false);
   const [showSmartSelectorNotice, setShowSmartSelectorNotice] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [discountApplied, setDiscountApplied] = useState(false);
@@ -24,8 +23,6 @@ function ItemizedPage() {
   const { finalPrice, totalVolume } = calculatePrice(cart);
   const discountAmount = discountApplied ? finalPrice * 0.1 : 0;
   const totalWithDiscount = finalPrice - discountAmount;
-
-  const truckFillPercent = ((totalVolume % fullLoadPoints) / fullLoadPoints) * 100;
   const loadLabel = getLoadLabel(totalVolume);
 
   const addToCart = (item) => setCart((prev) => [...prev, item]);
@@ -37,7 +34,6 @@ function ItemizedPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Save lead once after form is submitted (now hits same-origin API)
   const submitLead = () => {
     setLeadSubmitted(true);
     fetch(SMART_SELECTOR_URL, {
@@ -45,7 +41,7 @@ function ItemizedPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         leadInfo: { name: leadName, phone: leadPhone, submitted: true },
-        messages: [], // optional
+        messages: chatMessages,
       }),
     }).catch(() => console.error("Failed to save lead"));
   };
@@ -61,7 +57,6 @@ function ItemizedPage() {
     }
   `;
 
-  // Handle Smart Selector chat input (now using same-origin API + role/content history)
   async function handleSmartSelectorInput(userText) {
     if (!userText.trim()) return;
 
@@ -69,7 +64,6 @@ function ItemizedPage() {
     const updatedMessages = [...chatMessages, newMessage];
     setChatMessages(updatedMessages);
 
-    // Map UI messages -> {role, content}
     const history = updatedMessages.map((m) => ({
       role: m.sender === "user" ? "user" : "assistant",
       content: m.text,
@@ -85,26 +79,33 @@ function ItemizedPage() {
         }),
       });
 
-      if (!res.ok) {
-        const txt = await res.text().catch(() => "");
-        throw new Error(`HTTP ${res.status} ${res.statusText} — ${txt || "No body"}`);
-      }
-
+      if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
       const data = await res.json();
 
       setChatMessages((prev) => [
         ...prev,
-        { sender: "bot", text: (data && data.reply) || "Got it!" },
+        { sender: "bot", text: data.reply || "Got it!" },
       ]);
 
-      // Still supports cartItems if your backend decides to return them later
       if (Array.isArray(data.cartItems) && data.cartItems.length) {
         const newItems = data.cartItems.filter(
           (i) => !cart.some((c) => c.name === i.name)
         );
         if (newItems.length) {
           setCart((prev) => [...prev, ...newItems]);
-          setDiscountApplied(true);
+          setChatMessages((prev) => [
+            ...prev,
+            {
+              sender: "bot",
+              text: `Added ${newItems.map((i) => i.name).join(", ")}. You now have ${cart.length + newItems.length} items worth $${calculatePrice([...cart, ...newItems]).finalPrice.toFixed(2)}.`,
+            },
+          ]);
+          if (!discountApplied) {
+            setChatMessages((prev) => [
+              ...prev,
+              { sender: "bot", text: "Want me to apply your 10% discount now so you can see it in real time?" },
+            ]);
+          }
         }
       }
     } catch (err) {
@@ -127,7 +128,6 @@ function ItemizedPage() {
     <div className="bg-black text-white min-h-screen p-6 pb-32">
       <style>{pulseGlowStyle}</style>
 
-      {/* Title */}
       <h1 className="text-4xl mb-6 text-center font-bold">
         <span className="text-white">Manually Select Junk</span>{" "}
         <span
@@ -138,7 +138,6 @@ function ItemizedPage() {
         </span>
       </h1>
 
-      {/* Popup Notice */}
       {showSmartSelectorNotice && !showChat && (
         <div
           className="fixed bottom-6 right-6 bg-black text-white border-2 rounded-xl p-4 shadow-xl animate-pulse-glow cursor-pointer z-50 max-w-xs"
@@ -149,7 +148,7 @@ function ItemizedPage() {
               {
                 sender: "bot",
                 text:
-                  "Hi! I can help build your junk list fast and save you 10%. What’s the first item?",
+                  "Hey there! I can build your junk list fast. Want me to apply a 10% discount now so you can see it live, or should we just start listing items?",
               },
             ]);
           }}
@@ -161,7 +160,6 @@ function ItemizedPage() {
         </div>
       )}
 
-      {/* Chat Drawer */}
       {showChat && (
         <div className="fixed bottom-0 right-0 w-full sm:w-96 h-2/3 bg-gray-900 border-l border-gold z-50 flex flex-col">
           <div className="flex justify-between items-center p-4 border-b border-gold">
@@ -185,7 +183,7 @@ function ItemizedPage() {
             ))}
           </div>
 
-          {discountApplied && (
+          {discountApplied && !leadSubmitted && (
             <div className="p-4 border-t border-gold bg-gray-800">
               <p className="text-sm text-gold font-bold mb-2">
                 Lock in your 10% discount:
@@ -205,7 +203,13 @@ function ItemizedPage() {
                 onChange={(e) => setLeadPhone(e.target.value)}
               />
               <button
-                onClick={submitLead}
+                onClick={() => {
+                  submitLead();
+                  setChatMessages((prev) => [
+                    ...prev,
+                    { sender: "bot", text: "Thanks! You can finish here: /schedule" },
+                  ]);
+                }}
                 className="mt-2 w-full px-3 py-1 bg-gold text-black font-semibold rounded"
               >
                 Save Discount
@@ -227,16 +231,7 @@ function ItemizedPage() {
         </div>
       )}
 
-      {/* Search + badges */}
       <div className="mb-6 max-w-2xl mx-auto">
-        <div className="mt-4 mb-6 flex flex-wrap justify-center gap-3">
-          <div className="compare-badge-silver">
-            You Don’t Pay Until the Job Is Done
-          </div>
-          <div className="compare-badge-silver">
-            Compare Prices Instantly in Cart
-          </div>
-        </div>
         <input
           type="text"
           placeholder="Search items..."
@@ -246,27 +241,55 @@ function ItemizedPage() {
         />
       </div>
 
-      {/* Item Grid (unchanged) */}
       {filteredData.map((section, idx) =>
         section.items.length > 0 ? (
           <div key={idx} className="mb-10">
             <h2 className="text-2xl text-gold mb-4">{section.category}</h2>
-            <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {section.items.map((item, i) => (
                 <button
                   key={i}
-                  className="item-card-button"
+                  className="bg-gray-800 p-4 rounded-lg border border-gold hover:bg-gold hover:text-black"
                   onClick={() => addToCart(item)}
                 >
-                  <div className="item-card-button-text">
-                    <p className="font-semibold">{item.name}</p>
-                  </div>
+                  <p className="font-semibold">{item.name}</p>
                 </button>
               ))}
             </div>
           </div>
         ) : null
       )}
+
+      {/* Professional Cart UI */}
+      <div
+        className={`fixed ${cartVisible ? "bottom-0" : "-bottom-64"} left-0 w-full sm:w-80 sm:top-0 sm:right-0 sm:left-auto sm:h-full bg-gray-900 border-t sm:border-l border-gold transition-all duration-300`}
+      >
+        <div className="flex justify-between items-center p-4 border-b border-gold">
+          <h3 className="text-gold font-bold">Your Cart</h3>
+          <button onClick={() => setCartVisible(!cartVisible)} className="text-white">
+            {cartVisible ? "▼" : "▲"}
+          </button>
+        </div>
+        <div className="p-4 space-y-2 overflow-y-auto h-full">
+          {cart.map((item, idx) => (
+            <div key={idx} className="flex justify-between items-center bg-gray-800 p-2 rounded">
+              <span>{item.name}</span>
+              <button onClick={() => removeFromCart(idx)} className="text-red-400">✕</button>
+            </div>
+          ))}
+          <div className="mt-4 text-gold">
+            Load Size: {loadLabel}
+            <br />
+            Price: ${finalPrice.toFixed(2)}
+            {discountApplied && (
+              <>
+                <br />
+                With Discount: ${totalWithDiscount.toFixed(2)}
+              </>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
