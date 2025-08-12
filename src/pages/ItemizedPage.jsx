@@ -5,13 +5,13 @@ import { useCart } from "../context/CartContext";
 import { calculatePrice, getLoadLabel, fullLoadPoints } from "../utils/pricing";
 import itemData from "../data/itemData";
 
-const SMART_SELECTOR_URL = "https://smartselector-nbclj4qvoq-uc.a.run.app"; // <<— using your Cloud Function again
+// Use your Firebase/Cloud Run Smart Selector endpoint
+const SMART_SELECTOR_URL = "https://smartselector-nbclj4qvoq-uc.a.run.app";
 
 function ItemizedPage() {
   const { cart, setCart } = useCart();
   const [search, setSearch] = useState("");
   const [cartVisible, setCartVisible] = useState(false);
-  const [showComparison, setShowComparison] = useState(false);
   const [showSmartSelectorNotice, setShowSmartSelectorNotice] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [discountApplied, setDiscountApplied] = useState(false);
@@ -24,13 +24,11 @@ function ItemizedPage() {
   const { finalPrice, totalVolume } = calculatePrice(cart);
   const discountAmount = discountApplied ? finalPrice * 0.1 : 0;
   const totalWithDiscount = finalPrice - discountAmount;
-
   const truckFillPercent = ((totalVolume % fullLoadPoints) / fullLoadPoints) * 100;
   const loadLabel = getLoadLabel(totalVolume);
 
   const addToCart = (item) => setCart((prev) => [...prev, item]);
-  const removeFromCart = (idx) =>
-    setCart((prev) => prev.filter((_, i) => i !== idx));
+  const removeFromCart = (idx) => setCart((prev) => prev.filter((_, i) => i !== idx));
 
   useEffect(() => {
     const timer = setTimeout(() => setShowSmartSelectorNotice(true), 3000);
@@ -123,6 +121,7 @@ function ItemizedPage() {
     <div className="bg-black text-white min-h-screen p-6 pb-32">
       <style>{pulseGlowStyle}</style>
 
+      {/* Title */}
       <h1 className="text-4xl mb-6 text-center font-bold">
         <span className="text-white">Manually Select Junk</span>{" "}
         <span
@@ -133,6 +132,7 @@ function ItemizedPage() {
         </span>
       </h1>
 
+      {/* Smart Selector popup */}
       {showSmartSelectorNotice && !showChat && (
         <div
           className="fixed bottom-6 right-6 bg-black text-white border-2 rounded-xl p-4 shadow-xl animate-pulse-glow cursor-pointer z-50 max-w-xs"
@@ -143,7 +143,7 @@ function ItemizedPage() {
               {
                 sender: "bot",
                 text:
-                  "Hey! I can help build your junk list fast and save you 10%. Want to apply the discount now so you can see prices as your cart builds, or just start listing items?",
+                  "Hey there! I can help you build your junk list and save 10%. Want me to apply the discount now so you can see prices as we go, or keep adding items for now?",
               },
             ]);
           }}
@@ -155,6 +155,7 @@ function ItemizedPage() {
         </div>
       )}
 
+      {/* Chat Drawer */}
       {showChat && (
         <div className="fixed bottom-0 right-0 w-full sm:w-96 h-2/3 bg-gray-900 border-l border-gold z-50 flex flex-col">
           <div className="flex justify-between items-center p-4 border-b border-gold">
@@ -178,7 +179,7 @@ function ItemizedPage() {
             ))}
           </div>
 
-          {discountApplied && (
+          {discountApplied && !leadSubmitted && (
             <div className="p-4 border-t border-gold bg-gray-800">
               <p className="text-sm text-gold font-bold mb-2">
                 Lock in your 10% discount:
@@ -201,7 +202,19 @@ function ItemizedPage() {
                 onClick={submitLead}
                 className="mt-2 w-full px-3 py-1 bg-gold text-black font-semibold rounded"
               >
-                Save Discount
+                Save Discount & Continue
+              </button>
+            </div>
+          )}
+
+          {leadSubmitted && (
+            <div className="p-4 border-t border-gold bg-gray-800 text-center">
+              <p className="text-gold font-bold mb-2">Great! Let’s finish up.</p>
+              <button
+                onClick={() => navigate("/schedule")}
+                className="mt-2 w-full px-3 py-1 bg-gold text-black font-semibold rounded"
+              >
+                Go to Schedule Page
               </button>
             </div>
           )}
@@ -220,6 +233,7 @@ function ItemizedPage() {
         </div>
       )}
 
+      {/* Search & badges */}
       <div className="mb-6 max-w-2xl mx-auto">
         <div className="mt-4 mb-6 flex flex-wrap justify-center gap-3">
           <div className="compare-badge-silver">
@@ -238,6 +252,7 @@ function ItemizedPage() {
         />
       </div>
 
+      {/* Item Grid */}
       {filteredData.map((section, idx) =>
         section.items.length > 0 ? (
           <div key={idx} className="mb-10">
@@ -258,6 +273,60 @@ function ItemizedPage() {
           </div>
         ) : null
       )}
+
+      {/* Cart Drawer */}
+      {cartVisible && (
+        <div className="fixed bottom-0 left-0 w-full sm:w-96 h-2/3 bg-gray-900 border-r border-gold z-50 flex flex-col">
+          <div className="flex justify-between items-center p-4 border-b border-gold">
+            <h2 className="text-gold font-bold">Your Cart</h2>
+            <button
+              onClick={() => setCartVisible(false)}
+              className="text-white hover:text-gold"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 text-sm">
+            {cart.map((item, idx) => (
+              <div key={idx} className="flex justify-between items-center">
+                <p>{item.name}</p>
+                <button
+                  onClick={() => removeFromCart(idx)}
+                  className="text-red-400 hover:text-red-600"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+          <div className="p-4 border-t border-gold bg-gray-800">
+            <p className="text-sm text-gray-300 mb-1">Truck Fill: {loadLabel}</p>
+            <div className="w-full bg-gray-700 h-2 rounded">
+              <div
+                style={{
+                  width: `${truckFillPercent}%`,
+                  backgroundColor: "#FFD700",
+                }}
+                className="h-2 rounded"
+              ></div>
+            </div>
+            <p className="mt-3 text-lg font-bold">
+              Total:{" "}
+              {discountApplied
+                ? `$${totalWithDiscount.toFixed(2)} (after 10% off)`
+                : `$${finalPrice.toFixed(2)}`}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Cart Button */}
+      <button
+        onClick={() => setCartVisible(true)}
+        className="fixed bottom-6 left-6 px-4 py-2 bg-gold text-black font-semibold rounded shadow-lg hover:bg-yellow-500"
+      >
+        View Cart ({cart.length})
+      </button>
     </div>
   );
 }
