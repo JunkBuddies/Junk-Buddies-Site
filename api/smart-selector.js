@@ -1,178 +1,169 @@
 // /api/smart-selector.js
-// ESM handler for Vercel (because your repo uses `"type":"module"`)
+// ESM API route for Vercel – AI-powered Smart Selector using your itemData
 
-const CATALOG = [
-  // Minimal sample catalog — expand as you like (names should match your itemData names)
-  { name: "Couch / Sofa",            price: 95,  volume: 50,  category: "Furniture", keywords: ["couch", "sofa", "sectional"] },
-  { name: "Dresser",                 price: 60,  volume: 30,  category: "Furniture", keywords: ["dresser"] },
-  { name: "Treadmill",               price: 110, volume: 40,  category: "Exercise",  keywords: ["treadmill"] },
-  { name: "Mattress (Queen)",        price: 70,  volume: 35,  category: "Furniture", keywords: ["mattress", "queen mattress"] },
-  { name: "Refrigerator",            price: 120, volume: 45,  category: "Appliances", keywords: ["fridge", "refrigerator"] },
-  { name: "Moving Boxes (x5)",       price: 25,  volume: 15,  category: "Boxes",     keywords: ["box", "boxes", "moving boxes"] },
-  { name: "TV Stand",                price: 45,  volume: 20,  category: "Furniture", keywords: ["tv stand", "entertainment stand"] },
-  { name: "Office Chair",            price: 35,  volume: 15,  category: "Furniture", keywords: ["office chair", "desk chair"] }
-];
+import itemData from '../src/data/itemData.js'; // adjust if path differs
 
-// --- Utility: simple keyword extractor as a fallback ---
-function extractItemsHeuristically(text) {
-  const t = (text || "").toLowerCase();
+// Flatten your itemData into one list
+function flattenCatalog(data) {
+  const out = [];
+  for (const section of data || []) {
+    const category = section?.category || 'Other';
+    for (const item of section?.items || []) {
+      if (!item?.name) continue;
+      out.push({
+        name: String(item.name),
+        price: Number(item.price ?? 0),
+        volume: Number(item.volume ?? 0),
+        category
+      });
+    }
+  }
+  return out;
+}
+const CATALOG = flattenCatalog(itemData);
+
+// Build a keyword index for fallback
+function buildKeywordIndex(catalog) {
+  const idx = [];
+  for (const it of catalog) {
+    const tokens = it.name.toLowerCase().split(/\s+/);
+    idx.push({ item: it, tokens: new Set(tokens) });
+  }
+  return idx;
+}
+const KEYWORDS = buildKeywordIndex(CATALOG);
+
+// Fallback: match keywords in user text
+function extractHeuristic(text) {
+  const t = (text || '').toLowerCase();
   const found = [];
-  const foundNames = new Set();
+  const seen = new Set();
 
-  for (const item of CATALOG) {
-    if (item.keywords.some(k => t.includes(k))) {
-      if (!foundNames.has(item.name)) {
-        found.push({ name: item.name, price: item.price, volume: item.volume, category: item.category });
-        foundNames.add(item.name);
-      }
+  for (const { item, tokens } of KEYWORDS) {
+    if ([...tokens].some(tok => t.includes(tok)) && !seen.has(item.name)) {
+      found.push(item);
+      seen.add(item.name);
     }
   }
-
-  // very rough quantity detection for boxes
-  const boxMatch = t.match(/(\d+)\s*(box|boxes)/);
-  if (boxMatch) {
-    const qty = Math.max(1, Math.min(50, parseInt(boxMatch[1], 10)));
-    const bundleSize = 5;
-    const bundles = Math.ceil(qty / bundleSize);
-    const base = CATALOG.find(i => i.name.startsWith("Moving Boxes"));
-    if (base) {
-      for (let i = 0; i < bundles; i++) {
-        found.push({ name: base.name, price: base.price, volume: base.volume, category: base.category });
-      }
-    }
-  }
-
   return found;
 }
 
-// --- Utility: build a strict system prompt for JSON output ---
+// System prompt for OpenAI
 function buildSystemPrompt() {
   return [
-    "You are Junk Buddies Smart Selector.",
-    "Goal: Turn the user's description of junk items into a list of items to add to a cart.",
-    "Return STRICT JSON with this shape ONLY:",
-    "{",
-    '  "reply": string,',
-    '  "cartItems": [ { "name": string, "price": number, "volume": number, "category": string }, ... ]',
-    "}",
-    "No backticks. No extra text. No markdown. If uncertain, reply courteously and leave cartItems empty.",
-  ].join("\n");
+    'You are Junk Buddies Smart Selector.',
+    'From the user description, match items from the catalog and return JSON:',
+    '{ "reply": string, "cartItems": [ { "name": string, "price": number, "volume": number, "category": string }, ... ] }',
+    'Only use exact names from the catalog if possible. No markdown or extra text.'
+  ].join('\n');
 }
 
-// --- Utility: call OpenAI (if key present) and parse strict JSON ---
+// Call OpenAI
 async function callOpenAI(messages, leadInfo) {
-  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-  if (!OPENAI_API_KEY) return null; // no key -> tell caller to fallback
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) return null; // no key – fallback
 
-  // Build chat in OpenAI format
-  const sys = { role: "system", content: buildSystemPrompt() };
-  const chatMsgs = [sys, ...messages.map(m => ({
-    role: m.role === "assistant" ? "assistant" : "user",
-    content: m.content || ""
+  const sys = { role: 'system', content: buildSystemPrompt() };
+  const chat = [sys, ...messages.map(m => ({
+    role: m.role === 'assistant' ? 'assistant' : 'user',
+    content: m.content || ''
   }))];
 
-  // Optional: nudge the model with lightweight catalog context
-  const catalogSummary = "Catalog examples: " + CATALOG.map(c => `${c.name} ($${c.price}, ${c.volume} cu ft, ${c.category})`).join("; ");
-  chatMsgs.push({ role: "system", content: catalogSummary });
+  // Add catalog summary
+  const names = CATALOG.map(i => `${i.name} ($${i.price}, ${i.volume} cu ft, ${i.category})`).join('; ');
+  chat.push({ role: 'system', content: `Catalog: ${names}` });
 
-  // Optional: include lead info lightly (doesn't change output type)
   if (leadInfo?.name || leadInfo?.phone) {
-    chatMsgs.push({ role: "system", content: `Potential lead: name=${leadInfo.name || ""}, phone=${leadInfo.phone || ""}` });
+    chat.push({ role: 'system', content: `Lead: ${leadInfo.name || ''}, ${leadInfo.phone || ''}` });
   }
 
-  const resp = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${OPENAI_API_KEY}`,
-      "Content-Type": "application/json"
-    },
+  const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: "gpt-4o-mini",           // fast & cheap; change if you prefer
+      model: 'gpt-4o-mini',
       temperature: 0.2,
-      response_format: { type: "json_object" }, // force JSON
-      messages: chatMsgs
+      response_format: { type: 'json_object' },
+      messages: chat
     })
   });
 
   if (!resp.ok) {
-    const txt = await resp.text().catch(() => "");
+    const txt = await resp.text().catch(() => '');
     throw new Error(`OpenAI HTTP ${resp.status} ${resp.statusText}: ${txt}`);
   }
 
   const data = await resp.json();
   const content = data?.choices?.[0]?.message?.content?.trim();
-  if (!content) throw new Error("OpenAI returned empty content");
+  if (!content) throw new Error('Empty content from OpenAI');
 
-  // Parse JSON safely
   let json;
   try {
     json = JSON.parse(content);
-  } catch (e) {
-    throw new Error("Failed to parse OpenAI JSON");
+  } catch {
+    throw new Error('Invalid JSON from OpenAI');
   }
 
-  // Validate minimal shape
-  const reply = typeof json.reply === "string" ? json.reply : "OK.";
+  // Validate & sanitize
+  const reply = typeof json.reply === 'string' ? json.reply : 'OK.';
   const cartItems = Array.isArray(json.cartItems) ? json.cartItems : [];
-  // sanitize items a bit
   const cleaned = cartItems
     .filter(i => i && i.name)
-    .map(i => ({
-      name: String(i.name),
-      price: Number.isFinite(i.price) ? i.price : 0,
-      volume: Number.isFinite(i.volume) ? i.volume : 0,
-      category: i.category ? String(i.category) : "Other"
-    }));
+    .map(i => {
+      const match = CATALOG.find(ci => ci.name.toLowerCase() === String(i.name).toLowerCase());
+      return match || {
+        name: String(i.name),
+        price: Number.isFinite(i.price) ? i.price : 0,
+        volume: Number.isFinite(i.volume) ? i.volume : 0,
+        category: i.category ? String(i.category) : 'Other'
+      };
+    });
 
   return { reply, cartItems: cleaned };
 }
 
 export default async function handler(req, res) {
-  // CORS (safe even on same-origin)
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS, GET");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS, GET');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (req.method === "OPTIONS") return res.status(204).end();
-  if (req.method === "GET") return res.status(200).json({ ok: true, where: "vercel", ts: Date.now() });
-  if (req.method !== "POST") return res.status(405).json({ error: "Method Not Allowed" });
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  if (req.method === 'GET') return res.status(200).json({ ok: true, where: 'vercel', ts: Date.now() });
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
   try {
-    // Parse JSON body
     let body = {};
     try {
-      body = req.body && typeof req.body === "object" ? req.body : JSON.parse(req.body || "{}");
-    } catch (_) {
+      body = req.body && typeof req.body === 'object' ? req.body : JSON.parse(req.body || '{}');
+    } catch {
       body = {};
     }
 
     const messages = Array.isArray(body.messages) ? body.messages : [];
     const leadInfo = body.leadInfo || { submitted: false };
 
-    // 1) Try OpenAI if key is present
+    // Try OpenAI
     let result = null;
     try {
       result = await callOpenAI(messages, leadInfo);
     } catch (err) {
-      console.error("OpenAI error:", err?.message || err);
-      result = null; // fall back below
+      console.error('OpenAI error:', err?.message || err);
     }
 
-    // 2) Fallback: keyword extractor on the user's latest message
     if (!result) {
-      const lastUser = [...messages].reverse().find(m => m.role === "user");
-      const text = lastUser?.content || "";
-      const items = extractItemsHeuristically(text);
+      // Fallback keyword match
+      const lastUser = [...messages].reverse().find(m => m.role === 'user');
+      const text = lastUser?.content || '';
+      const items = extractHeuristic(text);
       const reply = items.length
-        ? "I found some items from your description. You can add more or say 'done' when ready."
-        : "Tell me what you need removed (e.g., 'one couch and 6 boxes').";
+        ? 'I found items matching your description.'
+        : 'Tell me what you need removed (e.g., “couch and 6 boxes”).';
       return res.status(200).json({ reply, cartItems: items });
     }
 
-    // 3) Return OpenAI result
     return res.status(200).json(result);
   } catch (err) {
-    console.error("smart-selector fatal:", err?.stack || err);
-    return res.status(500).json({ error: "Server error", detail: String(err?.message || err) });
+    console.error('smart-selector fatal:', err?.stack || err);
+    return res.status(500).json({ error: 'Server error', detail: String(err?.message || err) });
   }
 }
