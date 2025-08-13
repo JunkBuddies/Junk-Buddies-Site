@@ -1,4 +1,4 @@
-// ESM Vercel API proxy to Cloud Run
+// /api/smart-selector.js
 const UPSTREAM = "https://smartselector-nbclj4qvoq-uc.a.run.app";
 
 export default async function handler(req, res) {
@@ -10,8 +10,8 @@ export default async function handler(req, res) {
 
   if (req.method === "GET") {
     try {
-      const r = await fetch(UPSTREAM, { method: "GET" });
-      const data = await r.json().catch(() => ({}));
+      const upstreamRes = await fetch(UPSTREAM, { method: "GET" });
+      const data = await upstreamRes.json().catch(() => ({}));
       return res.status(200).json({ ok: true, via: "vercel-proxy", upstream: data });
     } catch {
       return res.status(200).json({ ok: true, via: "vercel-proxy", upstream: "unreachable" });
@@ -22,13 +22,20 @@ export default async function handler(req, res) {
 
   try {
     const body = (req.body && typeof req.body === "object") ? JSON.stringify(req.body) : (req.body || "{}");
-    const upstream = await fetch(UPSTREAM, { method: "POST", headers: { "Content-Type": "application/json" }, body });
-    const text = await upstream.text();
+
+    const upstreamRes = await fetch(UPSTREAM, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body
+    });
+
+    const text = await upstreamRes.text();
     try {
-      return res.status(upstream.status).json(JSON.parse(text));
+      const json = JSON.parse(text);
+      return res.status(upstreamRes.status).json(json);
     } catch {
       res.setHeader("Content-Type", "application/json");
-      return res.status(upstream.status).send(text);
+      return res.status(upstreamRes.status).send(text);
     }
   } catch (err) {
     return res.status(502).json({ error: "Proxy failed", detail: String(err?.message || err) });
