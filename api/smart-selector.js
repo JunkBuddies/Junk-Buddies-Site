@@ -1,20 +1,25 @@
-import OpenAI from "openai";
-import itemData from "../src/data/itemData.js"; // adjust if needed
+// /api/smart-selector.js
+// ESM Vercel API route (Node runtime) — proxies to Cloud Run to avoid CORS
+const UPSTREAM = "https://smartselector-nbclj4qvoq-uc.a.run.app";
 
 export default async function handler(req, res) {
-  // Set CORS headers
+  // CORS headers (harmless here; useful if you ever hit cross-origin)
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS, GET");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // ✅ Handle preflight
-  if (req.method === "OPTIONS") {
-    return res.status(204).end();
-  }
+  // Preflight
+  if (req.method === "OPTIONS") return res.status(204).end();
 
-  // Simple health check
+  // Health check passthrough
   if (req.method === "GET") {
-    return res.status(200).json({ ok: true, where: "firebase" });
+    try {
+      const upstreamRes = await fetch(UPSTREAM, { method: "GET" });
+      const data = await upstreamRes.json().catch(() => ({}));
+      return res.status(200).json({ ok: true, via: "vercel-proxy", upstream: data });
+    } catch {
+      return res.status(200).json({ ok: true, via: "vercel-proxy", upstream: "unreachable" });
+    }
   }
 
   if (req.method !== "POST") {
@@ -22,57 +27,23 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { messages, leadInfo, discountApplied, cartItems } = req.body;
+    const body = (req.body && typeof req.body === "object") ? JSON.stringify(req.body) : (req.body || "{}");
 
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY // stored in Firebase config
+    const upstreamRes = await fetch(UPSTREAM, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body
     });
 
-    const flatItems = itemData.flatMap(section =>
-      section.items.map(item => item.name)
-    );
-
-    const prompt = `
-You are "Junk Buddies Smart Selector", a friendly assistant for a junk removal site.
-- Greet customers casually.
-- Ask if they want discount applied now or keep adding.
-- If discount: confirm + show prices as cart builds.
-- If keep adding: keep asking "Add more or see price?" in different ways until price is requested.
-- Show price, offer discount again if not applied.
-- After discount + name/phone: send /schedule link.
-- Always confirm added items and show current cart in a friendly way.
-
-Items: ${flatItems.join(", ")}
-`;
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: prompt },
-        ...messages.map(m => ({
-          role: m.sender === "user" ? "user" : "assistant",
-          content: m.text
-        }))
-      ],
-      temperature: 0.7
-    });
-
-    const aiReply = completion.choices[0]?.message?.content || "Got it!";
-
-    const matchedItems = flatItems
-      .filter(item => aiReply.toLowerCase().includes(item.toLowerCase()))
-      .map(name => ({ name }));
-
-    res.status(200).json({
-      reply: aiReply,
-      cartItems: matchedItems,
-      discountApplied: discountApplied || false,
-      leadInfo: leadInfo || {}
-    });
+    const text = await upstreamRes.text();
+    try {
+      const json = JSON.parse(text);
+      return res.status(upstreamRes.status).json(json);
+    } catch {
+      res.setHeader("Content-Type", "application/json");
+      return res.status(upstreamRes.status).send(text);
+    }
   } catch (err) {
-    console.error("Smart Selector error:", err);
-    res
-      .status(500)
-      .json({ error: "Smart Selector failed", details: err.message });
+    return res.status(502).json({ error: "Proxy failed", detail: String(err?.message || err) });
   }
 }
