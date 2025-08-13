@@ -6,7 +6,7 @@ import { calculatePrice, getLoadLabel, fullLoadPoints } from "../utils/pricing";
 import itemData from "../data/itemData";
 
 // Use your Firebase/Cloud Run Smart Selector endpoint
-const SMART_SELECTOR_URL = "https://smartselector-nbclj4qvoq-uc.a.run.app";
+const SMART_SELECTOR_URL = "/api/smart-selector";
 
 function ItemizedPage() {
   const { cart, setCart } = useCart();
