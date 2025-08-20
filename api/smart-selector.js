@@ -1,43 +1,64 @@
 // /api/smart-selector.js
-const UPSTREAM = "https://smartselector-nbclj4qvoq-uc.a.run.app";
+// ESM Vercel function → calls OpenAI directly (no GCP, no CORS headaches)
+
+const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS, GET");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
   if (req.method === "OPTIONS") return res.status(204).end();
 
   if (req.method === "GET") {
-    try {
-      const upstreamRes = await fetch(UPSTREAM, { method: "GET" });
-      const data = await upstreamRes.json().catch(() => ({}));
-      return res.status(200).json({ ok: true, via: "vercel-proxy", upstream: data });
-    } catch {
-      return res.status(200).json({ ok: true, via: "vercel-proxy", upstream: "unreachable" });
-    }
+    return res.status(200).json({ ok: true, where: "vercel" });
+  }
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  if (req.method !== "POST") return res.status(405).json({ error: "Method Not Allowed" });
-
   try {
-    const body = (req.body && typeof req.body === "object") ? JSON.stringify(req.body) : (req.body || "{}");
+    const body = typeof req.body === "object" ? req.body : JSON.parse(req.body || "{}");
+    const history = Array.isArray(body.messages) ? body.messages : [];
 
-    const upstreamRes = await fetch(UPSTREAM, {
+    // Accept [{sender,text}] OR OpenAI [{role,content}]
+    const msgs = history.map(m =>
+      m.role && m.content ? m : { role: m.sender === "user" ? "user" : "assistant", content: m.text || "" }
+    );
+
+    const system = `
+You are "Junk Buddies Smart Selector".
+- Greet casually and explain: list items or apply a 10% discount now to see discounted prices as the cart builds.
+- After each user message, confirm items you added and show a concise current list.
+- Keep asking in varied ways: "add more or see price?"
+- When showing price, if discount not applied, offer "see price with discount?"
+- If user shares name + phone, acknowledge and provide /schedule link.
+Keep replies short and clear. Do not invent prices; the site handles pricing.
+`.trim();
+
+    const r = await fetch(OPENAI_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [{ role: "system", content: system }, ...msgs],
+        temperature: 0.7
+      })
     });
 
-    const text = await upstreamRes.text();
-    try {
-      const json = JSON.parse(text);
-      return res.status(upstreamRes.status).json(json);
-    } catch {
-      res.setHeader("Content-Type", "application/json");
-      return res.status(upstreamRes.status).send(text);
+    const data = await r.json();
+    if (!r.ok) {
+      console.error("OpenAI error:", data);
+      return res.status(r.status).json({ error: data?.error?.message || "OpenAI failed" });
     }
-  } catch (err) {
-    return res.status(502).json({ error: "Proxy failed", detail: String(err?.message || err) });
+
+    const reply = data?.choices?.[0]?.message?.content || "Got it!";
+    // Start simple: return reply only (we’ll add item matching later)
+    return res.status(200).json({ reply, cartItems: [] });
+  } catch (e) {
+    console.error("Smart Selector fatal:", e);
+    return res.status(500).json({ error: "Server error" });
   }
 }
