@@ -1,23 +1,34 @@
-// /api/chat.js — RAW AI + your pricing.js
-//  - Parses messy text (typos ok) to items
-//  - Maps to your catalog (itemdata.js) with fuzzy matching
-//  - For unlisted items: uses dimensions or AI cu-ft estimate
-//  - Builds cart lines { volume, price } and calls your calculatePrice(cart)
+// /api/chat.js — RAW AI + static imports of your pricing & catalog
+// - Pricing imported from ../src/utils/pricing.js (unchanged)
+// - Catalog imported from ../src/data/itemdata.js (adjust path if needed)
+
+import { calculatePrice, fullLoadPoints, getLoadLabel } from "../src/utils/pricing.js";
+import itemDataModule from "../src/data/itemdata.js"; // <-- adjust if your file lives elsewhere
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
-const ITEMDATA_PATH = process.env.ITEMDATA_PATH || null;
+const POINTS_PER_CUFT = Number(process.env.POINTS_PER_CUFT || 1);
+
+// ---------- catalog normalization ----------
+const CATALOG = Array.isArray(itemDataModule)
+  ? itemDataModule
+  : (itemDataModule?.default || itemDataModule?.items || itemDataModule?.ITEMS || itemDataModule?.data || []);
+
+const FALLBACK_CATALOG = [
+  { id: "sofa_3seat", name: "Sofa (3-seat)", volume: 60, aliases: ["sofa","couch"] },
+  { id: "treadmill_std", name: "Treadmill", volume: 40, aliases: ["treadmill"] },
+  { id: "queen_mattress", name: "Queen Mattress", volume: 30, aliases: ["queen mattress","mattress queen"] },
+];
+
+const ACTIVE_CATALOG = (Array.isArray(CATALOG) && CATALOG.length) ? CATALOG : FALLBACK_CATALOG;
 
 // ---------- tiny utils ----------
 function norm(s = "") {
   return String(s).toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
 }
-function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
-
-// Levenshtein for fuzzy alias matching
 function levenshtein(a = "", b = "") {
   const m = a.length, n = b.length;
   if (!m) return n; if (!n) return m;
-  const dp = Array.from({ length: m + 1 }, (_, i) => Array(n + 1).fill(0));
+  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
   for (let i = 0; i <= m; i++) dp[i][0] = i;
   for (let j = 0; j <= n; j++) dp[0][j] = j;
   for (let i = 1; i <= m; i++) {
@@ -39,9 +50,8 @@ function fuzzyOne(name, list, threshold = 0.34) {
   return best && best.score <= threshold ? best.cand : null;
 }
 
-// Find dimensions like "60x80x10in" or "5ft x 3ft x 2ft"
-function parseDims(t) {
-  const s = t.toLowerCase().replace(/,/g, " ");
+function parseDims(text) {
+  const s = text.toLowerCase().replace(/,/g, " ");
   let m = s.match(/(\d+(?:\.\d+)?)\s*(?:ft|feet)['"]?\s*[x×]\s*(\d+(?:\.\d+)?)\s*(?:ft|feet)['"]?\s*[x×]\s*(\d+(?:\.\d+)?)\s*(?:ft|feet)/);
   if (m) return { L:+m[1], W:+m[2], H:+m[3], unit:"ft" };
   m = s.match(/(\d+(?:\.\d+)?)\s*(?:in|inch|inches)['"]?\s*[x×]\s*(\d+(?:\.\d+)?)\s*(?:in|inch|inches)['"]?\s*[x×]\s*(\d+(?:\.\d+)?)\s*(?:in|inch|inches)/);
@@ -51,43 +61,11 @@ function parseDims(t) {
   return null;
 }
 function dimsToCuFt(d) {
-  if (!d) return null;
-  const { L, W, H, unit } = d;
-  if (!(L && W && H)) return null;
-  return unit === "ft" ? L*W*H : (L/12)*(W/12)*(H/12);
+  if (!d || !d.L || !d.W || !d.H) return null;
+  return d.unit === "ft" ? d.L*d.W*dH : (d.L/12)*(d.W/12)*(d.H/12);
 }
 
-// ---------- load your pricing + catalog ----------
-async function loadPricing() {
-  // import your pricing helpers/constants
-  const mod = await import("../src/utils/pricing.js");
-  return {
-    calculatePrice: mod.calculatePrice,
-    fullLoadPoints: mod.fullLoadPoints,
-    getLoadLabel: mod.getLoadLabel,
-  };
-}
-
-async function loadCatalog() {
-  const tryPaths = ITEMDATA_PATH
-    ? [ITEMDATA_PATH]
-    : ["../src/data/itemdata.js", "../src/itemdata.js", "../itemdata.js"];
-
-  for (const p of tryPaths) {
-    try {
-      const mod = await import(p);
-      const data = mod.default || mod.items || mod.ITEMS || mod.data || [];
-      if (Array.isArray(data) && data.length) return data;
-    } catch {}
-  }
-  // minimal fallback so we always reply
-  return [
-    { id:"sofa_3seat", name:"Sofa (3-seat)", volume:60, aliases:["sofa","couch"] },
-    { id:"treadmill_std", name:"Treadmill", volume:40, aliases:["treadmill"] },
-    { id:"queen_mattress", name:"Queen Mattress", volume:30, aliases:["queen mattress","mattress queen"] },
-  ];
-}
-
+// ---------- alias index ----------
 function buildAliasIndex(catalog) {
   const entries = []; // {id,name,volume,price|null,alias}
   for (const it of catalog) {
@@ -95,18 +73,19 @@ function buildAliasIndex(catalog) {
     const extras = [it.name, it.id].filter(Boolean);
     for (const a of [...aliases, ...extras]) {
       const alias = norm(a);
-      if (alias) entries.push({
+      if (!alias) continue;
+      entries.push({
         id: it.id,
         name: it.name || it.id,
-        volume: Number(it.volume || it.cuft || 0) || 0,   // your file uses "volume"
-        price: it.price != null ? Number(it.price) : null // per-unit flat price if you have it
-      , alias });
+        volume: Number(it.volume || it.cuft || 0) || 0,
+        price: it.price != null ? Number(it.price) : 0,
+        alias
+      });
     }
   }
   const aliasStrings = entries.map(e => e.alias);
   return { entries, aliasStrings };
 }
-
 function resolveToCatalog(rawName, aliasEntries, aliasStrings) {
   const n = norm(rawName);
   const exact = aliasEntries.find(e => e.alias === n);
@@ -117,12 +96,12 @@ function resolveToCatalog(rawName, aliasEntries, aliasStrings) {
 
 // ---------- AI helpers ----------
 async function aiParseItems(userText, catalogExamples) {
-  if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY missing");
+  if (!OPENAI_API_KEY) return []; // we'll fallback to local parser
   const sys = "You extract item lines for a junk removal cart. Return JSON only.";
   const prompt = [
     `Examples in catalog: ${catalogExamples.slice(0,120).join(", ")}`,
     "Return ONLY JSON like: {\"items\":[{\"raw_name\":\"couch\",\"qty\":2},{\"raw_name\":\"treadmill\",\"qty\":1},{\"raw_name\":\"queen mattress\",\"qty\":1,\"L\":60,\"W\":80,\"H\":10,\"unit\":\"in\"}]}",
-    "Correct typos; if user included dimensions, include L/W/H & unit (in/ft). If not, omit L/W/H."
+    "Correct typos; include dimensions if present (L/W/H + unit in|ft).",
   ].join("\n");
 
   const r = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -139,13 +118,12 @@ async function aiParseItems(userText, catalogExamples) {
       ]
     })
   });
-  if (!r.ok) throw new Error(`LLM parse ${r.status}`);
+  if (!r.ok) return [];
   const j = await r.json();
   const text = j.choices?.[0]?.message?.content || "{}";
-  let out;
-  try { out = JSON.parse(text); } catch { out = { items: [] }; }
+  let out; try { out = JSON.parse(text); } catch { out = { items: [] }; }
   if (!Array.isArray(out.items)) out.items = [];
-  return out.items.map(it => ({ 
+  return out.items.map(it => ({
     raw_name: String(it.raw_name || "").trim(),
     qty: Math.max(1, parseInt(it.qty || 1, 10)),
     L: it.L ?? null, W: it.W ?? null, H: it.H ?? null, unit: it.unit ?? null
@@ -172,61 +150,7 @@ async function aiEstimateCuFt(label) {
   catch { return { cuft: 15 }; }
 }
 
-// ---------- main handler ----------
-export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
-  res.setHeader("X-Chat-Version", "raw-ai-pricing-v1");
-  res.setHeader("Cache-Control", "no-store");
-
-  if (req.method === "OPTIONS") return res.status(200).end();
-  if (req.method !== "POST") return res.status(405).json({ error:"Method not allowed" });
-
-  try {
-    const { messages = [], sessionId } = req.body || {};
-    const last = messages[messages.length - 1]?.content?.trim() || "";
-
-    // load pricing + catalog
-    const { calculatePrice, fullLoadPoints, getLoadLabel } = await loadPricing();
-    const CATALOG = await loadCatalog();
-    const { entries: aliasEntries, aliasStrings } = buildAliasIndex(CATALOG);
-    const catalogNames = CATALOG.map(c => c.name || c.id);
-
-    // 1) AI parse messy text → item lines (qty, name, optional dims)
-    let aiItems = [];
-    try { aiItems = await aiParseItems(last, catalogNames); }
-    catch (e) { console.error("[chat] aiParseItems:", e); aiItems = []; }
-
-    if (!aiItems.length) {
-      return res.status(200).json({
-        reply: `Tell me what you’ve got (typos fine): “2 couches + treadmill”, or add dimensions like “queen mattress 60x80x10in”.`,
-        parsed: { cart: [], finalPrice: 0, totalVolume: 0, loadLabel: "Empty" },
-        sessionId
-      });
-    }
-
-    // 2) Resolve each line to catalog item OR estimate cu-ft
-    const cart = []; // each line: { id, name, qty, volume, price, source }
-    for (const it of aiItems) {
-      const raw = it.raw_name || "";
-      const qty = Math.max(1, parseInt(it.qty || 1, 10));
-
-      // Try to resolve to catalog
-      const match = resolveToCatalog(raw, aliasEntries, aliasStrings);
-
-      if (match) {
-        const unitVol = Number(match.volume || 0);
-        const unitPrice = match.price != null ? Number(match.price) : 0;
-        cart.push({
-          id: match.id,
-          name: match.name,
-          qty,
-          volume: unitVol * qty,      // your pricing.js expects full line volume
-          price: unitPrice * qty,     // and full line price (0 if volume-based)
-          source: "catalog"
-        });
-        continue;
-      }
-
-      // Unlisted
+// ---------- fallback local parser (no key or AI failure) ----------
+function localParse(userText, aliasEntries) {
+  const msg = norm(userText);
+  const o
