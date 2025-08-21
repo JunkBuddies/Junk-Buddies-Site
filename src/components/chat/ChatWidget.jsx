@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-// If your CartContext exports a different hook, adjust this import:
 import { useCart } from "../../context/CartContext";
 
 const GOLD = "#d4af37";
@@ -15,12 +14,13 @@ function getSessionId() {
   return s;
 }
 
+function slug(s = "") {
+  return String(s).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
 export default function ChatWidget() {
-  // Cart integration (graceful if API differs)
-  const cartCtx = (typeof useCart === "function" ? useCart() : null) || {};
-  const addItemsFn = cartCtx.addItems || null;
-  const addItemFn  = cartCtx.addItem  || null;
-  const addToCartFn= cartCtx.addToCart|| null;
+  // match your CartContext: { cart, setCart }
+  const { cart, setCart } = useCart() || {};
 
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -62,26 +62,18 @@ export default function ChatWidget() {
 
       const raw = await res.text();
       let json;
-      try {
-        json = JSON.parse(raw);
-      } catch {
-        json = { error: "non_json", detail: raw };
-      }
+      try { json = JSON.parse(raw); } catch { json = { error: "non_json", detail: raw }; }
 
       if (!res.ok) {
         setError(json?.detail || json?.error || `Server ${res.status}`);
-        setMessages((m) => [
-          ...m,
-          { role: "assistant", content: "Sorry, I had trouble responding." }
-        ]);
+        setMessages((m) => [...m, { role: "assistant", content: "Sorry, I had trouble responding." }]);
       } else {
         const reply = json?.reply || "Okay.";
-        const cart = Array.isArray(json?.parsed?.cart) ? json.parsed.cart : [];
+        const cartLines = Array.isArray(json?.parsed?.cart) ? json.parsed.cart : [];
         setMessages((m) => [...m, { role: "assistant", content: reply }]);
-        // Prepare suggestions with checkboxes checked by default
         setSuggestions(
-          cart.map((it) => ({
-            id: it.id || it.name,
+          cartLines.map((it) => ({
+            id: it.id || slug(it.name),
             name: it.name,
             qty: Number(it.qty || 1),
             volume: Number(it.volume || 0),
@@ -92,10 +84,7 @@ export default function ChatWidget() {
       }
     } catch (e) {
       setError("I had trouble responding. Please try again.");
-      setMessages((m) => [
-        ...m,
-        { role: "assistant", content: "Sorry, I had trouble responding." }
-      ]);
+      setMessages((m) => [...m, { role: "assistant", content: "Sorry, I had trouble responding." }]);
     } finally {
       setLoading(false);
     }
@@ -109,45 +98,47 @@ export default function ChatWidget() {
   }
 
   function toggleSuggestion(i) {
-    setSuggestions((prev) =>
-      prev.map((s, idx) => (idx === i ? { ...s, selected: !s.selected } : s))
-    );
+    setSuggestions((prev) => prev.map((s, idx) => (idx === i ? { ...s, selected: !s.selected } : s)));
   }
 
   function addSelectedToCart() {
+    if (typeof setCart !== "function") {
+      console.warn("[ChatWidget] setCart not available from CartContext.");
+      return;
+    }
     const selected = suggestions.filter((s) => s.selected);
     if (!selected.length) return;
 
-    // Try common cart APIs; fallback to a DOM event
-    if (typeof addItemsFn === "function") {
-      addItemsFn(selected);
-    } else if (typeof addItemFn === "function") {
+    // Merge into cart using your existing setCart
+    setCart((prev = []) => {
+      const next = [...prev];
       for (const s of selected) {
-        addItemFn({ id: s.id, name: s.name, qty: s.qty, volume: s.volume, price: s.price });
+        const key = s.id || slug(s.name);
+        const idx = next.findIndex((it) => (it.id || slug(it.name)) === key);
+        if (idx >= 0) {
+          const cur = next[idx];
+          next[idx] = {
+            ...cur,
+            qty: (Number(cur.qty) || 0) + (Number(s.qty) || 0),
+            volume: (Number(cur.volume) || 0) + (Number(s.volume) || 0),
+            price: (Number(cur.price) || 0) + (Number(s.price) || 0),
+          };
+        } else {
+          next.push({
+            id: key,
+            name: s.name,
+            qty: Number(s.qty) || 1,
+            volume: Number(s.volume) || 0,
+            price: Number(s.price) || 0
+          });
+        }
       }
-    } else if (typeof addToCartFn === "function") {
-      for (const s of selected) {
-        addToCartFn({ id: s.id, name: s.name, qty: s.qty, volume: s.volume, price: s.price });
-      }
-    } else {
-      // Fallback: emit a browser event your app can listen for
-      window.dispatchEvent(new CustomEvent("chat:add-items", { detail: selected }));
-      console.warn(
-        "[ChatWidget] CartContext API not found. Emitted 'chat:add-items' with selected items."
-      );
-    }
+      return next;
+    });
 
     setSuggestions([]);
-    setMessages((m) => [
-      ...m,
-      { role: "assistant", content: "Added to cart ✅  (You can keep adding or say 'schedule')." }
-    ]);
+    setMessages((m) => [...m, { role: "assistant", content: "Added to cart ✅  (You can keep adding or say 'schedule')." }]);
   }
-
-  const anyCartAPI =
-    typeof addItemsFn === "function" ||
-    typeof addItemFn === "function" ||
-    typeof addToCartFn === "function";
 
   return (
     <>
@@ -201,13 +192,7 @@ export default function ChatWidget() {
             <span style={{ fontWeight: "bold" }}>Junk Buddies Chat</span>
             <button
               onClick={() => setOpen(false)}
-              style={{
-                float: "right",
-                background: "transparent",
-                border: "none",
-                color: "#fff",
-                cursor: "pointer"
-              }}
+              style={{ float: "right", background: "transparent", border: "none", color: "#fff", cursor: "pointer" }}
               aria-label="Close chat"
             >
               ✕
@@ -217,13 +202,7 @@ export default function ChatWidget() {
           {/* Messages */}
           <div style={{ flex: 1, overflowY: "auto", padding: 10 }}>
             {messages.map((m, i) => (
-              <div
-                key={i}
-                style={{
-                  margin: "6px 0",
-                  textAlign: m.role === "user" ? "right" : "left"
-                }}
-              >
+              <div key={i} style={{ margin: "6px 0", textAlign: m.role === "user" ? "right" : "left" }}>
                 <span
                   style={{
                     display: "inline-block",
@@ -241,26 +220,12 @@ export default function ChatWidget() {
 
             {/* Suggestions */}
             {suggestions.length > 0 && (
-              <div
-                style={{
-                  background: "#111",
-                  border: `1px solid ${GOLD}`,
-                  borderRadius: 10,
-                  padding: 8,
-                  marginTop: 8
-                }}
-              >
-                <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6 }}>
-                  Suggested items
-                </div>
+              <div style={{ background: "#111", border: `1px solid ${GOLD}`, borderRadius: 10, padding: 8, marginTop: 8 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6 }}>Suggested items</div>
                 <div style={{ display: "grid", gap: 6 }}>
                   {suggestions.map((s, i) => (
                     <label key={s.id + "_" + i} style={{ fontSize: 13, display: "flex", gap: 8 }}>
-                      <input
-                        type="checkbox"
-                        checked={s.selected}
-                        onChange={() => toggleSuggestion(i)}
-                      />
+                      <input type="checkbox" checked={s.selected} onChange={() => toggleSuggestion(i)} />
                       <span style={{ lineHeight: 1.2 }}>
                         {s.qty}× {s.name}
                         <span style={{ color: "#bbb" }}>
@@ -284,12 +249,6 @@ export default function ChatWidget() {
                     padding: "8px 10px",
                     cursor: "pointer"
                   }}
-                  disabled={!anyCartAPI && typeof window === "undefined"}
-                  title={
-                    anyCartAPI
-                      ? "Add selected items"
-                      : "No CartContext API detected — will emit 'chat:add-items' event"
-                  }
                 >
                   Add selected to cart
                 </button>
