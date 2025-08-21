@@ -1,28 +1,41 @@
-// api/chat.js — Step 3: verify item catalog import
-// If your catalog isn’t exactly at ../src/data/itemdata.js,
-// set ITEMDATA_PATH in Vercel → Settings → Environment Variables → Production
-// to the real relative path from /api/chat.js (e.g., ../src/itemdata.js)
-
-const ITEMDATA_PATH = process.env.ITEMDATA_PATH || "../src/data/itemdata.js";
+// api/chat.js — catalog path diagnostic (ESM)
+const CANDIDATES = [
+  process.env.ITEMDATA_PATH,                  // if you set it in Vercel
+  "../src/data/itemdata.js",
+  "../src/itemdata.js",
+  "../itemdata.js",
+  "../src/utils/itemdata.js",
+  "../src/data/items.js"
+].filter(Boolean);
 
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
-  try {
-    const mod = await import(ITEMDATA_PATH);
-    const data = Array.isArray(mod)
-      ? mod
-      : (mod.default || mod.items || mod.ITEMS || mod.data || []);
-    res.status(200).json({
-      ok: true,
-      pathTried: ITEMDATA_PATH,
-      type: Array.isArray(data) ? "array" : typeof data,
-      count: Array.isArray(data) ? data.length : 0
-    });
-  } catch (e) {
-    res.status(500).json({
-      error: "itemdata_import_failed",
-      pathTried: ITEMDATA_PATH,
-      detail: String(e?.message || e)
-    });
+
+  const results = [];
+  for (const rel of CANDIDATES) {
+    try {
+      // Resolve the relative path robustly for ESM on Vercel
+      const url = new URL(rel, import.meta.url);
+      const mod = await import(url.href);
+      const data = Array.isArray(mod) ? mod : (mod.default || mod.items || mod.ITEMS || mod.data || []);
+      results.push({
+        path: rel,
+        resolved: url.href,
+        ok: Array.isArray(data),
+        count: Array.isArray(data) ? data.length : 0,
+        keys: Object.keys(mod)
+      });
+      if (Array.isArray(data)) {
+        return res.status(200).json({ ok: true, picked: rel, count: data.length, results });
+      }
+    } catch (e) {
+      results.push({ path: rel, ok: false, error: String(e?.message || e) });
+    }
   }
+
+  return res.status(500).json({
+    error: "itemdata_import_failed",
+    hint: "Set ITEMDATA_PATH in Vercel to the correct relative path from /api/chat.js",
+    results
+  });
 }
