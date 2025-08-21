@@ -1,98 +1,13 @@
-// api/chat.js — Minimal parser for nested itemData + your pricing (no AI)
+// api/chat.js — Tight matching for sofa/treadmill/mattress + your pricing (no AI)
 
-function norm(s = "") { return String(s).toLowerCase().trim(); }
-function escRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
-function slug(s=""){ return norm(s).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g,""); }
-
-// Generate helpful aliases from a human label like "Couch / Loveseat" or "Mattress - Queen"
-function nameAliases(name = "") {
-  const n = norm(name);
-  const parts = n.split(/[\/–—-]/).map(x => x.trim()).filter(Boolean); // split on / or - types
-  const out = new Set([n]);
-  for (const p of parts) out.add(p);
-
-  // special “A - B” → add “B A” and “A B”
-  const dashMatch = n.match(/^(.*?)-\s*(.*)$/);
-  if (dashMatch) {
-    const a = dashMatch[1].trim(), b = dashMatch[2].trim();
-    if (a && b) { out.add(`${b} ${a}`); out.add(`${a} ${b}`); out.add(b); }
-  }
-
-  // Common synonyms
-  const syn = {
-    "couch": ["sofa","loveseat","sectional"],
-    "sofa": ["couch","loveseat","sectional"],
-    "loveseat": ["couch","sofa"],
-    "recliner": ["reclining chair"],
-    "tv": ["television"],
-    "television": ["tv"],
-    "fridge": ["refrigerator"],
-    "refrigerator": ["fridge"],
-    "ac": ["air conditioner","window unit"],
-    "air conditioner": ["ac","window unit"],
-    "lawn mower": ["lawnmower"],
-    "lawnmower": ["lawn mower"],
-    "leaf blower": ["leafblower"],
-    "leafblower": ["leaf blower"],
-    "weed eater": ["trimmer","weed wacker","weedwhacker"],
-    "trimmer": ["weed eater","weed wacker","weedwhacker"],
-    "grill": ["bbq","barbecue","propane grill"],
-    "range": ["stove","oven"],
-    "stove": ["range","oven"],
-    "mattress queen": ["queen mattress"],
-    "mattress king": ["king mattress"],
-    "mattress full": ["full mattress"],
-    "mattress twin": ["twin mattress"],
-    "queen mattress": ["mattress queen"],
-    "king mattress": ["mattress king"],
-    "full mattress": ["mattress full"],
-    "twin mattress": ["mattress twin"]
-  };
-
-  // If name contains tokens we can expand
-  const tokens = n.split(/\s+/);
-  const joined = tokens.join(" ");
-  for (const [k, vals] of Object.entries(syn)) {
-    if (joined.includes(k)) vals.forEach(v => out.add(v));
-  }
-
-  // Specific heuristics
-  if (joined.includes("couch") || joined.includes("sofa") || joined.includes("loveseat")) {
-    out.add("couch"); out.add("sofa"); out.add("loveseat"); out.add("sectional");
-  }
-  if (joined.includes("television")) out.add("tv");
-  if (joined.includes("tv")) out.add("television");
-  if (joined.includes("refrigerator")) out.add("fridge");
-  if (joined.includes("fridge")) out.add("refrigerator");
-  if (joined.includes("air conditioner")) { out.add("ac"); out.add("window unit"); }
-
-  // Normalize whitespace
-  return [...out].map(x => x.replace(/\s+/g," ").trim()).filter(Boolean);
-}
-
-function buildMatchers(flatItems) {
-  return flatItems.map(it => {
-    const labels = new Set([
-      ...nameAliases(it.name || ""),
-      it.name ? norm(it.name) : ""
-    ]);
-    // e.g. "Mattress - Queen" → add "queen mattress"
-    if (/^mattress/.test(norm(it.name||"")) || /mattress/.test(norm(it.name||""))) {
-      const m = norm(it.name).match(/mattress.*\b(king|queen|full|twin)\b/);
-      if (m) { labels.add(`${m[1]} mattress`); labels.add(`mattress ${m[1]}`); }
-    }
-
-    const uniq = [...labels].filter(Boolean).map(escRe);
-    const pattern = uniq.length ? `(?:${uniq.join("|")})(?:es|s)?` : null;
-
-    return {
-      id: it.id,
-      name: it.name,
-      volume: Number(it.volume || it.cuft || 0) || 0,
-      price: it.price != null ? Number(it.price) : 0,
-      re: pattern ? new RegExp(`(?:^|\\b)(\\d{1,3})?\\s*(?:x|×)?\\s*(${pattern})\\b`, "g") : null
-    };
-  }).filter(m => m.re);
+function norm(s=""){ return String(s).toLowerCase().trim(); }
+function escRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"); }
+function slug(s=""){ return norm(s).replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
+function countWithQty(text, base){
+  const re = new RegExp(`(?:^|\\b)(\\d{1,3})?\\s*${base}\\b`, "g");
+  let m, total = 0;
+  while ((m = re.exec(text)) !== null) total += Math.max(1, parseInt(m[1] || "1", 10));
+  return total;
 }
 
 function flattenCatalog(nested = []) {
@@ -112,32 +27,143 @@ function flattenCatalog(nested = []) {
   return flat;
 }
 
-export default async function handler(req, res) {
+function indexByName(items){
+  const get = (pred) => items.find(pred) || null;
+  const byInc = (frag) => get(it => norm(it.name).includes(frag));
+  return {
+    sofa:         get(it => norm(it.name) === "sofa") || byInc("sofa"),
+    couchLove:    byInc("couch / loveseat"),
+    reclSofa:     byInc("reclining sofa"),
+    reclLove:     byInc("loveseat - reclining"),
+    sleeperSofa:  byInc("sleeper sofa"),
+    sectionalAny: items.filter(it => /sectional sofa/i.test(it.name)),
+
+    treadBase:    get(it => norm(it.name) === "treadmill") || byInc("treadmill"),
+    treadComm:    byInc("treadmill - commercial"),
+    treadRes:     byInc("treadmill - residential"),
+
+    mattBase:     get(it => norm(it.name) === "mattress") || byInc("mattress"),
+    mattQueen:    byInc("mattress - queen"),
+    mattKing:     byInc("mattress - king"),
+    mattKingCal:  byInc("mattress - king/cal king") || byInc("mattress - king/"),
+    mattFull:     byInc("mattress - full"),
+    mattTwin:     byInc("mattress - twin"),
+  };
+}
+
+function buildExactNameMatchers(items) {
+  // For non-family items: match the literal name (and pieces like "Table - Coffee" → "table", "coffee")
+  return items.map(it => {
+    const base = norm(it.name);
+    const parts = base.split(/[\/–—-]/).map(s => s.trim()).filter(Boolean);
+    const labels = [...new Set([base, ...parts])].map(escRe);
+    const pattern = labels.length ? `(?:${labels.join("|")})(?:es|s)?` : null;
+    return {
+      id: it.id, name: it.name,
+      volume: Number(it.volume || 0) || 0,
+      price: it.price != null ? Number(it.price) : 0,
+      re: pattern ? new RegExp(`(?:^|\\b)(\\d{1,3})?\\s*(?:x|×)?\\s*(${pattern})\\b`, "g") : null
+    };
+  }).filter(m => m.re);
+}
+
+export default async function handler(req, res){
   res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Cache-Control", "no-store");
   if (req.method === "OPTIONS") return res.status(200).end();
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  if (req.method !== "POST") return res.status(405).json({ error:"Method not allowed" });
 
   try {
-    // imports
     const pricing = await import(new URL("../src/utils/pricing.js", import.meta.url).href);
     const dataMod = await import(new URL("../src/data/itemData.js", import.meta.url).href);
+
     const NESTED = dataMod.default || dataMod.items || dataMod.ITEMS || dataMod.data || [];
     if (!Array.isArray(NESTED) || !NESTED.length) {
-      return res.status(500).json({ error: "itemdata_empty", detail: "src/data/itemData.js must export the nested array you posted" });
+      return res.status(500).json({ error:"itemdata_empty", detail:"src/data/itemData.js must export the nested array" });
     }
-
     const ITEMS = flattenCatalog(NESTED);
     const { calculatePrice, fullLoadPoints, getLoadLabel } = pricing;
 
     const { messages = [] } = req.body || {};
     const text = norm(messages[messages.length - 1]?.content || "");
 
-    // build matchers and scan
-    const matchers = buildMatchers(ITEMS);
+    // ---- Family heuristics (prevents over-matching) ----
+    const idx = indexByName(ITEMS);
     const qtyById = new Map();
+
+    // SOFA FAMILY
+    const hasSectional  = /\bsectional\b/.test(text);
+    const hasRecliner   = /\brecliner|reclining\b/.test(text);
+    const hasSleeper    = /\bsleeper\b/.test(text);
+    const hasLoveseatW  = /\bloveseat(s)?\b/.test(text);
+    const couchQty      = countWithQty(text, "(?:couch|couches)");
+    const sofaQty       = countWithQty(text, "sofa(?:s)?");
+
+    if (hasSectional) {
+      // if user says "sectional", choose a mid-size default if pieces not specified
+      const secQty = countWithQty(text, "sectional(?:\\s+sofa)?s?");
+      const defaultSectional = idx.sectionalAny?.[1] || idx.sectionalAny?.[0] || null; // pick 3-pieces if present
+      if (defaultSectional && secQty) qtyById.set(defaultSectional.id, secQty);
+    } else if (hasRecliner) {
+      const q = Math.max(couchQty, sofaQty, countWithQty(text, "recliner(?:s)?"));
+      if (q) {
+        const pick = idx.reclSofa || idx.reclLove || idx.sofa || idx.couchLove;
+        if (pick) qtyById.set(pick.id, q);
+      }
+    } else if (hasSleeper) {
+      const q = Math.max(couchQty, sofaQty, countWithQty(text, "sleeper(?:\\s+sofa)?s?"));
+      if (q && idx.sleeperSofa) qtyById.set(idx.sleeperSofa.id, q);
+    } else {
+      // generic "couch/sofa": map couches → Couch / Loveseat if present, else Sofa
+      if (couchQty) {
+        const pick = idx.couchLove || idx.sofa;
+        if (pick) qtyById.set(pick.id, (qtyById.get(pick.id)||0) + couchQty);
+      }
+      if (sofaQty && !couchQty) { // don't double-count if both words used
+        const pick = idx.sofa || idx.couchLove;
+        if (pick) qtyById.set(pick.id, (qtyById.get(pick.id)||0) + sofaQty);
+      }
+      // explicit "loveseat"
+      const loveQty = countWithQty(text, "loveseat(?:s)?");
+      if (loveQty && idx.couchLove) qtyById.set(idx.couchLove.id, (qtyById.get(idx.couchLove.id)||0) + loveQty);
+    }
+
+    // TREADMILL FAMILY
+    const treadQty = countWithQty(text, "treadmill(?:s)?");
+    const hasComm  = /\bcommercial\b/.test(text);
+    const hasRes   = /\bresidential\b/.test(text);
+    if (treadQty) {
+      const pick = (hasComm && idx.treadComm) ? idx.treadComm
+                 : (hasRes  && idx.treadRes ) ? idx.treadRes
+                 : idx.treadBase;
+      if (pick) qtyById.set(pick.id, (qtyById.get(pick.id)||0) + treadQty);
+    }
+
+    // MATTRESS FAMILY
+    const mattQty = countWithQty(text, "mattress(?:es)?");
+    if (mattQty) {
+      const sizeQueen = /\bqueen\b/.test(text);
+      const sizeKing  = /\b(cal(?:ifornia)?\\s*)?king\b/.test(text) || /\bking\b/.test(text);
+      const sizeFull  = /\bfull\b/.test(text);
+      const sizeTwin  = /\btwin\b/.test(text);
+
+      let pick = null;
+      if (sizeQueen && idx.mattQueen) pick = idx.mattQueen;
+      else if (sizeKing && (idx.mattKingCal || idx.mattKing)) pick = idx.mattKingCal || idx.mattKing;
+      else if (sizeFull && idx.mattFull) pick = idx.mattFull;
+      else if (sizeTwin && idx.mattTwin) pick = idx.mattTwin;
+      else pick = idx.mattBase || idx.mattQueen;
+
+      if (pick) qtyById.set(pick.id, (qtyById.get(pick.id)||0) + mattQty);
+    }
+
+    // ---- Generic exact-name matching for everything else (NOT sofa/treadmill/mattress) ----
+    const familyWord = /(sofa|couch|loveseat|sectional|treadmill|mattress)/;
+    const others = ITEMS.filter(it => !familyWord.test(norm(it.name)));
+    const matchers = buildExactNameMatchers(others);
+
     for (const m of matchers) {
       m.re.lastIndex = 0;
       let hit;
@@ -147,7 +173,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // assemble cart
+    // ---- Build cart & price
     const cart = [];
     for (const it of ITEMS) {
       const qty = qtyById.get(it.id) || 0;
@@ -156,22 +182,21 @@ export default async function handler(req, res) {
         id: it.id,
         name: it.name,
         qty,
-        volume: (Number(it.volume) || 0) * qty,  // your pricing expects line volume total
-        price: (Number(it.price) || 0) * qty     // flat per-unit price if provided; 0 → volume-based
+        volume: (Number(it.volume)||0) * qty,
+        price: (Number(it.price)||0) * qty
       });
     }
 
     if (!cart.length) {
       return res.status(200).json({
-        reply: `Tell me items like “2 couches + treadmill” or “queen mattress + fridge”. I’ll total the volume and price using your catalog.`,
+        reply: `Try: “2 couches + treadmill + queen mattress”. I’ll total volume & price from your catalog.`,
         parsed: { cart: [], finalPrice: 0, totalVolume: 0, loadLabel: "Empty" }
       });
     }
 
-    // price via your rules
+    const { calculatePrice, fullLoadPoints, getLoadLabel } = pricing;
     const { finalPrice, totalVolume } = calculatePrice(cart);
     const loadLabel = getLoadLabel(totalVolume);
-
     const itemsList = cart.map(li => `• ${li.qty}× ${li.name} — ${li.volume.toFixed(1)} pts`).join("\n");
     const loads = Math.floor(totalVolume / fullLoadPoints);
     const remainderPct = Math.round(((totalVolume % fullLoadPoints) / fullLoadPoints) * 100);
@@ -184,6 +209,6 @@ export default async function handler(req, res) {
 
   } catch (e) {
     console.error("[/api/chat] error:", e);
-    return res.status(500).json({ error: "chat_error", detail: String(e?.message || e) });
+    return res.status(500).json({ error:"chat_error", detail:String(e?.message||e) });
   }
 }
