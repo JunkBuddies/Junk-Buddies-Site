@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCart } from "../../context/CartContext";
+import { calculatePrice } from "../../utils/pricing";
+import { useNavigate } from "react-router-dom";
 
 const GOLD = "#d4af37";
 const BLACK = "#0b0b0b";
@@ -14,32 +16,27 @@ function getSessionId() {
   return s;
 }
 
-function slug(s = "") {
-  return String(s).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-}
-
 export default function ChatWidget() {
-  // match your CartContext: { cart, setCart }
-  const { cart, setCart } = useCart() || {};
-
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
-    {
-      role: "assistant",
-      content:
-        "Hi! I’m your Junk Buddies assistant. Tell me items like “2 couches + treadmill + queen mattress” and I’ll estimate and suggest a cart."
-    }
+    { role: "assistant", content: "Hi! Tell me what you need removed (typos OK). I’ll total volume & price from our catalog." }
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [suggestions, setSuggestions] = useState([]); // [{id,name,qty,volume,price,selected}]
+  const [aiStatus, setAiStatus] = useState("unknown"); // "on" | "off" | "unknown"
+  const [lastParsed, setLastParsed] = useState(null);   // { cart, finalPrice, totalVolume, loadLabel }
+
   const endRef = useRef(null);
   const sessionId = useMemo(getSessionId, []);
+  const { cart, setCart } = useCart() || { cart: [], setCart: () => {} };
+  const navigate = useNavigate();
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, open, loading, suggestions]);
+  }, [messages, open, loading]);
+
+  const cartSummary = lastParsed?.cart?.length ? calculatePrice(lastParsed.cart) : null;
 
   async function send() {
     const text = input.trim();
@@ -48,43 +45,26 @@ export default function ChatWidget() {
     setInput("");
     setMessages((m) => [...m, { role: "user", content: text }]);
     setLoading(true);
-    setSuggestions([]);
 
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId,
-          messages: [...messages, { role: "user", content: text }]
-        })
+        body: JSON.stringify({ sessionId, messages: [...messages, { role: "user", content: text }] })
       });
 
-      const raw = await res.text();
-      let json;
-      try { json = JSON.parse(raw); } catch { json = { error: "non_json", detail: raw }; }
+      // read AI status header (API exposes it)
+      const aiHeader = (res.headers.get("x-ai") || "").toLowerCase();
+      setAiStatus(aiHeader === "on" ? "on" : aiHeader === "off" ? "off" : "unknown");
 
-      if (!res.ok) {
-        setError(json?.detail || json?.error || `Server ${res.status}`);
-        setMessages((m) => [...m, { role: "assistant", content: "Sorry, I had trouble responding." }]);
-      } else {
-        const reply = json?.reply || "Okay.";
-        const cartLines = Array.isArray(json?.parsed?.cart) ? json.parsed.cart : [];
-        setMessages((m) => [...m, { role: "assistant", content: reply }]);
-        setSuggestions(
-          cartLines.map((it) => ({
-            id: it.id || slug(it.name),
-            name: it.name,
-            qty: Number(it.qty || 1),
-            volume: Number(it.volume || 0),
-            price: Number(it.price || 0),
-            selected: true
-          }))
-        );
-      }
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error || "Request failed");
+
+      setLastParsed(json.parsed || null);
+      setMessages((m) => [...m, { role: "assistant", content: json.reply }]);
     } catch (e) {
       setError("I had trouble responding. Please try again.");
-      setMessages((m) => [...m, { role: "assistant", content: "Sorry, I had trouble responding." }]);
+      setAiStatus((s) => (s === "unknown" ? "off" : s));
     } finally {
       setLoading(false);
     }
@@ -97,47 +77,9 @@ export default function ChatWidget() {
     }
   }
 
-  function toggleSuggestion(i) {
-    setSuggestions((prev) => prev.map((s, idx) => (idx === i ? { ...s, selected: !s.selected } : s)));
-  }
-
-  function addSelectedToCart() {
-    if (typeof setCart !== "function") {
-      console.warn("[ChatWidget] setCart not available from CartContext.");
-      return;
-    }
-    const selected = suggestions.filter((s) => s.selected);
-    if (!selected.length) return;
-
-    // Merge into cart using your existing setCart
-    setCart((prev = []) => {
-      const next = [...prev];
-      for (const s of selected) {
-        const key = s.id || slug(s.name);
-        const idx = next.findIndex((it) => (it.id || slug(it.name)) === key);
-        if (idx >= 0) {
-          const cur = next[idx];
-          next[idx] = {
-            ...cur,
-            qty: (Number(cur.qty) || 0) + (Number(s.qty) || 0),
-            volume: (Number(cur.volume) || 0) + (Number(s.volume) || 0),
-            price: (Number(cur.price) || 0) + (Number(s.price) || 0),
-          };
-        } else {
-          next.push({
-            id: key,
-            name: s.name,
-            qty: Number(s.qty) || 1,
-            volume: Number(s.volume) || 0,
-            price: Number(s.price) || 0
-          });
-        }
-      }
-      return next;
-    });
-
-    setSuggestions([]);
-    setMessages((m) => [...m, { role: "assistant", content: "Added to cart ✅  (You can keep adding or say 'schedule')." }]);
+  function addParsedToCart() {
+    if (!lastParsed?.cart?.length) return;
+    setCart((prev) => [...prev, ...lastParsed.cart]);
   }
 
   return (
@@ -159,8 +101,6 @@ export default function ChatWidget() {
             cursor: "pointer",
             zIndex: 9999
           }}
-          aria-label="Open chat"
-          title="Chat • Get Estimate"
         >
           💬
         </button>
@@ -175,8 +115,8 @@ export default function ChatWidget() {
             bottom: 16,
             width: 360,
             maxWidth: "90vw",
-            height: 500,
-            maxHeight: "80vh",
+            height: 560,
+            maxHeight: "85vh",
             background: BLACK,
             color: "#fff",
             borderRadius: 16,
@@ -188,12 +128,24 @@ export default function ChatWidget() {
           }}
         >
           {/* Header */}
-          <div style={{ padding: "10px", borderBottom: `1px solid ${GOLD}` }}>
-            <span style={{ fontWeight: "bold" }}>Junk Buddies Chat</span>
+          <div style={{ padding: "10px", borderBottom: `1px solid ${GOLD}`, display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontWeight: "bold", flex: 1 }}>Junk Buddies Chat</span>
+            <span
+              title={aiStatus === "on" ? "AI parser active" : aiStatus === "off" ? "AI disabled — using fallback parser" : "Status unknown"}
+              style={{
+                fontSize: 12,
+                padding: "2px 8px",
+                borderRadius: 999,
+                border: `1px solid ${GOLD}`,
+                color: aiStatus === "on" ? "#22c55e" : aiStatus === "off" ? "#9ca3af" : "#f59e0b",
+                background: "#111"
+              }}
+            >
+              AI: {aiStatus.toUpperCase()}
+            </span>
             <button
               onClick={() => setOpen(false)}
-              style={{ float: "right", background: "transparent", border: "none", color: "#fff", cursor: "pointer" }}
-              aria-label="Close chat"
+              style={{ marginLeft: 8, background: "transparent", border: "none", color: "#fff", cursor: "pointer" }}
             >
               ✕
             </button>
@@ -209,55 +161,41 @@ export default function ChatWidget() {
                     padding: "6px 10px",
                     borderRadius: 10,
                     background: m.role === "user" ? GOLD : "#222",
-                    color: m.role === "user" ? BLACK : "#fff",
-                    whiteSpace: "pre-wrap"
+                    color: m.role === "user" ? BLACK : "#fff"
                   }}
                 >
                   {m.content}
                 </span>
               </div>
             ))}
-
-            {/* Suggestions */}
-            {suggestions.length > 0 && (
-              <div style={{ background: "#111", border: `1px solid ${GOLD}`, borderRadius: 10, padding: 8, marginTop: 8 }}>
-                <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6 }}>Suggested items</div>
-                <div style={{ display: "grid", gap: 6 }}>
-                  {suggestions.map((s, i) => (
-                    <label key={s.id + "_" + i} style={{ fontSize: 13, display: "flex", gap: 8 }}>
-                      <input type="checkbox" checked={s.selected} onChange={() => toggleSuggestion(i)} />
-                      <span style={{ lineHeight: 1.2 }}>
-                        {s.qty}× {s.name}
-                        <span style={{ color: "#bbb" }}>
-                          {" "}
-                          — {s.volume.toFixed(1)} pts
-                          {s.price ? ` • $${s.price.toFixed(2)}` : ""}
-                        </span>
-                      </span>
-                    </label>
-                  ))}
-                </div>
-                <button
-                  onClick={addSelectedToCart}
-                  style={{
-                    marginTop: 8,
-                    width: "100%",
-                    borderRadius: 8,
-                    background: GOLD,
-                    color: BLACK,
-                    fontWeight: 700,
-                    padding: "8px 10px",
-                    cursor: "pointer"
-                  }}
-                >
-                  Add selected to cart
-                </button>
-              </div>
-            )}
-
-            {loading && <div style={{ fontStyle: "italic", marginTop: 6 }}>Assistant is typing…</div>}
-            {error && <div style={{ color: "red", marginTop: 6 }}>{error}</div>}
+            {loading && <div style={{ fontStyle: "italic" }}>Assistant is typing…</div>}
+            {error && <div style={{ color: "red" }}>{error}</div>}
             <div ref={endRef} />
+          </div>
+
+          {/* Parsed result preview & actions */}
+          <div style={{ borderTop: `1px solid ${GOLD}`, padding: 10, background: "#111" }}>
+            <div style={{ fontSize: 12, marginBottom: 6 }}>
+              <strong>Parsed:</strong>{" "}
+              {lastParsed?.cart?.length
+                ? `${lastParsed.cart.length} lines • ${Math.round(lastParsed.totalVolume || 0)} pts • $${(lastParsed.finalPrice ?? 0).toFixed(2)}`
+                : "nothing yet"}
+            </div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <button
+                onClick={addParsedToCart}
+                disabled={!lastParsed?.cart?.length}
+                style={{ borderRadius: 8, background: GOLD, color: BLACK, fontWeight: 700, padding: "6px 10px", cursor: "pointer" }}
+              >
+                Add selected to cart
+              </button>
+              <button
+                onClick={() => navigate("/itemized")}
+                style={{ borderRadius: 8, background: "#222", color: "#fff", padding: "6px 10px", border: `1px solid ${GOLD}`, cursor: "pointer" }}
+              >
+                View cart / edit
+              </button>
+            </div>
           </div>
 
           {/* Input */}
@@ -267,11 +205,10 @@ export default function ChatWidget() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKey}
-              placeholder={loading ? "Working..." : "Type items and press Enter"}
+              placeholder="Type your message..."
               style={{ width: "80%", borderRadius: 8, padding: 6 }}
-              disabled={loading}
             />
-            <button onClick={send} disabled={loading || !input.trim()} style={{ marginLeft: 8 }}>
+            <button onClick={send} disabled={loading} style={{ marginLeft: 8 }}>
               Send
             </button>
           </div>
