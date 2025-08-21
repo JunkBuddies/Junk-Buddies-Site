@@ -9,6 +9,7 @@ function countWithQty(text, base){
   while ((m = re.exec(text)) !== null) total += Math.max(1, parseInt(m[1] || "1", 10));
   return total;
 }
+
 function flattenCatalog(nested = []) {
   const flat = [];
   for (const cat of nested) {
@@ -25,6 +26,7 @@ function flattenCatalog(nested = []) {
   }
   return flat;
 }
+
 function indexByName(items){
   const get = (eq) => items.find(it => norm(it.name) === eq) || null;
   const inc = (frag) => items.find(it => norm(it.name).includes(frag)) || null;
@@ -49,18 +51,43 @@ function indexByName(items){
     mattTwin:    inc("mattress - twin"),
   };
 }
+
+// REPLACED: safer exact-name matchers (no size-only labels)
 function buildExactNameMatchers(items) {
+  // words that should NOT stand alone as labels
+  const SIZE = new Set([
+    "queen", "king", "cal king", "california king",
+    "full", "twin", "small", "medium", "large"
+  ]);
+
   return items.map(it => {
-    const base = norm(it.name);
-    const parts = base.split(/[\/–—-]/).map(s => s.trim()).filter(Boolean);
-    const labels = [...new Set([base, ...parts])].map(escRe);
-    const pattern = labels.length ? `(?:${labels.join("|")})(?:es|s)?` : null;
-    return pattern ? {
+    const base = norm(it.name);           // always include the full literal name
+    const labels = new Set([base]);
+
+    // For "A - B": add "B A" only if neither A nor B is size-only (e.g., "table - coffee" → "coffee table")
+    const dash = base.split(/\s*-\s*/);
+    if (dash.length === 2) {
+      const [a, b] = dash.map(s => s.trim());
+      if (a && b && !SIZE.has(a) && !SIZE.has(b)) labels.add(`${b} ${a}`);
+    }
+
+    // For "A / B": add "A B" and "B A" only if neither side is size-only (e.g., "range / oven")
+    const slash = base.split(/\s*\/\s*/);
+    if (slash.length === 2) {
+      const [a, b] = slash.map(s => s.trim());
+      if (a && b && !SIZE.has(a) && !SIZE.has(b)) {
+        labels.add(`${a} ${b}`);
+        labels.add(`${b} ${a}`);
+      }
+    }
+
+    const pattern = Array.from(labels).map(escRe).join("|");
+    return {
       id: it.id, name: it.name,
-      volume: Number(it.volume||0), price: Number(it.price||0),
-      re: new RegExp(`(?:^|\\b)(\\d{1,3})?\\s*(?:x|×)?\\s*(${pattern})\\b`, "g")
-    } : null;
-  }).filter(Boolean);
+      volume: Number(it.volume || 0), price: Number(it.price || 0),
+      re: new RegExp(`(?:^|\\b)(\\d{1,3})?\\s*(?:x|×)?\\s*(?:${pattern})\\b`, "g")
+    };
+  });
 }
 
 export default async function handler(req, res){
@@ -128,7 +155,7 @@ export default async function handler(req, res){
       if (pick) qtyById.set(pick.id, (qtyById.get(pick.id)||0) + treadQty);
     }
 
-    // mattress
+    // mattress (fixed Cal-King whitespace: \s* not \\s*)
     const mattQty = countWithQty(text, "mattress(?:es)?");
     if (mattQty) {
       let pick = null;
