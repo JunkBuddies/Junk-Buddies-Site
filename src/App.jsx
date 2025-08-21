@@ -37,6 +37,9 @@ import LaPorte from './pages/cities/La-Porte';
 
 import { CartProvider } from './context/CartContext';
 
+// ⬇️ NEW: global chat widget
+import ChatWidget from './components/chat/ChatWidget';
+
 function App() {
   return (
     <CartProvider>
@@ -80,6 +83,9 @@ function App() {
           <Route path="/service-areas/deer-park" element={<DeerPark />} />
           <Route path="/service-areas/la-porte" element={<LaPorte />} />
         </Routes>
+
+        {/* ⬇️ NEW: mounted once so it overlays all routes */}
+        <ChatWidget />
       </Router>
     </CartProvider>
   );
