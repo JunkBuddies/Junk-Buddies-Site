@@ -1,4 +1,4 @@
-// api/chat.js — AI-first parser with your pricing + itemData, with headers for AI status
+// api/chat.js — Conversational router + AI-first estimator with your pricing + itemData
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 const POINTS_PER_CUFT = Number(process.env.POINTS_PER_CUFT || 1); // points == cu ft by default
 
@@ -62,15 +62,18 @@ function indexByName(items){
   const get = (eq) => items.find(it => norm(it.name) === eq) || null;
   const inc = (frag) => items.find(it => norm(it.name).includes(frag)) || null;
   return {
+    // sofas
     sofa:        get("sofa") || inc("sofa"),
     couchLove:   inc("couch / loveseat") || inc("loveseat"),
     reclSofa:    inc("reclining sofa"),
     sleeperSofa: inc("sleeper sofa"),
     sectional2:  inc("sectional sofa - 2 pieces"),
     sectional3:  inc("sectional sofa - 3 pieces"),
+    // treadmill
     tread:       get("treadmill") || inc("treadmill"),
     treadComm:   inc("treadmill - commercial"),
     treadRes:    inc("treadmill - residential"),
+    // mattresses
     matt:        get("mattress") || inc("mattress"),
     mattQueen:   inc("mattress - queen"),
     mattKing:    inc("mattress - king"),
@@ -120,6 +123,69 @@ function bestCatalogMatch(raw, items){
 }
 
 // -------- AI helpers --------
+function oaiHeaders() {
+  const h = {
+    "Content-Type": "application/json",
+  };
+  if (OPENAI_API_KEY) h["Authorization"] = `Bearer ${OPENAI_API_KEY}`;
+  if (process.env.OPENAI_PROJECT) h["OpenAI-Project"] = process.env.OPENAI_PROJECT.trim();
+  return h;
+}
+
+// Decide response mode per turn: "chat" | "estimate" | "both"
+async function aiRoute(messages, catalogNames = []) {
+  if (!OPENAI_API_KEY) {
+    return { mode: "estimate", chat: null, items: [] }; // no key => estimator only
+  }
+
+  const sys = `
+You are a helpful assistant for a junk removal site.
+Decide the response mode each turn:
+
+- "chat": user is only asking a question; answer briefly (1–2 sentences).
+- "estimate": user listed items/qty/dimensions; extract items for pricing.
+- "both": there is a general question AND items; give a short friendly line, then we will estimate.
+
+Return STRICT JSON:
+{"mode":"chat|estimate|both","chat":"string or null","items":[{"name":"string","qty":number,"dims":"optional raw dims"}]}
+
+If items are present, prefer "estimate" or "both".
+Catalog examples: ${catalogNames.slice(0,120).join(", ")}
+`.trim();
+
+  const r = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: oaiHeaders(),
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      temperature: 0,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: sys },
+        ...messages.map(m => ({ role: m.role, content: String(m.content || "") }))
+      ]
+    })
+  });
+
+  if (!r.ok) return { mode: "estimate", chat: null, items: [] };
+
+  let obj = {};
+  try {
+    const j = await r.json();
+    obj = JSON.parse(j.choices?.[0]?.message?.content || "{}");
+  } catch {}
+  const mode = (obj.mode === "chat" || obj.mode === "both") ? obj.mode : "estimate";
+  const chat = (typeof obj.chat === "string" && obj.chat.trim()) ? obj.chat.trim() : null;
+  const items = Array.isArray(obj.items) ? obj.items.map(it => ({
+    name: String(it.name||"").trim(),
+    qty: Math.max(1, parseInt(it.qty||1, 10)),
+    dims: typeof it.dims === "string" ? it.dims : null
+  })) : [];
+
+  return { mode, chat, items };
+}
+
+// Extract list-like items from a single user message (backup parser)
 async function aiParseItems(userText, exampleNames = []) {
   if (!OPENAI_API_KEY) return [];
   const sys = "Extract a shopping list for junk removal. Reply ONLY with JSON {\"items\":[{\"name\":\"string\",\"qty\":number,\"dims\":\"optional raw dims if present\"}]}";
@@ -136,7 +202,7 @@ async function aiParseItems(userText, exampleNames = []) {
   };
   const r = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${OPENAI_API_KEY}` },
+    headers: oaiHeaders(),
     body: JSON.stringify(body)
   });
   if (!r.ok) return [];
@@ -157,7 +223,7 @@ async function aiEstimateCuFt(label) {
   const user = `Item: ${label}\nReturn {"cuft": number} with cuft between 1 and 300.`;
   const r = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${OPENAI_API_KEY}` },
+    headers: oaiHeaders(),
     body: JSON.stringify({
       model: "gpt-4o-mini",
       temperature: 0,
@@ -177,7 +243,7 @@ export default async function handler(req, res){
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
   res.setHeader("Cache-Control", "no-store");
-  res.setHeader("Access-Control-Expose-Headers", "X-AI, X-Catalog, X-Error");
+  res.setHeader("Access-Control-Expose-Headers", "X-AI, X-Catalog, X-Error, X-Mode");
   res.setHeader("X-AI", OPENAI_API_KEY ? "on" : "off");
 
   if (req.method === "OPTIONS") return res.status(200).end();
@@ -193,17 +259,40 @@ export default async function handler(req, res){
     res.setHeader("X-Catalog", "/src/data/itemData.js");
 
     // input
-    const { messages = [] } = req.body || {};
+    const { messages = [], sessionId } = req.body || {};
     const lastRaw = messages[messages.length - 1]?.content || "";
     const text = norm(lastRaw);
+    const catalogNames = ITEMS.map(i => i.name);
 
-    // ==== AI path ====
-    let cart = [];
+    // ---- Conversational router ----
+    let mode = "estimate";
+    let chatLine = null;
+    let seedItems = [];
     try {
-      const names = ITEMS.map(i => i.name);
-      const aiItems = await aiParseItems(lastRaw, names);
+      const routed = await aiRoute(messages, catalogNames); // {mode, chat, items}
+      mode = routed.mode;
+      chatLine = routed.chat;
+      seedItems = Array.isArray(routed.items) ? routed.items : [];
+      res.setHeader("X-Mode", mode);
+    } catch {
+      // if router fails, we just estimate as usual
+      res.setHeader("X-Mode", "estimate");
+    }
 
-      for (const row of aiItems) {
+    // If pure chat, return early
+    if (mode === "chat" && chatLine) {
+      return res.status(200).json({
+        reply: chatLine,
+        parsed: { cart: [], finalPrice: 0, totalVolume: 0, loadLabel: "Empty" }
+      });
+    }
+
+    // ==== Build CART ====
+    let cart = [];
+
+    // A) If router gave us items, try to price them
+    if (seedItems.length) {
+      for (const row of seedItems) {
         const qty = Math.max(1, Number(row.qty || 1));
         const dims = row.dims ? parseDims(row.dims) : parseDims(row.name);
         const matched = bestCatalogMatch(row.name, ITEMS);
@@ -229,9 +318,42 @@ export default async function handler(req, res){
           });
         }
       }
-    } catch {}
+    }
 
-    // ==== Fallback (regex/exact-name) if AI produced nothing ====
+    // B) If router gave nothing, try your AI single-turn extractor
+    if (!cart.length) {
+      try {
+        const aiItems = await aiParseItems(lastRaw, catalogNames);
+        for (const row of aiItems) {
+          const qty = Math.max(1, Number(row.qty || 1));
+          const dims = row.dims ? parseDims(row.dims) : parseDims(row.name);
+          const matched = bestCatalogMatch(row.name, ITEMS);
+
+          if (matched) {
+            cart.push({
+              id: matched.id,
+              name: matched.name,
+              qty,
+              volume: Number(matched.volume || 0) * qty,
+              price: Number(matched.price || 0) * qty
+            });
+          } else {
+            let cuft = dimsToCuFt(dims);
+            if (cuft == null) cuft = await aiEstimateCuFt(row.name);
+            const points = Math.max(1, Math.min(300, cuft * POINTS_PER_CUFT)) * qty;
+            cart.push({
+              id: "unlisted-" + slug(row.name),
+              name: row.name,
+              qty,
+              volume: points,
+              price: 0
+            });
+          }
+        }
+      } catch {}
+    }
+
+    // C) If still nothing, fallback to your regex/exact-name logic (sofa/treadmill/mattress + exact names)
     if (!cart.length) {
       const idx = indexByName(ITEMS);
       const qtyById = new Map();
@@ -330,8 +452,11 @@ export default async function handler(req, res){
     const remainderPct = Math.round(((totalVolume % fullLoadPoints) / fullLoadPoints) * 100);
     const header = `Estimated total: ~$${finalPrice.toFixed(2)} • ${loadLabel}${loads ? ` • +${loads} full load(s)` : ""}${remainderPct ? ` • ${remainderPct}% of next` : ""}`;
 
+    const estimateText = `${header}\n${bullets}`;
+    const reply = (mode === "both" && chatLine) ? `${chatLine}\n\n${estimateText}` : estimateText;
+
     return res.status(200).json({
-      reply: `${header}\n${bullets}`,
+      reply,
       parsed: { cart, finalPrice: Math.round(finalPrice*100)/100, totalVolume, loadLabel }
     });
 
