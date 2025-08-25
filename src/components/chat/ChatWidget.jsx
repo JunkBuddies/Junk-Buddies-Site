@@ -1,7 +1,3 @@
-Here’s your cleaned, working `ChatWidget.jsx` (same behavior you described, with proper JSX and styles):
-
-```jsx
-// File: src/components/chat/ChatWidget.jsx
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCart } from "../../context/CartContext";
 import { calculatePrice } from "../../utils/pricing";
@@ -23,17 +19,13 @@ function getSessionId() {
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
-    {
-      role: "assistant",
-      content:
-        "Hi! Tell me what you need removed (typos OK). I’ll total volume & price from our catalog.",
-    },
+    { role: "assistant", content: "Hi! Tell me what you need removed (typos OK). I’ll total volume & price from our catalog." }
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [aiStatus, setAiStatus] = useState("unknown"); // "on" | "off" | "unknown"
-  const [lastParsed, setLastParsed] = useState(null); // { cart, finalPrice, totalVolume, loadLabel }
+  const [lastParsed, setLastParsed] = useState(null);   // { cart, finalPrice, totalVolume, loadLabel }
 
   const endRef = useRef(null);
   const sessionId = useMemo(getSessionId, []);
@@ -44,9 +36,7 @@ export default function ChatWidget() {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open, loading]);
 
-  const cartSummary = lastParsed?.cart?.length
-    ? calculatePrice(lastParsed.cart)
-    : null;
+  const cartSummary = lastParsed?.cart?.length ? calculatePrice(lastParsed.cart) : null;
 
   async function send() {
     const text = input.trim();
@@ -60,17 +50,12 @@ export default function ChatWidget() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId,
-          messages: [...messages, { role: "user", content: text }],
-        }),
+        body: JSON.stringify({ sessionId, messages: [...messages, { role: "user", content: text }] })
       });
 
       // read AI status header (API exposes it)
       const aiHeader = (res.headers.get("x-ai") || "").toLowerCase();
-      setAiStatus(
-        aiHeader === "on" ? "on" : aiHeader === "off" ? "off" : "unknown"
-      );
+      setAiStatus(aiHeader === "on" ? "on" : aiHeader === "off" ? "off" : "unknown");
 
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "Request failed");
@@ -114,9 +99,8 @@ export default function ChatWidget() {
             border: `2px solid ${BLACK}`,
             fontWeight: 700,
             cursor: "pointer",
-            zIndex: 9999,
+            zIndex: 9999
           }}
-          aria-label="Open chat"
         >
           💬
         </button>
@@ -140,54 +124,28 @@ export default function ChatWidget() {
             display: "flex",
             flexDirection: "column",
             zIndex: 10000,
-            border: `1px solid ${GOLD}`,
+            border: `1px solid ${GOLD}`
           }}
         >
           {/* Header */}
-          <div
-            style={{
-              padding: "10px",
-              borderBottom: `1px solid ${GOLD}`,
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
+          <div style={{ padding: "10px", borderBottom: `1px solid ${GOLD}`, display: "flex", alignItems: "center", gap: 8 }}>
             <span style={{ fontWeight: "bold", flex: 1 }}>Junk Buddies Chat</span>
             <span
-              title={
-                aiStatus === "on"
-                  ? "AI parser active"
-                  : aiStatus === "off"
-                  ? "AI disabled — using fallback parser"
-                  : "Status unknown"
-              }
+              title={aiStatus === "on" ? "AI parser active" : aiStatus === "off" ? "AI disabled — using fallback parser" : "Status unknown"}
               style={{
                 fontSize: 12,
                 padding: "2px 8px",
                 borderRadius: 999,
                 border: `1px solid ${GOLD}`,
-                color:
-                  aiStatus === "on"
-                    ? "#22c55e"
-                    : aiStatus === "off"
-                    ? "#9ca3af"
-                    : "#f59e0b",
-                background: "#111",
+                color: aiStatus === "on" ? "#22c55e" : aiStatus === "off" ? "#9ca3af" : "#f59e0b",
+                background: "#111"
               }}
             >
               AI: {aiStatus.toUpperCase()}
             </span>
             <button
               onClick={() => setOpen(false)}
-              style={{
-                marginLeft: 8,
-                background: "transparent",
-                border: "none",
-                color: "#fff",
-                cursor: "pointer",
-              }}
-              aria-label="Close chat"
+              style={{ marginLeft: 8, background: "transparent", border: "none", color: "#fff", cursor: "pointer" }}
             >
               ✕
             </button>
@@ -196,18 +154,14 @@ export default function ChatWidget() {
           {/* Messages */}
           <div style={{ flex: 1, overflowY: "auto", padding: 10 }}>
             {messages.map((m, i) => (
-              <div
-                key={i}
-                style={{ margin: "6px 0", textAlign: m.role === "user" ? "right" : "left" }}
-              >
+              <div key={i} style={{ margin: "6px 0", textAlign: m.role === "user" ? "right" : "left" }}>
                 <span
                   style={{
                     display: "inline-block",
                     padding: "6px 10px",
                     borderRadius: 10,
                     background: m.role === "user" ? GOLD : "#222",
-                    color: m.role === "user" ? BLACK : "#fff",
-                    whiteSpace: "pre-wrap",
+                    color: m.role === "user" ? BLACK : "#fff"
                   }}
                 >
                   {m.content}
@@ -224,36 +178,20 @@ export default function ChatWidget() {
             <div style={{ fontSize: 12, marginBottom: 6 }}>
               <strong>Parsed:</strong>{" "}
               {lastParsed?.cart?.length
-                ? `${lastParsed.cart.length} lines • ${Math.round(
-                    lastParsed.totalVolume || 0
-                  )} pts • $${(lastParsed.finalPrice ?? 0).toFixed(2)}`
+                ? `${lastParsed.cart.length} lines • ${Math.round(lastParsed.totalVolume || 0)} pts • $${(lastParsed.finalPrice ?? 0).toFixed(2)}`
                 : "nothing yet"}
             </div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               <button
                 onClick={addParsedToCart}
                 disabled={!lastParsed?.cart?.length}
-                style={{
-                  borderRadius: 8,
-                  background: GOLD,
-                  color: BLACK,
-                  fontWeight: 700,
-                  padding: "6px 10px",
-                  cursor: "pointer",
-                }}
+                style={{ borderRadius: 8, background: GOLD, color: BLACK, fontWeight: 700, padding: "6px 10px", cursor: "pointer" }}
               >
                 Add selected to cart
               </button>
               <button
                 onClick={() => navigate("/itemized")}
-                style={{
-                  borderRadius: 8,
-                  background: "#222",
-                  color: "#fff",
-                  padding: "6px 10px",
-                  border: `1px solid ${GOLD}`,
-                  cursor: "pointer",
-                }}
+                style={{ borderRadius: 8, background: "#222", color: "#fff", padding: "6px 10px", border: `1px solid ${GOLD}`, cursor: "pointer" }}
               >
                 View cart / edit
               </button>
@@ -279,4 +217,3 @@ export default function ChatWidget() {
     </>
   );
 }
-```
