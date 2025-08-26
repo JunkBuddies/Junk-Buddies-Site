@@ -4,20 +4,13 @@ import { useCart } from "../../context/CartContext";
 import { calculatePrice } from "../../utils/pricing";
 import { useNavigate } from "react-router-dom";
 
-// 🔗 Firestore (client-only) — uses your existing src/lib/firebase.js
+// 🔗 Firestore (existing project)
 import { db } from "../../lib/firebase";
-import {
-  addDoc,
-  collection,
-  doc as fsDoc,
-  updateDoc,
-  serverTimestamp,
-} from "firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 const GOLD = "#d4af37";
 const BLACK = "#0b0b0b";
 const DISCOUNT_RATE = 0.10; // 10%
-const LEADS_COLLECTION = "leadCaptures";
 
 function getSessionId() {
   const key = "jb_chat_session";
@@ -54,10 +47,6 @@ export default function ChatWidget() {
   // gate.id in: "offer_pre" | "offer_post" | "lead_capture"
   const [gate, setGate] = useState(null);
   const [leadDraft, setLeadDraft] = useState({ name: "", phone: "" });
-
-  // Firestore draft doc (created when lead gate opens)
-  const [draftId, setDraftId] = useState(null);
-  const typingTimer = useRef2(null);
 
   // guard to avoid duplicate discount follow-ups
   const lastDiscountSig = useRef2("");
@@ -151,9 +140,9 @@ export default function ChatWidget() {
             if (lastDiscountSig.current !== sig) {
               lastDiscountSig.current = sig;
               const disc = discountedPrice(base);
-              // ⬇️ no load label in this follow-up
               next.push({
                 role: "assistant",
+                // ⛔ no load label here
                 content: `With **10% off**: **$${disc.toFixed(2)}** (was $${base.toFixed(2)})`,
               });
             }
@@ -195,63 +184,6 @@ export default function ChatWidget() {
     const digits = (p || "").replace(/\D/g, "");
     return digits.length >= 10;
   }
-
-  // --- Firestore capture helpers ---
-
-  // 1) Create a draft doc as soon as the lead gate opens
-  useEffect(() => {
-    async function createDraft() {
-      if (gate?.id !== "lead_capture" || draftId) return;
-      try {
-        const meta = {
-          cartCount: lastParsed?.cart?.length || 0,
-          estSubtotal: lastParsed?.finalPrice || 0,
-          totalVolume: lastParsed?.totalVolume || 0,
-        };
-        const ref = await addDoc(collection(db, LEADS_COLLECTION), {
-          name: leadDraft.name || "",
-          phone: (leadDraft.phone || "").replace(/\D/g, ""),
-          sessionId,
-          discount: false,
-          source: "chat",
-          status: "open",
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-          meta,
-        });
-        setDraftId(ref.id);
-      } catch (err) {
-        console.warn("lead draft create failed:", err);
-      }
-    }
-    createDraft();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gate, draftId, sessionId, lastParsed]);
-
-  // 2) As the user types name/phone, debounce-update the draft doc
-  useEffect(() => {
-    if (!draftId) return;
-    if (gate?.id !== "lead_capture") return;
-
-    if (typingTimer.current) clearTimeout(typingTimer.current);
-    typingTimer.current = setTimeout(async () => {
-      try {
-        const ref = fsDoc(db, LEADS_COLLECTION, draftId);
-        await updateDoc(ref, {
-          name: (leadDraft.name || "").trim(),
-          phone: (leadDraft.phone || "").replace(/\D/g, ""),
-          status: "draft",
-          updatedAt: serverTimestamp(),
-        });
-      } catch (err) {
-        console.warn("lead draft update failed:", err);
-      }
-    }, 600);
-
-    return () => {
-      if (typingTimer.current) clearTimeout(typingTimer.current);
-    };
-  }, [leadDraft, draftId, gate]);
 
   // Gating flow handler
   async function onGateChoice(action) {
@@ -298,61 +230,38 @@ export default function ChatWidget() {
     if (gate.id === "lead_capture") {
       if (action === "submit") {
         if (!leadDraft.name.trim() || !validPhone(leadDraft.phone)) {
+          // simple inline nudge; keep gate open
           setMessages((m) => [
             ...m,
             { role: "assistant", content: "Please add a name and a valid phone number (10+ digits)." },
           ]);
           return;
         }
-        // persist + activate discount
+
+        // 1) Save to Firestore (leadCaptures) with the exact fields you wanted
+        try {
+          await addDoc(collection(db, "leadCaptures"), {
+            name: leadDraft.name.trim(),
+            phone: leadDraft.phone.trim(),
+            enteredAt: serverTimestamp(),
+          });
+        } catch (err) {
+          console.error("[lead capture] Firestore write failed:", err);
+          // Continue UX even if the write fails
+          setMessages((m) => [
+            ...m,
+            { role: "assistant", content: "Got it — I couldn’t save your info just now, but your discount is still applied." },
+          ]);
+        }
+
+        // 2) Persist locally + activate discount
         localStorage.setItem(`jb_lead_name_${sessionId}`, leadDraft.name.trim());
         localStorage.setItem(`jb_lead_phone_${sessionId}`, leadDraft.phone);
         setLeadCaptured(true);
         setDiscountActive(true);
         setGate(null);
 
-        // finalize Firestore doc
-        try {
-          if (draftId) {
-            const ref = fsDoc(db, LEADS_COLLECTION, draftId);
-            const digits = (leadDraft.phone || "").replace(/\D/g, "");
-            const meta = {
-              cartCount: lastParsed?.cart?.length || 0,
-              estSubtotal: lastParsed?.finalPrice || 0,
-              totalVolume: lastParsed?.totalVolume || 0,
-            };
-            await updateDoc(ref, {
-              name: leadDraft.name.trim(),
-              phone: digits,
-              discount: true,
-              status: "submitted",
-              updatedAt: serverTimestamp(),
-              meta,
-            });
-          } else {
-            // safety (shouldn't hit if draft was created)
-            const digits = (leadDraft.phone || "").replace(/\D/g, "");
-            await addDoc(collection(db, LEADS_COLLECTION), {
-              name: leadDraft.name.trim(),
-              phone: digits,
-              sessionId,
-              discount: true,
-              source: "chat",
-              status: "submitted",
-              createdAt: serverTimestamp(),
-              updatedAt: serverTimestamp(),
-              meta: {
-                cartCount: lastParsed?.cart?.length || 0,
-                estSubtotal: lastParsed?.finalPrice || 0,
-                totalVolume: lastParsed?.totalVolume || 0,
-              },
-            });
-          }
-        } catch (err) {
-          console.warn("lead submit save failed:", err);
-        }
-
-        // If we already have a price, show discounted follow-up immediately (no load label)
+        // 3) If we already have a price, show discounted follow-up immediately
         if (lastParsed?.finalPrice != null) {
           const base = lastParsed.finalPrice;
           const disc = discountedPrice(base);
@@ -360,6 +269,7 @@ export default function ChatWidget() {
             ...m,
             {
               role: "assistant",
+              // ⛔ no load label here
               content: `Thanks, ${leadDraft.name}! Your **10% off** is attached to ${leadDraft.phone}. Discounted total: **$${disc.toFixed(
                 2
               )}** (was $${base.toFixed(2)})`,
@@ -376,18 +286,7 @@ export default function ChatWidget() {
           ]);
         }
       } else {
-        // decline → mark draft cancelled if it exists
-        try {
-          if (draftId) {
-            const ref = fsDoc(db, LEADS_COLLECTION, draftId);
-            await updateDoc(ref, {
-              status: "cancelled",
-              updatedAt: serverTimestamp(),
-            });
-          }
-        } catch (err) {
-          console.warn("lead cancel save failed:", err);
-        }
+        // decline
         setGate(null);
         setMessages((m) => [
           ...m,
