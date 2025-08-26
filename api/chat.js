@@ -447,12 +447,10 @@ export default async function handler(req, res){
     const { finalPrice, totalVolume } = calculatePrice(cart);
     const loadLabel = getLoadLabel(totalVolume);
 
-    const bullets = cart.map(li => `• ${li.qty}× ${li.name} — ${li.volume.toFixed(1)} pts`).join("\n");
-    const loads = Math.floor(totalVolume / fullLoadPoints);
-    const remainderPct = Math.round(((totalVolume % fullLoadPoints) / fullLoadPoints) * 100);
-    const header = `Estimated total: ~$${finalPrice.toFixed(2)} • ${loadLabel}${loads ? ` • +${loads} full load(s)` : ""}${remainderPct ? ` • ${remainderPct}% of next` : ""}`;
-
-    const estimateText = `${header}\n${bullets}`;
+    // === Minimal change: clean output (no load label, no % of next, no points) ===
+    const bullets = cart.map(li => `• ${li.qty}× ${li.name}`).join("\n");
+    const totalLine = `Estimated total: $${finalPrice.toFixed(2)}`;
+    const estimateText = `${bullets}\n\n${totalLine}`;
     const reply = (mode === "both" && chatLine) ? `${chatLine}\n\n${estimateText}` : estimateText;
 
     return res.status(200).json({
