@@ -129,7 +129,6 @@ export default function ChatWidget() {
         const hasCart = (json.parsed?.cart?.length || 0) > 0;
         if (hasCart) {
           const base = json.parsed.finalPrice ?? 0;
-          const loadLabel = json.parsed.loadLabel ? ` • ${json.parsed.loadLabel}` : "";
           const sig = `${base}|${json.parsed?.totalVolume || 0}`;
 
           if (discountActive) {
@@ -139,7 +138,7 @@ export default function ChatWidget() {
               const disc = discountedPrice(base);
               next.push({
                 role: "assistant",
-                content: `With **10% off**: **$${disc.toFixed(2)}** (was $${base.toFixed(2)})${loadLabel}.`,
+                content: `With **10% off**: **$${disc.toFixed(2)}** (was $${base.toFixed(2)})`,
               });
             }
           } else if (!offeredThisParse) {
@@ -240,18 +239,17 @@ export default function ChatWidget() {
         setDiscountActive(true);
         setGate(null);
 
-        // If we already have a price, show discounted follow-up immediately
+        // If we already have a price, show discounted follow-up immediately (WITHOUT load label)
         if (lastParsed?.finalPrice != null) {
           const base = lastParsed.finalPrice;
           const disc = discountedPrice(base);
-          const label = lastParsed?.loadLabel ? ` • ${lastParsed.loadLabel}` : "";
           setMessages((m) => [
             ...m,
             {
               role: "assistant",
               content: `Thanks, ${leadDraft.name}! Your **10% off** is attached to ${leadDraft.phone}. Discounted total: **$${disc.toFixed(
                 2
-              )}** (was $${base.toFixed(2)})${label}.`,
+              )}** (was $${base.toFixed(2)})`,
             },
           ]);
           lastDiscountSig.current = `${base}|${lastParsed?.totalVolume || 0}`;
