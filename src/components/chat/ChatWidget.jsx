@@ -4,9 +4,20 @@ import { useCart } from "../../context/CartContext";
 import { calculatePrice } from "../../utils/pricing";
 import { useNavigate } from "react-router-dom";
 
+// 🔗 Firestore (client-only) — uses your existing src/lib/firebase.js
+import { db } from "../../lib/firebase";
+import {
+  addDoc,
+  collection,
+  doc as fsDoc,
+  updateDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+
 const GOLD = "#d4af37";
 const BLACK = "#0b0b0b";
 const DISCOUNT_RATE = 0.10; // 10%
+const LEADS_COLLECTION = "leadCaptures";
 
 function getSessionId() {
   const key = "jb_chat_session";
@@ -43,6 +54,10 @@ export default function ChatWidget() {
   // gate.id in: "offer_pre" | "offer_post" | "lead_capture"
   const [gate, setGate] = useState(null);
   const [leadDraft, setLeadDraft] = useState({ name: "", phone: "" });
+
+  // Firestore draft doc (created when lead gate opens)
+  const [draftId, setDraftId] = useState(null);
+  const typingTimer = useRef2(null);
 
   // guard to avoid duplicate discount follow-ups
   const lastDiscountSig = useRef2("");
@@ -136,6 +151,7 @@ export default function ChatWidget() {
             if (lastDiscountSig.current !== sig) {
               lastDiscountSig.current = sig;
               const disc = discountedPrice(base);
+              // ⬇️ no load label in this follow-up
               next.push({
                 role: "assistant",
                 content: `With **10% off**: **$${disc.toFixed(2)}** (was $${base.toFixed(2)})`,
@@ -180,8 +196,65 @@ export default function ChatWidget() {
     return digits.length >= 10;
   }
 
+  // --- Firestore capture helpers ---
+
+  // 1) Create a draft doc as soon as the lead gate opens
+  useEffect(() => {
+    async function createDraft() {
+      if (gate?.id !== "lead_capture" || draftId) return;
+      try {
+        const meta = {
+          cartCount: lastParsed?.cart?.length || 0,
+          estSubtotal: lastParsed?.finalPrice || 0,
+          totalVolume: lastParsed?.totalVolume || 0,
+        };
+        const ref = await addDoc(collection(db, LEADS_COLLECTION), {
+          name: leadDraft.name || "",
+          phone: (leadDraft.phone || "").replace(/\D/g, ""),
+          sessionId,
+          discount: false,
+          source: "chat",
+          status: "open",
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          meta,
+        });
+        setDraftId(ref.id);
+      } catch (err) {
+        console.warn("lead draft create failed:", err);
+      }
+    }
+    createDraft();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gate, draftId, sessionId, lastParsed]);
+
+  // 2) As the user types name/phone, debounce-update the draft doc
+  useEffect(() => {
+    if (!draftId) return;
+    if (gate?.id !== "lead_capture") return;
+
+    if (typingTimer.current) clearTimeout(typingTimer.current);
+    typingTimer.current = setTimeout(async () => {
+      try {
+        const ref = fsDoc(db, LEADS_COLLECTION, draftId);
+        await updateDoc(ref, {
+          name: (leadDraft.name || "").trim(),
+          phone: (leadDraft.phone || "").replace(/\D/g, ""),
+          status: "draft",
+          updatedAt: serverTimestamp(),
+        });
+      } catch (err) {
+        console.warn("lead draft update failed:", err);
+      }
+    }, 600);
+
+    return () => {
+      if (typingTimer.current) clearTimeout(typingTimer.current);
+    };
+  }, [leadDraft, draftId, gate]);
+
   // Gating flow handler
-  function onGateChoice(action) {
+  async function onGateChoice(action) {
     if (!gate) return;
 
     // PRE-OFFER → move to lead capture if yes, else dismiss
@@ -225,7 +298,6 @@ export default function ChatWidget() {
     if (gate.id === "lead_capture") {
       if (action === "submit") {
         if (!leadDraft.name.trim() || !validPhone(leadDraft.phone)) {
-          // simple inline nudge; keep gate open
           setMessages((m) => [
             ...m,
             { role: "assistant", content: "Please add a name and a valid phone number (10+ digits)." },
@@ -239,7 +311,48 @@ export default function ChatWidget() {
         setDiscountActive(true);
         setGate(null);
 
-        // If we already have a price, show discounted follow-up immediately (WITHOUT load label)
+        // finalize Firestore doc
+        try {
+          if (draftId) {
+            const ref = fsDoc(db, LEADS_COLLECTION, draftId);
+            const digits = (leadDraft.phone || "").replace(/\D/g, "");
+            const meta = {
+              cartCount: lastParsed?.cart?.length || 0,
+              estSubtotal: lastParsed?.finalPrice || 0,
+              totalVolume: lastParsed?.totalVolume || 0,
+            };
+            await updateDoc(ref, {
+              name: leadDraft.name.trim(),
+              phone: digits,
+              discount: true,
+              status: "submitted",
+              updatedAt: serverTimestamp(),
+              meta,
+            });
+          } else {
+            // safety (shouldn't hit if draft was created)
+            const digits = (leadDraft.phone || "").replace(/\D/g, "");
+            await addDoc(collection(db, LEADS_COLLECTION), {
+              name: leadDraft.name.trim(),
+              phone: digits,
+              sessionId,
+              discount: true,
+              source: "chat",
+              status: "submitted",
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp(),
+              meta: {
+                cartCount: lastParsed?.cart?.length || 0,
+                estSubtotal: lastParsed?.finalPrice || 0,
+                totalVolume: lastParsed?.totalVolume || 0,
+              },
+            });
+          }
+        } catch (err) {
+          console.warn("lead submit save failed:", err);
+        }
+
+        // If we already have a price, show discounted follow-up immediately (no load label)
         if (lastParsed?.finalPrice != null) {
           const base = lastParsed.finalPrice;
           const disc = discountedPrice(base);
@@ -263,7 +376,18 @@ export default function ChatWidget() {
           ]);
         }
       } else {
-        // decline
+        // decline → mark draft cancelled if it exists
+        try {
+          if (draftId) {
+            const ref = fsDoc(db, LEADS_COLLECTION, draftId);
+            await updateDoc(ref, {
+              status: "cancelled",
+              updatedAt: serverTimestamp(),
+            });
+          }
+        } catch (err) {
+          console.warn("lead cancel save failed:", err);
+        }
         setGate(null);
         setMessages((m) => [
           ...m,
