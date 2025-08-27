@@ -9,8 +9,13 @@ import { db } from "../../lib/firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 const GOLD = "#d4af37";
+const SILVER = "#C0C0C0";
+const BLUE = "#1e90ff";
 const BLACK = "#0b0b0b";
 const DISCOUNT_RATE = 0.10; // 10%
+const TIP_COOLDOWN_MS = 10 * 60 * 1000; // show tip again if >10m since last
+
+const ASSISTANT_NAME = "Your Junk Buddy";
 
 function getSessionId() {
   const key = "jb_chat_session";
@@ -24,13 +29,10 @@ function getSessionId() {
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      role: "assistant",
-      content:
-        "Hi! Tell me what you need removed (typos OK). I’ll total volume & price from our catalog.",
-    },
-  ]);
+
+  // Start blank; greeting is injected after open
+  const [messages, setMessages] = useState([]);
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -50,6 +52,13 @@ export default function ChatWidget() {
 
   // guard to avoid duplicate discount follow-ups
   const lastDiscountSig = useRef2("");
+
+  // onboarding tip bubble by the launcher
+  const [showTip, setShowTip] = useState(false);
+
+  // intro typing effect
+  const [introShown, setIntroShown] = useState(false);
+  const [introTyping, setIntroTyping] = useState(false);
 
   const endRef = useRef(null);
   const sessionId = useMemo(getSessionId, []);
@@ -93,6 +102,42 @@ export default function ChatWidget() {
     });
     setInitialGateShown(true);
   }, [open, initialGateShown, discountActive, sessionId]);
+
+  // Tip bubble logic (show on visit/return, throttle by time)
+  useEffect(() => {
+    const last = Number(localStorage.getItem("jb_tip_last") || "0");
+    const now = Date.now();
+    if (now - last > TIP_COOLDOWN_MS) {
+      setShowTip(true);
+    }
+  }, []);
+  function dismissTip() {
+    setShowTip(false);
+    localStorage.setItem("jb_tip_last", String(Date.now()));
+  }
+
+  // When chat opens, inject assistant greeting (one time)
+  useEffect(() => {
+    if (!open || introShown) return;
+    setIntroTyping(true);
+    const t = setTimeout(() => {
+      const greeting =
+        `Hey! I’m **${ASSISTANT_NAME}** — your junk-selecting assistant.\n` +
+        `Just **list items casually** (e.g., *"2 couches + queen mattress + treadmill"*) and I’ll add & price them.`;
+      setMessages([{ role: "assistant", content: greeting }]);
+
+      // If discount already active, also notify once
+      if (discountActive) {
+        setMessages((m) => [
+          ...m,
+          { role: "assistant", content: "Heads up — your **10% off** is already attached and will be applied to your totals." },
+        ]);
+      }
+      setIntroTyping(false);
+      setIntroShown(true);
+    }, 450);
+    return () => clearTimeout(t);
+  }, [open, introShown, discountActive]);
 
   function discountedPrice(base) {
     return Math.max(0, Math.round((base * (1 - DISCOUNT_RATE) + Number.EPSILON) * 100) / 100);
@@ -299,27 +344,81 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* Floating launcher */}
+      {/* Local styles for pulse + tip */}
+      <style>{`
+        @keyframes jbPulse {
+          0%   { box-shadow: 0 0 0 0 rgba(212,175,55,.45), 0 0 12px 4px rgba(30,144,255,.35); }
+          50%  { box-shadow: 0 0 0 10px rgba(192,192,192,.18), 0 0 18px 6px rgba(212,175,55,.55); }
+          100% { box-shadow: 0 0 0 0 rgba(192,192,192,0.0), 0 0 12px 4px rgba(30,144,255,.35); }
+        }
+        .jb-pulse {
+          animation: jbPulse 2s ease-in-out infinite;
+        }
+        .jb-tip {
+          background: ${BLACK};
+          color: ${SILVER};
+          border: 1px solid ${GOLD};
+          border-radius: 12px;
+          padding: 10px 12px;
+          box-shadow: 0 10px 24px rgba(0,0,0,.4);
+        }
+        .jb-tip:after {
+          content: "";
+          position: absolute;
+          bottom: -8px; right: 18px;
+          border-width: 8px 8px 0 8px;
+          border-style: solid;
+          border-color: ${GOLD} transparent transparent transparent;
+          transform: translateY(1px);
+        }
+      `}</style>
+
+      {/* Floating launcher + tip bubble */}
       {!open && (
-        <button
-          onClick={() => setOpen(true)}
-          style={{
-            position: "fixed",
-            right: 16,
-            bottom: 16,
-            width: 64,
-            height: 64,
-            borderRadius: "50%",
-            background: GOLD,
-            border: `2px solid ${BLACK}`,
-            fontWeight: 700,
-            cursor: "pointer",
-            zIndex: 9999,
-          }}
-          aria-label="Open chat"
-        >
-          💬
-        </button>
+        <>
+          {showTip && (
+            <div
+              className="jb-tip"
+              style={{
+                position: "fixed",
+                right: 16,
+                bottom: 96,
+                maxWidth: 260,
+                zIndex: 9999,
+              }}
+              onClick={dismissTip}
+              role="dialog"
+              aria-live="polite"
+            >
+              <div style={{ fontWeight: 700, color: GOLD, marginBottom: 4 }}>
+                {ASSISTANT_NAME}
+              </div>
+              <div>I can add your junk items in seconds!</div>
+            </div>
+          )}
+
+          <button
+            onClick={() => { setOpen(true); dismissTip(); }}
+            style={{
+              position: "fixed",
+              right: 16,
+              bottom: 16,
+              width: 64,
+              height: 64,
+              borderRadius: "50%",
+              background: GOLD,
+              border: `2px solid ${BLACK}`,
+              fontWeight: 700,
+              cursor: "pointer",
+              zIndex: 9999,
+            }}
+            className="jb-pulse"
+            aria-label="Open chat"
+            title="Chat with Your Junk Buddy"
+          >
+            💬
+          </button>
+        </>
       )}
 
       {/* Chat window */}
@@ -353,7 +452,7 @@ export default function ChatWidget() {
               gap: 8,
             }}
           >
-            <span style={{ fontWeight: "bold", flex: 1 }}>Junk Buddies Chat</span>
+            <span style={{ fontWeight: "bold", flex: 1 }}>{ASSISTANT_NAME}</span>
             <span
               title={
                 aiStatus === "on"
@@ -412,7 +511,6 @@ export default function ChatWidget() {
               </div>
             ))}
 
-            {/* Blocking gate (with optional Name/Phone form) */}
             {gate && (
               <div
                 style={{
@@ -529,6 +627,7 @@ export default function ChatWidget() {
               </div>
             )}
 
+            {introTyping && <div style={{ fontStyle: "italic", marginTop: 8 }}>Assistant is typing…</div>}
             {loading && <div style={{ fontStyle: "italic", marginTop: 8 }}>Assistant is typing…</div>}
             {error && <div style={{ color: "red", marginTop: 8 }}>{error}</div>}
             <div ref={endRef} />
