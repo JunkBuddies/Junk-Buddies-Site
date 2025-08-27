@@ -1,114 +1,60 @@
 // File: src/pages/ItemizedPage.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { calculatePrice, getLoadLabel, fullLoadPoints } from "../utils/pricing";
 import itemData from "../data/itemData";
 
-// Use your Firebase/Cloud Run Smart Selector endpoint
-const SMART_SELECTOR_URL = "/api/smart-selector";
+const DISCOUNT_RATE = 0.10;
+
+// use same session id scheme as ChatWidget so we can read the discount flag it sets
+function getSessionId() {
+  const key = "jb_chat_session";
+  let s = localStorage.getItem(key);
+  if (!s) {
+    s = "sess_" + Math.random().toString(36).slice(2);
+    localStorage.setItem(key, s);
+  }
+  return s;
+}
 
 function ItemizedPage() {
   const { cart, setCart } = useCart();
   const [search, setSearch] = useState("");
   const [cartVisible, setCartVisible] = useState(false);
-  const [showSmartSelectorNotice, setShowSmartSelectorNotice] = useState(false);
-  const [showChat, setShowChat] = useState(false);
+
+  // discount is controlled by ChatWidget; we just reflect it here
+  const sessionId = useMemo(getSessionId, []);
   const [discountApplied, setDiscountApplied] = useState(false);
-  const [chatMessages, setChatMessages] = useState([]);
-  const [leadName, setLeadName] = useState("");
-  const [leadPhone, setLeadPhone] = useState("");
-  const [leadSubmitted, setLeadSubmitted] = useState(false);
+
   const navigate = useNavigate();
 
+  // reflect discount flag from ChatWidget (stored in localStorage)
+  useEffect(() => {
+    const flag = localStorage.getItem(`jb_disc_on_${sessionId}`) === "1";
+    setDiscountApplied(flag);
+
+    // in case it changes while user stays on this page (e.g., via other UI),
+    // re-check when storage changes (fires across tabs; safe as a light listener)
+    const onStorage = (e) => {
+      if (e.key === `jb_disc_on_${sessionId}`) {
+        setDiscountApplied(e.newValue === "1");
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [sessionId]);
+
   const { finalPrice, totalVolume } = calculatePrice(cart);
-  const discountAmount = discountApplied ? finalPrice * 0.1 : 0;
-  const totalWithDiscount = finalPrice - discountAmount;
+  const totalWithDiscount = discountApplied
+    ? Math.max(0, Math.round((finalPrice * (1 - DISCOUNT_RATE) + Number.EPSILON) * 100) / 100)
+    : finalPrice;
+
   const truckFillPercent = ((totalVolume % fullLoadPoints) / fullLoadPoints) * 100;
   const loadLabel = getLoadLabel(totalVolume);
 
   const addToCart = (item) => setCart((prev) => [...prev, item]);
   const removeFromCart = (idx) => setCart((prev) => prev.filter((_, i) => i !== idx));
-
-  useEffect(() => {
-    const timer = setTimeout(() => setShowSmartSelectorNotice(true), 3000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const submitLead = () => {
-    setLeadSubmitted(true);
-    fetch(SMART_SELECTOR_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        leadInfo: { name: leadName, phone: leadPhone, submitted: true },
-        messages: [],
-      }),
-    }).catch(() => console.error("Failed to save lead"));
-  };
-
-  const pulseGlowStyle = `
-    @keyframes glowPulse {
-      0% { border-color: #FFD700; box-shadow: 0 0 10px #FFD700; }
-      50% { border-color: white; box-shadow: 0 0 20px white; }
-      100% { border-color: #FFD700; box-shadow: 0 0 10px #FFD700; }
-    }
-    .animate-pulse-glow {
-      animation: glowPulse 1.5s infinite ease-in-out;
-    }
-  `;
-
-  async function handleSmartSelectorInput(userText) {
-    if (!userText.trim()) return;
-
-    const newMessage = { sender: "user", text: userText };
-    const updatedMessages = [...chatMessages, newMessage];
-    setChatMessages(updatedMessages);
-
-    const history = updatedMessages.map((m) => ({
-      role: m.sender === "user" ? "user" : "assistant",
-      content: m.text,
-    }));
-
-    try {
-      const res = await fetch(SMART_SELECTOR_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: history,
-          leadInfo: { name: leadName, phone: leadPhone, submitted: false },
-        }),
-      });
-
-      if (!res.ok) {
-        const txt = await res.text().catch(() => "");
-        throw new Error(`HTTP ${res.status} ${res.statusText} — ${txt || "No body"}`);
-      }
-
-      const data = await res.json();
-
-      setChatMessages((prev) => [
-        ...prev,
-        { sender: "bot", text: (data && data.reply) || "Got it!" },
-      ]);
-
-      if (Array.isArray(data.cartItems) && data.cartItems.length) {
-        const newItems = data.cartItems.filter(
-          (i) => !cart.some((c) => c.name === i.name)
-        );
-        if (newItems.length) {
-          setCart((prev) => [...prev, ...newItems]);
-          setDiscountApplied(true);
-        }
-      }
-    } catch (err) {
-      console.error("AI Chat error:", err);
-      setChatMessages((prev) => [
-        ...prev,
-        { sender: "bot", text: "AI is unavailable. Try again shortly." },
-      ]);
-    }
-  }
 
   const filteredData = itemData.map((section) => ({
     ...section,
@@ -119,119 +65,10 @@ function ItemizedPage() {
 
   return (
     <div className="bg-black text-white min-h-screen p-6 pb-32">
-      <style>{pulseGlowStyle}</style>
-
       {/* Title */}
       <h1 className="text-4xl mb-6 text-center font-bold">
-        <span className="text-white">Manually Select Junk</span>{" "}
-        <span
-          className="px-2 py-1 border-2 rounded-lg animate-pulse-glow"
-          style={{ borderColor: "#FFD700", color: "#FFD700" }}
-        >
-          or Add with Smart Select! (Save 10%)
-        </span>
+        <span className="text-white">Manually Select Junk</span>
       </h1>
-
-      {/* Smart Selector popup */}
-      {showSmartSelectorNotice && !showChat && (
-        <div
-          className="fixed bottom-6 right-6 bg-black text-white border-2 rounded-xl p-4 shadow-xl animate-pulse-glow cursor-pointer z-50 max-w-xs"
-          style={{ borderColor: "#FFD700" }}
-          onClick={() => {
-            setShowChat(true);
-            setChatMessages([
-              {
-                sender: "bot",
-                text:
-                  "Hey there! I can help you build your junk list and save 10%. Want me to apply the discount now so you can see prices as we go, or keep adding items for now?",
-              },
-            ]);
-          }}
-        >
-          <h3 className="font-bold text-gold text-lg mb-1">
-            Quick Add with Smart Select — Save 10%
-          </h3>
-          <p className="text-sm">Tap to get started.</p>
-        </div>
-      )}
-
-      {/* Chat Drawer */}
-      {showChat && (
-        <div className="fixed bottom-0 right-0 w-full sm:w-96 h-2/3 bg-gray-900 border-l border-gold z-50 flex flex-col">
-          <div className="flex justify-between items-center p-4 border-b border-gold">
-            <h2 className="text-gold font-bold">Junk Buddies Smart Selector</h2>
-            <button
-              onClick={() => setShowChat(false)}
-              className="text-white hover:text-gold"
-            >
-              ✕
-            </button>
-          </div>
-
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 text-sm">
-            {chatMessages.map((msg, idx) => (
-              <p
-                key={idx}
-                className={msg.sender === "user" ? "text-blue-300" : "text-gray-300"}
-              >
-                {msg.text}
-              </p>
-            ))}
-          </div>
-
-          {discountApplied && !leadSubmitted && (
-            <div className="p-4 border-t border-gold bg-gray-800">
-              <p className="text-sm text-gold font-bold mb-2">
-                Lock in your 10% discount:
-              </p>
-              <input
-                type="text"
-                placeholder="Your Name"
-                className="w-full p-2 mb-2 bg-gray-900 text-white border border-gold rounded"
-                value={leadName}
-                onChange={(e) => setLeadName(e.target.value)}
-              />
-              <input
-                type="tel"
-                placeholder="Your Phone"
-                className="w-full p-2 mb-2 bg-gray-900 text-white border border-gold rounded"
-                value={leadPhone}
-                onChange={(e) => setLeadPhone(e.target.value)}
-              />
-              <button
-                onClick={submitLead}
-                className="mt-2 w-full px-3 py-1 bg-gold text-black font-semibold rounded"
-              >
-                Save Discount & Continue
-              </button>
-            </div>
-          )}
-
-          {leadSubmitted && (
-            <div className="p-4 border-t border-gold bg-gray-800 text-center">
-              <p className="text-gold font-bold mb-2">Great! Let’s finish up.</p>
-              <button
-                onClick={() => navigate("/schedule")}
-                className="mt-2 w-full px-3 py-1 bg-gold text-black font-semibold rounded"
-              >
-                Go to Schedule Page
-              </button>
-            </div>
-          )}
-
-          <textarea
-            className="w-full p-2 bg-gray-800 text-white border-t border-gold"
-            placeholder="Type your items..."
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSmartSelectorInput(e.target.value);
-                e.target.value = "";
-              }
-            }}
-          />
-        </div>
-      )}
 
       {/* Search & badges */}
       <div className="mb-6 max-w-2xl mx-auto">
@@ -316,6 +153,17 @@ function ItemizedPage() {
                 ? `$${totalWithDiscount.toFixed(2)} (after 10% off)`
                 : `$${finalPrice.toFixed(2)}`}
             </p>
+            {discountApplied && (
+              <p className="text-xs text-yellow-300 mt-1">
+                10% discount is already attached to your account.
+              </p>
+            )}
+            <button
+              onClick={() => navigate("/schedule")}
+              className="mt-4 w-full px-3 py-2 bg-gold text-black font-semibold rounded"
+            >
+              Continue to Schedule
+            </button>
           </div>
         </div>
       )}
@@ -332,4 +180,3 @@ function ItemizedPage() {
 }
 
 export default ItemizedPage;
- 
