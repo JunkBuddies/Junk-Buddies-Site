@@ -143,9 +143,57 @@ export default function ChatWidget() {
     return Math.max(0, Math.round((base * (1 - DISCOUNT_RATE) + Number.EPSILON) * 100) / 100);
   }
 
+  // ===== DEV COMMANDS: refresh/reset lead in current session =====
+  function resetLeadForSession({ openCapture = true } = {}) {
+    // clear local flags & info
+    localStorage.setItem(`jb_disc_on_${sessionId}`, "0");
+    localStorage.setItem(`jb_lead_${sessionId}`, "0");
+    localStorage.removeItem(`jb_lead_name_${sessionId}`);
+    localStorage.removeItem(`jb_lead_phone_${sessionId}`);
+    localStorage.setItem(`jb_pre_offer_shown_${sessionId}`, "0");
+
+    setDiscountActive(false);
+    setLeadCaptured(false);
+    setLeadDraft({ name: "", phone: "" });
+    setInitialGateShown(false);
+    lastDiscountSig.current = "";
+
+    if (openCapture) {
+      setGate({
+        id: "lead_capture",
+        text: "Re-capture **10% off** — add your name & phone again.",
+      });
+    }
+  }
+
+  // Return true if handled locally (don’t call API)
+  function handleLocalCommands(raw) {
+    const t = (raw || "").trim().toLowerCase();
+    if (t === "refresh lead" || t === "reset lead") {
+      resetLeadForSession({ openCapture: true });
+      setMessages((m) => [
+        ...m,
+        { role: "assistant", content: "Lead info cleared for this session. Enter your name & phone to re-attach **10% off**." },
+      ]);
+      return true;
+    }
+    return false;
+  }
+  // ===============================================================
+
   async function send() {
     const text = input.trim();
-    if (!text || loading || gate) return; // block while a gate is active
+    if (!text || loading) return;
+
+    // Allow dev commands even if a gate is open
+    if (handleLocalCommands(text)) {
+      setInput("");
+      return;
+    }
+
+    // block normal sends while a gate is active
+    if (gate) return;
+
     setError("");
     setInput("");
     setMessages((m) => [...m, { role: "user", content: text }]);
