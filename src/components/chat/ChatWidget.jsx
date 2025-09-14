@@ -17,11 +17,12 @@ const TIP_COOLDOWN_MS = 10 * 60 * 1000; // show tip again if >10m since last
 
 const ASSISTANT_NAME = "Your Junk Buddy";
 
+// ✅ Safer session ID generator
 function getSessionId() {
   const key = "jb_chat_session";
   let s = localStorage.getItem(key);
   if (!s) {
-    s = "sess_" + Math.random().toString(36).slice(2);
+    s = "sess_" + Date.now() + "_" + Math.random().toString(36).slice(2);
     localStorage.setItem(key, s);
   }
   return s;
@@ -235,7 +236,6 @@ export default function ChatWidget() {
               const disc = discountedPrice(base);
               next.push({
                 role: "assistant",
-                // ⛔ no load label here
                 content: `With **10% off**: **$${disc.toFixed(2)}** (was $${base.toFixed(2)})`,
               });
             }
@@ -323,7 +323,6 @@ export default function ChatWidget() {
     if (gate.id === "lead_capture") {
       if (action === "submit") {
         if (!leadDraft.name.trim() || !validPhone(leadDraft.phone)) {
-          // simple inline nudge; keep gate open
           setMessages((m) => [
             ...m,
             { role: "assistant", content: "Please add a name and a valid phone number (10+ digits)." },
@@ -331,16 +330,17 @@ export default function ChatWidget() {
           return;
         }
 
-        // 1) Save to Firestore (leadCaptures) with the exact fields you wanted
+        // 1) Save to Firestore (leadCaptures) with logging
         try {
-          await addDoc(collection(db, "leadCaptures"), {
+          const docRef = await addDoc(collection(db, "leadCaptures"), {
             name: leadDraft.name.trim(),
             phone: leadDraft.phone.trim(),
             enteredAt: serverTimestamp(),
+            sessionId, // helpful for debugging
           });
+          console.log("✅ Lead saved to Firestore:", docRef.id, leadDraft);
         } catch (err) {
-          console.error("[lead capture] Firestore write failed:", err);
-          // Continue UX even if the write fails
+          console.error("❌ [lead capture] Firestore write failed:", err);
           setMessages((m) => [
             ...m,
             { role: "assistant", content: "Got it — I couldn’t save your info just now, but your discount is still applied." },
@@ -362,7 +362,6 @@ export default function ChatWidget() {
             ...m,
             {
               role: "assistant",
-              // ⛔ no load label here
               content: `Thanks, ${leadDraft.name}! Your **10% off** is attached to ${leadDraft.phone}. Discounted total: **$${disc.toFixed(
                 2
               )}** (was $${base.toFixed(2)})`,
@@ -379,7 +378,6 @@ export default function ChatWidget() {
           ]);
         }
       } else {
-        // decline
         setGate(null);
         setMessages((m) => [
           ...m,
@@ -753,3 +751,4 @@ export default function ChatWidget() {
     </>
   );
 }
+
