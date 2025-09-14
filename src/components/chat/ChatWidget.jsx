@@ -331,34 +331,31 @@ export default function ChatWidget() {
         }
 
         // 1) Save to Firestore (leadCaptures) with logging
-      try {
-  // Always write to backup collection
+      // Always attempt both writes — independent
+try {
   await addDoc(collection(db, "leadAttempts"), {
     name: leadDraft.name.trim(),
     phone: leadDraft.phone.trim(),
     enteredAt: serverTimestamp(),
     sessionId,
   });
+  console.log("✅ Lead logged to leadAttempts");
+} catch (err) {
+  console.error("❌ Failed to log to leadAttempts:", err);
+}
 
-  // Try main collection
+try {
   await addDoc(collection(db, "leadCaptures"), {
     name: leadDraft.name.trim(),
     phone: leadDraft.phone.trim(),
     enteredAt: serverTimestamp(),
     sessionId,
   });
-
-  console.log("✅ Lead saved to both leadAttempts and leadCaptures");
-
+  console.log("✅ Lead saved to leadCaptures");
 } catch (err) {
-  console.error("[lead capture] Firestore write failed:", err);
-
-  // At least the attempt is guaranteed in leadAttempts
-  setMessages((m) => [
-    ...m,
-    { role: "assistant", content: "Got it — your discount is applied. (We may not have saved your info properly, but your session is marked.)" },
-  ]);
+  console.error("❌ Failed to save to leadCaptures:", err);
 }
+
 
 
         // 2) Persist locally + activate discount
