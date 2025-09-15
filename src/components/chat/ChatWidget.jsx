@@ -388,8 +388,8 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* Local styles for pulse + tip */}
-    <style>{`
+     {/* Local styles for pulse + tip */}
+<style>{`
   @keyframes jbPulse {
     0% {
       box-shadow:
@@ -415,6 +415,23 @@ export default function ChatWidget() {
   .jb-pulse {
     animation: jbPulse 2.2s ease-in-out infinite;
   }
+
+  /* 🔹 New subtle glow for the chat window when open */
+  @keyframes jbChatGlow {
+    0% {
+      box-shadow: 0 0 10px rgba(30,144,255,0.5), 0 0 20px rgba(255,0,255,0.4);
+    }
+    50% {
+      box-shadow: 0 0 18px rgba(30,144,255,0.7), 0 0 28px rgba(255,0,255,0.6);
+    }
+    100% {
+      box-shadow: 0 0 10px rgba(30,144,255,0.5), 0 0 20px rgba(255,0,255,0.4);
+    }
+  }
+  .jb-chat-glow {
+    animation: jbChatGlow 2.5s ease-in-out infinite;
+  }
+
   .jb-tip {
     background: ${BLACK};
     color: ${SILVER};
@@ -483,6 +500,7 @@ export default function ChatWidget() {
       {/* Chat window */}
       {open && (
         <div
+          className="jb-chat-glow"
           style={{
             position: "fixed",
             right: 16,
