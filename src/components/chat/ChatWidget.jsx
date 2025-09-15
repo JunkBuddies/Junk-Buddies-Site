@@ -12,8 +12,8 @@ const GOLD = "#d4af37";
 const SILVER = "#C0C0C0";
 const BLUE = "#1e90ff";
 const BLACK = "#0b0b0b";
-const DISCOUNT_RATE = 0.10; // 10%
-const TIP_COOLDOWN_MS = 10 * 60 * 1000; // show tip again if >10m since last
+const DISCOUNT_RATE = 0.10;
+const TIP_COOLDOWN_MS = 10 * 60 * 1000;
 
 const ASSISTANT_NAME = "Your Junk Buddy";
 
@@ -27,7 +27,7 @@ function sendGAEvent(name, params = {}) {
   }
 }
 
-// ✅ Safer session ID generator
+// ✅ Session ID generator
 function getSessionId() {
   const key = "jb_chat_session";
   let s = localStorage.getItem(key);
@@ -40,34 +40,23 @@ function getSessionId() {
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
-
-  // Start blank; greeting is injected after open
   const [messages, setMessages] = useState([]);
-
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [aiStatus, setAiStatus] = useState("unknown"); // "on" | "off" | "unknown"
-  const [lastParsed, setLastParsed] = useState(null);   // { cart, finalPrice, totalVolume, loadLabel }
+  const [aiStatus, setAiStatus] = useState("unknown");
+  const [lastParsed, setLastParsed] = useState(null);
 
-  // discount / lead capture state
   const [discountActive, setDiscountActive] = useState(false);
   const [leadCaptured, setLeadCaptured] = useState(false);
   const [initialGateShown, setInitialGateShown] = useState(false);
   const [offeredThisParse, setOfferedThisParse] = useState(false);
 
-  // blocking gate with optional mini-form
-  // gate.id in: "offer_pre" | "offer_post" | "lead_capture"
   const [gate, setGate] = useState(null);
   const [leadDraft, setLeadDraft] = useState({ name: "", phone: "" });
 
-  // guard to avoid duplicate discount follow-ups
   const lastDiscountSig = useRef2("");
-
-  // onboarding tip bubble by the launcher
   const [showTip, setShowTip] = useState(false);
-
-  // intro typing effect
   const [introShown, setIntroShown] = useState(false);
   const [introTyping, setIntroTyping] = useState(false);
 
@@ -76,7 +65,7 @@ export default function ChatWidget() {
   const { setCart } = useCart() || { setCart: () => {} };
   const navigate = useNavigate();
 
-  // hydrate persisted flags + lead
+  // Hydrate persisted flags
   useEffect(() => {
     const d = localStorage.getItem(`jb_disc_on_${sessionId}`) === "1";
     const l = localStorage.getItem(`jb_lead_${sessionId}`) === "1";
@@ -87,7 +76,7 @@ export default function ChatWidget() {
     setLeadDraft({ name: n, phone: p });
   }, [sessionId]);
 
-  // persist flags
+  // Persist flags
   useEffect(() => {
     localStorage.setItem(`jb_disc_on_${sessionId}`, discountActive ? "1" : "0");
   }, [discountActive, sessionId]);
@@ -95,14 +84,14 @@ export default function ChatWidget() {
     localStorage.setItem(`jb_lead_${sessionId}`, leadCaptured ? "1" : "0");
   }, [leadCaptured, sessionId]);
 
-  // autoscroll
+  // Autoscroll
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open, loading, gate]);
 
   const cartSummary = lastParsed?.cart?.length ? calculatePrice(lastParsed.cart) : null;
 
-  // initial (pre-items) discount offer once per session
+  // Pre-offer gate
   useEffect(() => {
     if (!open || initialGateShown || discountActive) return;
     const flag = localStorage.getItem(`jb_pre_offer_shown_${sessionId}`);
@@ -114,7 +103,7 @@ export default function ChatWidget() {
     setInitialGateShown(true);
   }, [open, initialGateShown, discountActive, sessionId]);
 
-  // Tip bubble logic (show on visit/return, throttle by time)
+  // Tip bubble
   useEffect(() => {
     const last = Number(localStorage.getItem("jb_tip_last") || "0");
     const now = Date.now();
@@ -127,7 +116,7 @@ export default function ChatWidget() {
     localStorage.setItem("jb_tip_last", String(Date.now()));
   }
 
-  // When chat opens, inject assistant greeting (one time)
+  // Assistant greeting
   useEffect(() => {
     if (!open || introShown) return;
     setIntroTyping(true);
@@ -137,7 +126,6 @@ export default function ChatWidget() {
         `Just **list items casually** (e.g., *"2 couches + queen mattress + treadmill"*) and I’ll add & price them.`;
       setMessages([{ role: "assistant", content: greeting }]);
 
-      // If discount already active, also notify once
       if (discountActive) {
         setMessages((m) => [
           ...m,
@@ -154,9 +142,8 @@ export default function ChatWidget() {
     return Math.max(0, Math.round((base * (1 - DISCOUNT_RATE) + Number.EPSILON) * 100) / 100);
   }
 
-  // ===== DEV COMMANDS: refresh/reset lead in current session =====
+  // Reset lead for session
   function resetLeadForSession({ openCapture = true } = {}) {
-    // clear local flags & info
     localStorage.setItem(`jb_disc_on_${sessionId}`, "0");
     localStorage.setItem(`jb_lead_${sessionId}`, "0");
     localStorage.removeItem(`jb_lead_name_${sessionId}`);
@@ -177,7 +164,7 @@ export default function ChatWidget() {
     }
   }
 
-  // Return true if handled locally (don’t call API)
+  // Handle local commands
   function handleLocalCommands(raw) {
     const t = (raw || "").trim().toLowerCase();
     if (t === "refresh lead" || t === "reset lead") {
@@ -190,19 +177,15 @@ export default function ChatWidget() {
     }
     return false;
   }
-  // ===============================================================
-
+  // Send message
   async function send() {
     const text = input.trim();
     if (!text || loading) return;
 
-    // Allow dev commands even if a gate is open
     if (handleLocalCommands(text)) {
       setInput("");
       return;
     }
-
-    // block normal sends while a gate is active
     if (gate) return;
 
     setError("");
@@ -226,15 +209,12 @@ export default function ChatWidget() {
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "Request failed");
 
-      // update parsed result
       setLastParsed(json.parsed || null);
 
-      // Build message list atomically to avoid duplicate re-appends
       setMessages((prev) => {
         const next = [...prev, { role: "assistant", content: json.reply }];
-
-        // if we got a priced parse, maybe show discount follow-up or offer gate
         const hasCart = (json.parsed?.cart?.length || 0) > 0;
+
         if (hasCart) {
           const base = json.parsed.finalPrice ?? 0;
           const sig = `${base}|${json.parsed?.totalVolume || 0}`;
@@ -280,13 +260,12 @@ export default function ChatWidget() {
     setCart((prev) => [...prev, ...lastParsed.cart]);
   }
 
-  // Basic phone validation (US-ish): 10+ digits
   function validPhone(p) {
     const digits = (p || "").replace(/\D/g, "");
     return digits.length >= 10;
   }
 
-  // Gating flow handler
+  // Gating flow
   async function onGateChoice(action) {
     if (!gate) return;
 
@@ -297,6 +276,19 @@ export default function ChatWidget() {
           id: "lead_capture",
           text: "Enter your name & phone — we’ll attach **10% off** to your account so it’s applied to your estimate.",
         });
+
+        // 🔹 Log lead form view
+        try {
+          await addDoc(collection(db, "leadViews"), {
+            sessionId,
+            type: "pre-offer",
+            shownAt: serverTimestamp(),
+          });
+          console.log("👀 Lead form (pre-offer) shown");
+          sendGAEvent("lead_form_view", { type: "pre-offer", sessionId });
+        } catch (err) {
+          console.error("❌ Failed to log lead form view:", err);
+        }
       } else {
         setGate(null);
         setMessages((m) => [...m, { role: "assistant", content: "No problem — we can add it later if you want." }]);
@@ -310,6 +302,18 @@ export default function ChatWidget() {
           id: "lead_capture",
           text: "Enter your name & phone — we’ll attach **10% off** to your account and show the discounted price next.",
         });
+
+        try {
+          await addDoc(collection(db, "leadViews"), {
+            sessionId,
+            type: "post-offer",
+            shownAt: serverTimestamp(),
+          });
+          console.log("👀 Lead form (post-offer) shown");
+          sendGAEvent("lead_form_view", { type: "post-offer", sessionId });
+        } catch (err) {
+          console.error("❌ Failed to log lead form view:", err);
+        }
       } else {
         setGate(null);
         setMessages((m) => [...m, { role: "assistant", content: "All good — I’ll keep showing regular pricing." }]);
@@ -324,7 +328,6 @@ export default function ChatWidget() {
           return;
         }
 
-        // 🔹 Always log attempt to Analytics
         sendGAEvent("lead_capture_attempt", {
           name: leadDraft.name.trim(),
           phone: leadDraft.phone.trim(),
@@ -385,72 +388,69 @@ export default function ChatWidget() {
       return;
     }
   }
-
   return (
     <>
-     {/* Local styles for pulse + tip */}
-<style>{`
-  @keyframes jbPulse {
-    0% {
-      box-shadow:
-        0 0 0 0 rgba(30,144,255,0.6),
-        0 0 12px 4px rgba(212,175,55,.55);
-    }
-    40% {
-      box-shadow:
-        0 0 0 14px rgba(255,0,255,0.3),
-        0 0 16px 6px rgba(30,144,255,0.6);
-    }
-    80% {
-      box-shadow:
-        0 0 0 0 rgba(30,144,255,0),
-        0 0 10px 4px rgba(255,0,255,0.4);
-    }
-    100% {
-      box-shadow:
-        0 0 0 0 rgba(30,144,255,0),
-        0 0 12px 4px rgba(212,175,55,.55);
-    }
-  }
-  .jb-pulse {
-    animation: jbPulse 2.2s ease-in-out infinite;
-  }
+      {/* Local styles for pulse + tip */}
+      <style>{`
+        @keyframes jbPulse {
+          0% {
+            box-shadow:
+              0 0 0 0 rgba(30,144,255,0.6),
+              0 0 12px 4px rgba(212,175,55,.55);
+          }
+          40% {
+            box-shadow:
+              0 0 0 14px rgba(255,0,255,0.3),
+              0 0 16px 6px rgba(30,144,255,0.6);
+          }
+          80% {
+            box-shadow:
+              0 0 0 0 rgba(30,144,255,0),
+              0 0 10px 4px rgba(255,0,255,0.4);
+          }
+          100% {
+            box-shadow:
+              0 0 0 0 rgba(30,144,255,0),
+              0 0 12px 4px rgba(212,175,55,.55);
+          }
+        }
+        .jb-pulse {
+          animation: jbPulse 2.2s ease-in-out infinite;
+        }
 
-  /* 🔹 New subtle glow for the chat window when open */
-  @keyframes jbChatGlow {
-    0% {
-      box-shadow: 0 0 10px rgba(30,144,255,0.5), 0 0 20px rgba(255,0,255,0.4);
-    }
-    50% {
-      box-shadow: 0 0 18px rgba(30,144,255,0.7), 0 0 28px rgba(255,0,255,0.6);
-    }
-    100% {
-      box-shadow: 0 0 10px rgba(30,144,255,0.5), 0 0 20px rgba(255,0,255,0.4);
-    }
-  }
-  .jb-chat-glow {
-    animation: jbChatGlow 2.5s ease-in-out infinite;
-  }
+        @keyframes jbChatGlow {
+          0% {
+            box-shadow: 0 0 10px rgba(30,144,255,0.5), 0 0 20px rgba(255,0,255,0.4);
+          }
+          50% {
+            box-shadow: 0 0 18px rgba(30,144,255,0.7), 0 0 28px rgba(255,0,255,0.6);
+          }
+          100% {
+            box-shadow: 0 0 10px rgba(30,144,255,0.5), 0 0 20px rgba(255,0,255,0.4);
+          }
+        }
+        .jb-chat-glow {
+          animation: jbChatGlow 2.5s ease-in-out infinite;
+        }
 
-  .jb-tip {
-    background: ${BLACK};
-    color: ${SILVER};
-    border: 1px solid ${GOLD};
-    border-radius: 12px;
-    padding: 10px 12px;
-    box-shadow: 0 10px 24px rgba(0,0,0,.4);
-  }
-  .jb-tip:after {
-    content: "";
-    position: absolute;
-    bottom: -8px; right: 18px;
-    border-width: 8px 8px 0 8px;
-    border-style: solid;
-    border-color: ${GOLD} transparent transparent transparent;
-    transform: translateY(1px);
-  }
-`}</style>
-
+        .jb-tip {
+          background: ${BLACK};
+          color: ${SILVER};
+          border: 1px solid ${GOLD};
+          border-radius: 12px;
+          padding: 10px 12px;
+          box-shadow: 0 10px 24px rgba(0,0,0,.4);
+        }
+        .jb-tip:after {
+          content: "";
+          position: absolute;
+          bottom: -8px; right: 18px;
+          border-width: 8px 8px 0 8px;
+          border-style: solid;
+          border-color: ${GOLD} transparent transparent transparent;
+          transform: translateY(1px);
+        }
+      `}</style>
 
       {/* Floating launcher + tip bubble */}
       {!open && (
@@ -463,37 +463,38 @@ export default function ChatWidget() {
               role="dialog"
               aria-live="polite"
             >
-              <div style={{ fontWeight: 700, color: GOLD, marginBottom: 4 }}>{ASSISTANT_NAME}</div>
+              <div style={{ fontWeight: 700, color: GOLD, marginBottom: 4 }}>
+                {ASSISTANT_NAME}
+              </div>
               <div>I can add your junk items in seconds!</div>
             </div>
           )}
 
-         <button
-  onClick={() => {
-    setOpen(true);
-    dismissTip();
-    navigate("/itemized"); // ✅ redirect to Itemized page
-  }}
-  style={{
-    position: "fixed",
-    right: 16,
-    bottom: 16,
-    width: 64,
-    height: 64,
-    borderRadius: "50%",
-    background: GOLD,
-    border: `2px solid ${BLACK}`,
-    fontWeight: 700,
-    cursor: "pointer",
-    zIndex: 9999,
-  }}
-  className="jb-pulse"
-  aria-label="Open chat"
-  title="Chat with Your Junk Buddy"
->
-  💬
-</button>
-
+          <button
+            onClick={() => {
+              setOpen(true);
+              dismissTip();
+              navigate("/itemized");
+            }}
+            style={{
+              position: "fixed",
+              right: 16,
+              bottom: 16,
+              width: 64,
+              height: 64,
+              borderRadius: "50%",
+              background: GOLD,
+              border: `2px solid ${BLACK}`,
+              fontWeight: 700,
+              cursor: "pointer",
+              zIndex: 9999,
+            }}
+            className="jb-pulse"
+            aria-label="Open chat"
+            title="Chat with Your Junk Buddy"
+          >
+            💬
+          </button>
         </>
       )}
 
@@ -572,7 +573,10 @@ export default function ChatWidget() {
           {/* Messages */}
           <div style={{ flex: 1, overflowY: "auto", padding: 10 }}>
             {messages.map((m, i) => (
-              <div key={i} style={{ margin: "6px 0", textAlign: m.role === "user" ? "right" : "left" }}>
+              <div
+                key={i}
+                style={{ margin: "6px 0", textAlign: m.role === "user" ? "right" : "left" }}
+              >
                 <span
                   style={{
                     display: "inline-block",
@@ -606,7 +610,9 @@ export default function ChatWidget() {
                       Name
                       <input
                         value={leadDraft.name}
-                        onChange={(e) => setLeadDraft((d) => ({ ...d, name: e.target.value }))}
+                        onChange={(e) =>
+                          setLeadDraft((d) => ({ ...d, name: e.target.value }))
+                        }
                         placeholder="e.g., Jamie"
                         style={{
                           width: "100%",
@@ -624,7 +630,9 @@ export default function ChatWidget() {
                       Phone (for updates & discount)
                       <input
                         value={leadDraft.phone}
-                        onChange={(e) => setLeadDraft((d) => ({ ...d, phone: e.target.value }))}
+                        onChange={(e) =>
+                          setLeadDraft((d) => ({ ...d, phone: e.target.value }))
+                        }
                         placeholder="(###) ###-####"
                         style={{
                           width: "100%",
@@ -638,7 +646,14 @@ export default function ChatWidget() {
                         }}
                       />
                     </label>
-                    <div style={{ display: "flex", gap: 8, marginTop: 6, flexWrap: "wrap" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 8,
+                        marginTop: 6,
+                        flexWrap: "wrap",
+                      }}
+                    >
                       <button
                         onClick={() => onGateChoice("submit")}
                         style={{
@@ -704,8 +719,12 @@ export default function ChatWidget() {
               </div>
             )}
 
-            {introTyping && <div style={{ fontStyle: "italic", marginTop: 8 }}>Assistant is typing…</div>}
-            {loading && <div style={{ fontStyle: "italic", marginTop: 8 }}>Assistant is typing…</div>}
+            {introTyping && (
+              <div style={{ fontStyle: "italic", marginTop: 8 }}>Assistant is typing…</div>
+            )}
+            {loading && (
+              <div style={{ fontStyle: "italic", marginTop: 8 }}>Assistant is typing…</div>
+            )}
             {error && <div style={{ color: "red", marginTop: 8 }}>{error}</div>}
             <div ref={endRef} />
           </div>
@@ -754,7 +773,7 @@ export default function ChatWidget() {
             </div>
           </div>
 
-          {/* Input (visible + readable; disabled while a gate is active) */}
+          {/* Input */}
           <div style={{ borderTop: `1px solid ${GOLD}`, padding: 10, opacity: gate ? 0.6 : 1 }}>
             <textarea
               rows={1}
@@ -782,4 +801,3 @@ export default function ChatWidget() {
     </>
   );
 }
-
