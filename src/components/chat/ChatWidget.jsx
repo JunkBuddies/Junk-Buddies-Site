@@ -469,6 +469,35 @@ export default function ChatWidget() {
               <div>I can add your junk items in seconds!</div>
             </div>
           )}
+          {/* Glowing message next to bubble */}
+<button
+  onClick={() => {
+    setOpen(true);
+    dismissTip();
+    navigate("/itemized"); // same behavior as bubble
+  }}
+  style={{
+    position: "fixed",
+    right: 90, // push it left of the bubble
+    bottom: 26, // align vertically with bubble
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    zIndex: 9999,
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: "14px",
+    textShadow: "0 0 8px rgba(30,144,255,0.8), 0 0 12px rgba(255,0,255,0.7)",
+    animation: "jbPulse 2.2s ease-in-out infinite",
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+  }}
+  className="jb-pulse"
+>
+  🎁 Free Item + 10% Off 
+  <span style={{ fontSize: "18px" }}>→</span>
+</button>
 
           <button
             onClick={() => {
