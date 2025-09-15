@@ -389,31 +389,51 @@ export default function ChatWidget() {
   return (
     <>
       {/* Local styles for pulse + tip */}
-      <style>{`
-        @keyframes jbPulse {
-          0%   { box-shadow: 0 0 0 0 rgba(212,175,55,.45), 0 0 12px 4px rgba(30,144,255,.35); }
-          50%  { box-shadow: 0 0 0 10px rgba(192,192,192,.18), 0 0 18px 6px rgba(212,175,55,.55); }
-          100% { box-shadow: 0 0 0 0 rgba(192,192,192,0.0), 0 0 12px 4px rgba(30,144,255,.35); }
-        }
-        .jb-pulse { animation: jbPulse 2s ease-in-out infinite; }
-        .jb-tip {
-          background: ${BLACK};
-          color: ${SILVER};
-          border: 1px solid ${GOLD};
-          border-radius: 12px;
-          padding: 10px 12px;
-          box-shadow: 0 10px 24px rgba(0,0,0,.4);
-        }
-        .jb-tip:after {
-          content: "";
-          position: absolute;
-          bottom: -8px; right: 18px;
-          border-width: 8px 8px 0 8px;
-          border-style: solid;
-          border-color: ${GOLD} transparent transparent transparent;
-          transform: translateY(1px);
-        }
-      `}</style>
+    <style>{`
+  @keyframes jbPulse {
+    0% {
+      box-shadow:
+        0 0 0 0 rgba(30,144,255,0.6),
+        0 0 12px 4px rgba(212,175,55,.55);
+    }
+    40% {
+      box-shadow:
+        0 0 0 14px rgba(255,0,255,0.3),
+        0 0 16px 6px rgba(30,144,255,0.6);
+    }
+    80% {
+      box-shadow:
+        0 0 0 0 rgba(30,144,255,0),
+        0 0 10px 4px rgba(255,0,255,0.4);
+    }
+    100% {
+      box-shadow:
+        0 0 0 0 rgba(30,144,255,0),
+        0 0 12px 4px rgba(212,175,55,.55);
+    }
+  }
+  .jb-pulse {
+    animation: jbPulse 2.2s ease-in-out infinite;
+  }
+  .jb-tip {
+    background: ${BLACK};
+    color: ${SILVER};
+    border: 1px solid ${GOLD};
+    border-radius: 12px;
+    padding: 10px 12px;
+    box-shadow: 0 10px 24px rgba(0,0,0,.4);
+  }
+  .jb-tip:after {
+    content: "";
+    position: absolute;
+    bottom: -8px; right: 18px;
+    border-width: 8px 8px 0 8px;
+    border-style: solid;
+    border-color: ${GOLD} transparent transparent transparent;
+    transform: translateY(1px);
+  }
+`}</style>
+
 
       {/* Floating launcher + tip bubble */}
       {!open && (
@@ -431,27 +451,32 @@ export default function ChatWidget() {
             </div>
           )}
 
-          <button
-            onClick={() => { setOpen(true); dismissTip(); }}
-            style={{
-              position: "fixed",
-              right: 16,
-              bottom: 16,
-              width: 64,
-              height: 64,
-              borderRadius: "50%",
-              background: GOLD,
-              border: `2px solid ${BLACK}`,
-              fontWeight: 700,
-              cursor: "pointer",
-              zIndex: 9999,
-            }}
-            className="jb-pulse"
-            aria-label="Open chat"
-            title="Chat with Your Junk Buddy"
-          >
-            💬
-          </button>
+         <button
+  onClick={() => {
+    setOpen(true);
+    dismissTip();
+    navigate("/itemized"); // ✅ redirect to Itemized page
+  }}
+  style={{
+    position: "fixed",
+    right: 16,
+    bottom: 16,
+    width: 64,
+    height: 64,
+    borderRadius: "50%",
+    background: GOLD,
+    border: `2px solid ${BLACK}`,
+    fontWeight: 700,
+    cursor: "pointer",
+    zIndex: 9999,
+  }}
+  className="jb-pulse"
+  aria-label="Open chat"
+  title="Chat with Your Junk Buddy"
+>
+  💬
+</button>
+
         </>
       )}
 
