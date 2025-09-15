@@ -17,6 +17,16 @@ const TIP_COOLDOWN_MS = 10 * 60 * 1000; // show tip again if >10m since last
 
 const ASSISTANT_NAME = "Your Junk Buddy";
 
+// ✅ GA4 event helper
+function sendGAEvent(name, params = {}) {
+  if (window.gtag) {
+    window.gtag("event", name, params);
+    console.log("📊 GA event sent:", name, params);
+  } else {
+    console.warn("⚠️ gtag not ready, event skipped:", name, params);
+  }
+}
+
 // ✅ Safer session ID generator
 function getSessionId() {
   const key = "jb_chat_session";
@@ -230,7 +240,6 @@ export default function ChatWidget() {
           const sig = `${base}|${json.parsed?.totalVolume || 0}`;
 
           if (discountActive) {
-            // Avoid re-adding same discount line for the same estimate
             if (lastDiscountSig.current !== sig) {
               lastDiscountSig.current = sig;
               const disc = discountedPrice(base);
@@ -250,7 +259,6 @@ export default function ChatWidget() {
         return next;
       });
 
-      // reset “offer once per parse” when new response arrives
       setOfferedThisParse(false);
     } catch (e) {
       setError("I had trouble responding. Please try again.");
@@ -282,90 +290,77 @@ export default function ChatWidget() {
   async function onGateChoice(action) {
     if (!gate) return;
 
-    // PRE-OFFER → move to lead capture if yes, else dismiss
     if (gate.id === "offer_pre") {
       localStorage.setItem(`jb_pre_offer_shown_${sessionId}`, "1");
       if (action === "yes") {
         setGate({
           id: "lead_capture",
-          text:
-            "Enter your name & phone — we’ll attach **10% off** to your account so it’s applied to your estimate.",
+          text: "Enter your name & phone — we’ll attach **10% off** to your account so it’s applied to your estimate.",
         });
       } else {
         setGate(null);
-        setMessages((m) => [
-          ...m,
-          { role: "assistant", content: "No problem — we can add it later if you want." },
-        ]);
+        setMessages((m) => [...m, { role: "assistant", content: "No problem — we can add it later if you want." }]);
       }
       return;
     }
 
-    // POST-OFFER → move to lead capture if yes, else dismiss
     if (gate.id === "offer_post") {
       if (action === "yes") {
         setGate({
           id: "lead_capture",
-          text:
-            "Enter your name & phone — we’ll attach **10% off** to your account and show the discounted price next.",
+          text: "Enter your name & phone — we’ll attach **10% off** to your account and show the discounted price next.",
         });
       } else {
         setGate(null);
-        setMessages((m) => [
-          ...m,
-          { role: "assistant", content: "All good — I’ll keep showing regular pricing." },
-        ]);
+        setMessages((m) => [...m, { role: "assistant", content: "All good — I’ll keep showing regular pricing." }]);
       }
       return;
     }
 
-    // LEAD CAPTURE submit/decline
     if (gate.id === "lead_capture") {
       if (action === "submit") {
         if (!leadDraft.name.trim() || !validPhone(leadDraft.phone)) {
-          setMessages((m) => [
-            ...m,
-            { role: "assistant", content: "Please add a name and a valid phone number (10+ digits)." },
-          ]);
+          setMessages((m) => [...m, { role: "assistant", content: "Please add a name and a valid phone number (10+ digits)." }]);
           return;
         }
 
-        // 1) Save to Firestore (leadCaptures) with logging
-      // Always attempt both writes — independent
-try {
-  await addDoc(collection(db, "leadAttempts"), {
-    name: leadDraft.name.trim(),
-    phone: leadDraft.phone.trim(),
-    enteredAt: serverTimestamp(),
-    sessionId,
-  });
-  console.log("✅ Lead logged to leadAttempts");
-} catch (err) {
-  console.error("❌ Failed to log to leadAttempts:", err);
-}
+        // 🔹 Always log attempt to Analytics
+        sendGAEvent("lead_capture_attempt", {
+          name: leadDraft.name.trim(),
+          phone: leadDraft.phone.trim(),
+          sessionId,
+        });
 
-try {
-  await addDoc(collection(db, "leadCaptures"), {
-    name: leadDraft.name.trim(),
-    phone: leadDraft.phone.trim(),
-    enteredAt: serverTimestamp(),
-    sessionId,
-  });
-  console.log("✅ Lead saved to leadCaptures");
-} catch (err) {
-  console.error("❌ Failed to save to leadCaptures:", err);
-}
+        try {
+          await addDoc(collection(db, "leadAttempts"), {
+            name: leadDraft.name.trim(),
+            phone: leadDraft.phone.trim(),
+            enteredAt: serverTimestamp(),
+            sessionId,
+          });
+          console.log("✅ Lead logged to leadAttempts");
+        } catch (err) {
+          console.error("❌ Failed to log to leadAttempts:", err);
+        }
 
+        try {
+          await addDoc(collection(db, "leadCaptures"), {
+            name: leadDraft.name.trim(),
+            phone: leadDraft.phone.trim(),
+            enteredAt: serverTimestamp(),
+            sessionId,
+          });
+          console.log("✅ Lead saved to leadCaptures");
+        } catch (err) {
+          console.error("❌ Failed to save to leadCaptures:", err);
+        }
 
-
-        // 2) Persist locally + activate discount
         localStorage.setItem(`jb_lead_name_${sessionId}`, leadDraft.name.trim());
         localStorage.setItem(`jb_lead_phone_${sessionId}`, leadDraft.phone);
         setLeadCaptured(true);
         setDiscountActive(true);
         setGate(null);
 
-        // 3) If we already have a price, show discounted follow-up immediately
         if (lastParsed?.finalPrice != null) {
           const base = lastParsed.finalPrice;
           const disc = discountedPrice(base);
@@ -373,27 +368,19 @@ try {
             ...m,
             {
               role: "assistant",
-              content: `Thanks, ${leadDraft.name}! Your **10% off** is attached to ${leadDraft.phone}. Discounted total: **$${disc.toFixed(
-                2
-              )}** (was $${base.toFixed(2)})`,
+              content: `Thanks, ${leadDraft.name}! Your **10% off** is attached to ${leadDraft.phone}. Discounted total: **$${disc.toFixed(2)}** (was $${base.toFixed(2)})`,
             },
           ]);
           lastDiscountSig.current = `${base}|${lastParsed?.totalVolume || 0}`;
         } else {
           setMessages((m) => [
             ...m,
-            {
-              role: "assistant",
-              content: `Thanks, ${leadDraft.name}! Your **10% off** is attached to ${leadDraft.phone}. Tell me your items and I’ll apply it.`,
-            },
+            { role: "assistant", content: `Thanks, ${leadDraft.name}! Your **10% off** is attached to ${leadDraft.phone}. Tell me your items and I’ll apply it.` },
           ]);
         }
       } else {
         setGate(null);
-        setMessages((m) => [
-          ...m,
-          { role: "assistant", content: "No worries — we’ll keep the standard pricing visible." },
-        ]);
+        setMessages((m) => [...m, { role: "assistant", content: "No worries — we’ll keep the standard pricing visible." }]);
       }
       return;
     }
@@ -408,9 +395,7 @@ try {
           50%  { box-shadow: 0 0 0 10px rgba(192,192,192,.18), 0 0 18px 6px rgba(212,175,55,.55); }
           100% { box-shadow: 0 0 0 0 rgba(192,192,192,0.0), 0 0 12px 4px rgba(30,144,255,.35); }
         }
-        .jb-pulse {
-          animation: jbPulse 2s ease-in-out infinite;
-        }
+        .jb-pulse { animation: jbPulse 2s ease-in-out infinite; }
         .jb-tip {
           background: ${BLACK};
           color: ${SILVER};
@@ -436,20 +421,12 @@ try {
           {showTip && (
             <div
               className="jb-tip"
-              style={{
-                position: "fixed",
-                right: 16,
-                bottom: 96,
-                maxWidth: 260,
-                zIndex: 9999,
-              }}
+              style={{ position: "fixed", right: 16, bottom: 96, maxWidth: 260, zIndex: 9999 }}
               onClick={dismissTip}
               role="dialog"
               aria-live="polite"
             >
-              <div style={{ fontWeight: 700, color: GOLD, marginBottom: 4 }}>
-                {ASSISTANT_NAME}
-              </div>
+              <div style={{ fontWeight: 700, color: GOLD, marginBottom: 4 }}>{ASSISTANT_NAME}</div>
               <div>I can add your junk items in seconds!</div>
             </div>
           )}
