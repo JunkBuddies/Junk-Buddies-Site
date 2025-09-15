@@ -34,8 +34,6 @@ function ItemizedPage() {
     const flag = localStorage.getItem(`jb_disc_on_${sessionId}`) === "1";
     setDiscountApplied(flag);
 
-    // in case it changes while user stays on this page (e.g., via other UI),
-    // re-check when storage changes (fires across tabs; safe as a light listener)
     const onStorage = (e) => {
       if (e.key === `jb_disc_on_${sessionId}`) {
         setDiscountApplied(e.newValue === "1");
@@ -68,7 +66,38 @@ function ItemizedPage() {
       {/* Title */}
       <h1 className="text-4xl mb-6 text-center font-bold">
         <span className="text-white">Manually Select Junk</span>
+        <br />
+        <span className="jb-glow-text text-lg font-semibold">
+          — or add instantly in seconds with the assistant
+        </span>
       </h1>
+
+      <style>{`
+        @keyframes jbGlowText {
+          0% {
+            text-shadow:
+              0 0 6px rgba(30,144,255,0.8),
+              0 0 12px rgba(255,0,255,0.6);
+            color: #ffffff;
+          }
+          50% {
+            text-shadow:
+              0 0 12px rgba(30,144,255,1),
+              0 0 22px rgba(255,0,255,0.9);
+            color: #FFD700;
+          }
+          100% {
+            text-shadow:
+              0 0 6px rgba(30,144,255,0.8),
+              0 0 12px rgba(255,0,255,0.6);
+            color: #ffffff;
+          }
+        }
+        .jb-glow-text {
+          display: inline-block;
+          animation: jbGlowText 2.2s ease-in-out infinite;
+        }
+      `}</style>
 
       {/* Search & badges */}
       <div className="mb-6 max-w-2xl mx-auto">
