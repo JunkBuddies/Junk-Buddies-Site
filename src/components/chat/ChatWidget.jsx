@@ -8,6 +8,9 @@ import { useNavigate } from "react-router-dom";
 import { db } from "../../lib/firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
+// ✉️ EmailJS
+import emailjs from "emailjs-com";
+
 const GOLD = "#d4af37";
 const SILVER = "#C0C0C0";
 const BLUE = "#1e90ff";
@@ -16,6 +19,11 @@ const DISCOUNT_RATE = 0.10;
 const TIP_COOLDOWN_MS = 10 * 60 * 1000;
 
 const ASSISTANT_NAME = "Your Junk Buddy";
+
+// EmailJS config
+const EMAILJS_SERVICE_ID = "JunkBuddies.info";      // Service ID from EmailJS
+const EMAILJS_TEMPLATE_ID = "Junk-Buddies-Leads";   // Template ID from EmailJS
+const EMAILJS_PUBLIC_KEY = "QCl4Akw_LZ3T8IvUd";     // Public key from EmailJS
 
 // ✅ GA4 event helper
 function sendGAEvent(name, params = {}) {
@@ -277,14 +285,12 @@ export default function ChatWidget() {
           text: "Enter your name & phone — we’ll attach **10% off** to your account so it’s applied to your estimate.",
         });
 
-        // 🔹 Log lead form view
         try {
           await addDoc(collection(db, "leadViews"), {
             sessionId,
             type: "pre-offer",
             shownAt: serverTimestamp(),
           });
-          console.log("👀 Lead form (pre-offer) shown");
           sendGAEvent("lead_form_view", { type: "pre-offer", sessionId });
         } catch (err) {
           console.error("❌ Failed to log lead form view:", err);
@@ -309,7 +315,6 @@ export default function ChatWidget() {
             type: "post-offer",
             shownAt: serverTimestamp(),
           });
-          console.log("👀 Lead form (post-offer) shown");
           sendGAEvent("lead_form_view", { type: "post-offer", sessionId });
         } catch (err) {
           console.error("❌ Failed to log lead form view:", err);
@@ -341,7 +346,6 @@ export default function ChatWidget() {
             enteredAt: serverTimestamp(),
             sessionId,
           });
-          console.log("✅ Lead logged to leadAttempts");
         } catch (err) {
           console.error("❌ Failed to log to leadAttempts:", err);
         }
@@ -353,9 +357,26 @@ export default function ChatWidget() {
             enteredAt: serverTimestamp(),
             sessionId,
           });
-          console.log("✅ Lead saved to leadCaptures");
         } catch (err) {
           console.error("❌ Failed to save to leadCaptures:", err);
+        }
+
+        // ✉️ EmailJS send
+        try {
+          await emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_ID,
+            {
+              name: leadDraft.name.trim(),
+              phone: leadDraft.phone.trim(),
+              sessionId,
+              date: new Date().toLocaleString(),
+            },
+            EMAILJS_PUBLIC_KEY
+          );
+          console.log("📧 Lead emailed via EmailJS");
+        } catch (err) {
+          console.error("❌ Failed to send lead via EmailJS:", err);
         }
 
         localStorage.setItem(`jb_lead_name_${sessionId}`, leadDraft.name.trim());
@@ -469,36 +490,38 @@ export default function ChatWidget() {
               <div>I can add your junk items in seconds!</div>
             </div>
           )}
-          {/* Glowing message next to bubble */}
-<button
-  onClick={() => {
-    setOpen(true);
-    dismissTip();
-    navigate("/itemized"); // same behavior as bubble
-  }}
-  style={{
-    position: "fixed",
-    right: 90, // push it left of the bubble
-    bottom: 26, // align vertically with bubble
-    background: "transparent",
-    border: "none",
-    cursor: "pointer",
-    zIndex: 9999,
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: "14px",
-    textShadow: "0 0 8px rgba(30,144,255,0.8), 0 0 12px rgba(255,0,255,0.7)",
-    animation: "jbPulse 2.2s ease-in-out infinite",
-    display: "flex",
-    alignItems: "center",
-    gap: "6px",
-  }}
-  className="jb-pulse"
->
-  🎁 Free Item + 10% Off 
-  <span style={{ fontSize: "18px" }}>→</span>
-</button>
 
+          {/* Glowing message next to bubble */}
+          <button
+            onClick={() => {
+              setOpen(true);
+              dismissTip();
+              navigate("/itemized");
+            }}
+            style={{
+              position: "fixed",
+              right: 90,
+              bottom: 26,
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              zIndex: 9999,
+              color: "#fff",
+              fontWeight: "bold",
+              fontSize: "14px",
+              textShadow: "0 0 8px rgba(30,144,255,0.8), 0 0 12px rgba(255,0,255,0.7)",
+              animation: "jbPulse 2.2s ease-in-out infinite",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+            }}
+            className="jb-pulse"
+          >
+            🎁 Free Item + 10% Off
+            <span style={{ fontSize: "18px" }}>→</span>
+          </button>
+
+          {/* Bubble itself */}
           <button
             onClick={() => {
               setOpen(true);
@@ -675,14 +698,7 @@ export default function ChatWidget() {
                         }}
                       />
                     </label>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: 8,
-                        marginTop: 6,
-                        flexWrap: "wrap",
-                      }}
-                    >
+                    <div style={{ display: "flex", gap: 8, marginTop: 6, flexWrap: "wrap" }}>
                       <button
                         onClick={() => onGateChoice("submit")}
                         style={{
@@ -748,12 +764,8 @@ export default function ChatWidget() {
               </div>
             )}
 
-            {introTyping && (
-              <div style={{ fontStyle: "italic", marginTop: 8 }}>Assistant is typing…</div>
-            )}
-            {loading && (
-              <div style={{ fontStyle: "italic", marginTop: 8 }}>Assistant is typing…</div>
-            )}
+            {introTyping && <div style={{ fontStyle: "italic", marginTop: 8 }}>Assistant is typing…</div>}
+            {loading && <div style={{ fontStyle: "italic", marginTop: 8 }}>Assistant is typing…</div>}
             {error && <div style={{ color: "red", marginTop: 8 }}>{error}</div>}
             <div ref={endRef} />
           </div>
@@ -829,4 +841,6 @@ export default function ChatWidget() {
       )}
     </>
   );
+}
+
 }
