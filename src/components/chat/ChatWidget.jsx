@@ -9,7 +9,7 @@ import { db } from "../../lib/firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 // ✉️ EmailJS
-import emailjs from "@emailjs/browser";
+import emailjs from "emailjs-com";
 
 const GOLD = "#d4af37";
 const SILVER = "#C0C0C0";
