@@ -361,23 +361,24 @@ export default function ChatWidget() {
           console.error("❌ Failed to save to leadCaptures:", err);
         }
 
-        // ✉️ EmailJS send
-        try {
-          await emailjs.send(
-            EMAILJS_SERVICE_ID,
-            EMAILJS_TEMPLATE_ID,
-            {
-              name: leadDraft.name.trim(),
-              phone: leadDraft.phone.trim(),
-              sessionId,
-              date: new Date().toLocaleString(),
-            },
-            EMAILJS_PUBLIC_KEY
-          );
-          console.log("📧 Lead emailed via EmailJS");
-        } catch (err) {
-          console.error("❌ Failed to send lead via EmailJS:", err);
-        }
+       // ✉️ EmailJS send
+try {
+  await emailjs.send(
+    EMAILJS_SERVICE_ID,   // "JunkBuddies.info"
+    EMAILJS_TEMPLATE_ID,  // "Junk-Buddies-Leads"
+    {
+      name: leadDraft.name.trim(),       // matches {{name}}
+      phone: leadDraft.phone.trim(),     // matches {{phone}}
+      sessionId,                         // matches {{sessionId}}
+      enteredAt: new Date().toLocaleString(), // matches {{enteredAt}}
+    },
+    EMAILJS_PUBLIC_KEY   // "QCl4Akw_LZ3T8IvUd"
+  );
+  console.log("📧 Lead emailed via EmailJS");
+} catch (err) {
+  console.error("❌ Failed to send lead via EmailJS:", err);
+}
+
 
         localStorage.setItem(`jb_lead_name_${sessionId}`, leadDraft.name.trim());
         localStorage.setItem(`jb_lead_phone_${sessionId}`, leadDraft.phone);
