@@ -97,7 +97,7 @@ export default function ChatWidget() {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open, loading, gate]);
 
-  // ✅ Force capture on chat open (every visit or TEST_MODE)
+  // ✅ Greeting + First Offer Gate
   useEffect(() => {
     if (!open) return;
     if (!leadCaptured || TEST_MODE) {
@@ -107,22 +107,33 @@ export default function ChatWidget() {
           {
             role: "assistant",
             content:
-              `Hey there! I’m your Junk Buddy 👋\n` +
-              `I can select all your junk in seconds.\n` +
-              `You list it, I’ll add it.\n` +
-              `(Example: fridge, couch, sectional 3-piece, 2 ellipticals)`
+              "Hey there! I’m your Junk Buddy 👋\n" +
+              "I can select all your junk in seconds.\n" +
+              "You list it, I’ll add it.\n" +
+              "(Ex: fridge, couch, sectional 3 piece, 2 ellipticals)",
           },
         ]);
         setIntroTyping(false);
         setIntroShown(true);
 
-        // Show first gate
+        // First attempt: Yes / No gate (not form yet)
         setTimeout(() => {
           setGate({
             id: "offer_first",
-            text: "Want to claim your 10% off + 1 free item now?",
+            text: "Want to claim your 10% OFF + 1 FREE item now?",
           });
-          sendGAEvent("lead_offer_view", { type: "first", sessionId });
+
+          // 📊 Log gate shown
+          sendGAEvent("lead_form_view", { type: "offer_first", sessionId });
+          try {
+            addDoc(collection(db, "leadViews"), {
+              sessionId,
+              type: "offer_first",
+              shownAt: serverTimestamp(),
+            });
+          } catch (err) {
+            console.error("❌ Firestore log error:", err);
+          }
         }, 800);
       }, 600);
       return () => clearTimeout(t);
@@ -130,7 +141,10 @@ export default function ChatWidget() {
   }, [open, leadCaptured, sessionId]);
 
   function discountedPrice(base) {
-    return Math.max(0, Math.round((base * (1 - DISCOUNT_RATE) + Number.EPSILON) * 100) / 100);
+    return Math.max(
+      0,
+      Math.round((base * (1 - DISCOUNT_RATE) + Number.EPSILON) * 100) / 100
+    );
   }
 
   function validPhone(p) {
@@ -138,7 +152,7 @@ export default function ChatWidget() {
     return digits.length >= 10;
   }
 
-  // Reset lead
+  // Reset lead (used for "refresh lead" command)
   function resetLeadForSession({ openCapture = true } = {}) {
     localStorage.setItem(`jb_disc_on_${sessionId}`, "0");
     localStorage.setItem(`jb_lead_${sessionId}`, "0");
@@ -151,9 +165,9 @@ export default function ChatWidget() {
     if (openCapture) {
       setGate({
         id: "offer_first",
-        text: "Want to claim your 10% off + 1 free item now?",
+        text: "Want to claim your 10% OFF + 1 FREE item now?",
       });
-      sendGAEvent("lead_offer_view", { type: "reset", sessionId });
+      sendGAEvent("lead_form_view", { type: "reset", sessionId });
     }
   }
 
@@ -164,12 +178,17 @@ export default function ChatWidget() {
       resetLeadForSession({ openCapture: true });
       setMessages((m) => [
         ...m,
-        { role: "assistant", content: "Lead info cleared. Enter your name & phone to re-attach 10% off." },
+        {
+          role: "assistant",
+          content:
+            "Lead info cleared. Enter your name & phone to re-attach 10% off.",
+        },
       ]);
       return true;
     }
     return false;
   }
+
   // Send message
   async function send() {
     const text = input.trim();
@@ -196,7 +215,9 @@ export default function ChatWidget() {
       });
 
       const aiHeader = (res.headers.get("x-ai") || "").toLowerCase();
-      setAiStatus(aiHeader === "on" ? "on" : aiHeader === "off" ? "off" : "unknown");
+      setAiStatus(
+        aiHeader === "on" ? "on" : aiHeader === "off" ? "off" : "unknown"
+      );
 
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "Request failed");
@@ -214,25 +235,43 @@ export default function ChatWidget() {
               const disc = discountedPrice(base);
               next.push({
                 role: "assistant",
-                content: `With 10% off: $${disc.toFixed(2)} (was $${base.toFixed(2)})`,
-              });
-              next.push({
-                role: "assistant",
-                content: `Are you ready to check out?\nI’ll take you to scheduling now.`,
+                content: `With 10% off: $${disc.toFixed(
+                  2
+                )} (was $${base.toFixed(2)})`,
               });
             }
           } else if (!offeredThisParse) {
             setGate({
               id: "offer_post",
-              text: "Want to see your price with 10% off + 1 free item?",
+              text: "Want to see your price with 10% OFF + 1 FREE item?",
             });
             setOfferedThisParse(true);
-            sendGAEvent("lead_offer_view", { type: "post-offer", sessionId });
+            sendGAEvent("lead_form_view", { type: "offer_post", sessionId });
           }
         }
         return next;
       });
       setOfferedThisParse(false);
+
+      // ✅ After items, ask to checkout
+      if (
+        json.parsed?.cart?.length > 0 &&
+        json.parsed?.finalPrice &&
+        discountActive
+      ) {
+        setMessages((m) => [
+          ...m,
+          {
+            role: "assistant",
+            content:
+              "Looks like we’ve got your items ready! Are you ready to check out and schedule your pickup?",
+          },
+        ]);
+        setGate({
+          id: "checkout_prompt",
+          text: "Ready to move on to checkout?",
+        });
+      }
     } catch (e) {
       setError("Trouble responding. Try again.");
       setAiStatus((s) => (s === "unknown" ? "off" : s));
@@ -240,7 +279,6 @@ export default function ChatWidget() {
       setLoading(false);
     }
   }
-
   function handleKey(e) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -261,11 +299,18 @@ export default function ChatWidget() {
       if (action === "yes") {
         setGate({
           id: "lead_capture",
-          text: "Enter your name & phone — I’ll attach 10% off and 1 free item.",
+          text:
+            "Enter your name & phone — I’ll attach 10% OFF + 1 FREE item to your account.",
         });
       } else {
         setGate(null);
-        setMessages((m) => [...m, { role: "assistant", content: "No problem — we’ll keep standard pricing." }]);
+        setMessages((m) => [
+          ...m,
+          {
+            role: "assistant",
+            content: "No worries — you can still browse items with standard pricing.",
+          },
+        ]);
       }
       return;
     }
@@ -274,18 +319,44 @@ export default function ChatWidget() {
       if (action === "yes") {
         setGate({
           id: "lead_capture",
-          text: "Enter your name & phone — I’ll attach 10% off and 1 free item.",
+          text:
+            "Enter your name & phone — I’ll attach 10% OFF + 1 FREE item and show your discounted price.",
         });
       } else {
         setGate(null);
-        setMessages((m) => [...m, { role: "assistant", content: "All good — showing regular pricing." }]);
+        setMessages((m) => [
+          ...m,
+          {
+            role: "assistant",
+            content: "All good — showing regular pricing.",
+          },
+        ]);
+      }
+      return;
+    }
+
+    if (gate.id === "checkout_prompt") {
+      if (action === "yes") {
+        navigate("/schedule");
+      } else {
+        setGate(null);
+        setMessages((m) => [
+          ...m,
+          { role: "assistant", content: "Okay, we’ll keep building your list." },
+        ]);
       }
       return;
     }
 
     if (gate.id === "lead_capture" && action === "submit") {
       if (!leadDraft.name.trim() || !validPhone(leadDraft.phone)) {
-        setMessages((m) => [...m, { role: "assistant", content: "Please add a name and valid phone (10+ digits)." }]);
+        setMessages((m) => [
+          ...m,
+          {
+            role: "assistant",
+            content: "Please add a name and valid phone (10+ digits).",
+          },
+        ]);
         return;
       }
 
@@ -331,13 +402,19 @@ export default function ChatWidget() {
 
       setMessages((m) => [
         ...m,
-        { role: "assistant", content: `Awesome, ${leadDraft.name}! ✅ Your 10% discount and free item are attached. Now just list your items and I’ll price them.` },
+        {
+          role: "assistant",
+          content: `Awesome, ${leadDraft.name}! Your 10% OFF + 1 FREE item is attached ✅ Now just list your items and I’ll price them.`,
+        },
       ]);
     }
 
     if (gate.id === "lead_capture" && action === "decline") {
       setGate(null);
-      setMessages((m) => [...m, { role: "assistant", content: "No worries — we’ll keep standard pricing." }]);
+      setMessages((m) => [
+        ...m,
+        { role: "assistant", content: "No worries — we’ll keep standard pricing." },
+      ]);
     }
   }
 
@@ -375,24 +452,109 @@ export default function ChatWidget() {
           100% { box-shadow: 0 0 10px rgba(30,144,255,0.5), 0 0 20px rgba(255,0,255,0.4); }
         }
         .jb-chat-glow { animation: jbChatGlow 2.5s ease-in-out infinite; }
+
+        .jb-tip {
+          background: ${BLACK};
+          color: ${SILVER};
+          border: 1px solid ${GOLD};
+          border-radius: 12px;
+          padding: 10px 12px;
+          box-shadow: 0 10px 24px rgba(0,0,0,.4);
+        }
+        .jb-tip:after {
+          content: "";
+          position: absolute;
+          bottom: -8px; right: 18px;
+          border-width: 8px 8px 0 8px;
+          border-style: solid;
+          border-color: ${GOLD} transparent transparent transparent;
+          transform: translateY(1px);
+        }
       `}</style>
 
-      {/* Floating launcher */}
+      {/* Floating launcher + tip bubble */}
       {!open && (
-        <button
-          onClick={() => { setOpen(true); setShowTip(false); navigate("/itemized"); }}
-          style={{
-            position: "fixed", right: 16, bottom: 16,
-            width: 64, height: 64, borderRadius: "50%",
-            background: GOLD, border: `2px solid ${BLACK}`,
-            fontWeight: 700, cursor: "pointer", zIndex: 9999,
-          }}
-          className="jb-pulse"
-          aria-label="Open chat"
-          title="Chat with Your Junk Buddy"
-        >
-          💬
-        </button>
+        <>
+          {showTip && (
+            <div
+              className="jb-tip"
+              style={{
+                position: "fixed",
+                right: 16,
+                bottom: 96,
+                maxWidth: 260,
+                zIndex: 9999,
+              }}
+              onClick={() => setShowTip(false)}
+              role="dialog"
+              aria-live="polite"
+            >
+              <div
+                style={{ fontWeight: 700, color: GOLD, marginBottom: 4 }}
+              >
+                {ASSISTANT_NAME}
+              </div>
+              <div>I can add your junk items in seconds!</div>
+            </div>
+          )}
+
+          {/* Promo button */}
+          <button
+            onClick={() => {
+              setOpen(true);
+              setShowTip(false);
+              navigate("/itemized");
+            }}
+            style={{
+              position: "fixed",
+              right: 90,
+              bottom: 26,
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              zIndex: 9999,
+              color: "#fff",
+              fontWeight: "bold",
+              fontSize: "14px",
+              textShadow:
+                "0 0 8px rgba(30,144,255,0.8), 0 0 12px rgba(255,0,255,0.7)",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+            }}
+            className="jb-pulse"
+          >
+            🎁 Free Item + 10% Off{" "}
+            <span style={{ fontSize: "18px" }}>→</span>
+          </button>
+
+          {/* Bubble itself */}
+          <button
+            onClick={() => {
+              setOpen(true);
+              setShowTip(false);
+              navigate("/itemized");
+            }}
+            style={{
+              position: "fixed",
+              right: 16,
+              bottom: 16,
+              width: 64,
+              height: 64,
+              borderRadius: "50%",
+              background: GOLD,
+              border: `2px solid ${BLACK}`,
+              fontWeight: 700,
+              cursor: "pointer",
+              zIndex: 9999,
+            }}
+            className="jb-pulse"
+            aria-label="Open chat"
+            title="Chat with Your Junk Buddy"
+          >
+            💬
+          </button>
+        </>
       )}
 
       {/* Chat window */}
@@ -400,82 +562,334 @@ export default function ChatWidget() {
         <div
           className="jb-chat-glow"
           style={{
-            position: "fixed", right: 16, bottom: 16,
-            width: 360, maxWidth: "90vw", height: 560, maxHeight: "85vh",
-            background: BLACK, color: "#fff", borderRadius: 16,
+            position: "fixed",
+            right: 16,
+            bottom: 16,
+            width: 360,
+            maxWidth: "90vw",
+            height: 560,
+            maxHeight: "85vh",
+            background: BLACK,
+            color: "#fff",
+            borderRadius: 16,
             boxShadow: "0 18px 40px rgba(0,0,0,0.5)",
-            display: "flex", flexDirection: "column",
-            zIndex: 10000, border: `1px solid ${GOLD}`,
+            display: "flex",
+            flexDirection: "column",
+            zIndex: 10000,
+            border: `1px solid ${GOLD}`,
           }}
         >
           {/* Header */}
-          <div style={{ padding: "10px", borderBottom: `1px solid ${GOLD}`, display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontWeight: "bold", flex: 1 }}>{ASSISTANT_NAME}</span>
-            <button onClick={() => setOpen(false)} style={{ background: "transparent", border: "none", color: "#fff", cursor: "pointer" }} aria-label="Close chat">✕</button>
+          <div
+            style={{
+              padding: "10px",
+              borderBottom: `1px solid ${GOLD}`,
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <span style={{ fontWeight: "bold", flex: 1 }}>
+              {ASSISTANT_NAME}
+            </span>
+            <span
+              title={
+                aiStatus === "on"
+                  ? "AI parser active"
+                  : aiStatus === "off"
+                  ? "AI disabled — fallback parser"
+                  : "Status unknown"
+              }
+              style={{
+                fontSize: 12,
+                padding: "2px 8px",
+                borderRadius: 999,
+                border: `1px solid ${GOLD}`,
+                color:
+                  aiStatus === "on"
+                    ? "#22c55e"
+                    : aiStatus === "off"
+                    ? "#9ca3af"
+                    : "#f59e0b",
+                background: "#111",
+              }}
+            >
+              AI: {aiStatus.toUpperCase()}
+            </span>
+            <button
+              onClick={() => setOpen(false)}
+              style={{
+                marginLeft: 8,
+                background: "transparent",
+                border: "none",
+                color: "#fff",
+                cursor: "pointer",
+              }}
+              aria-label="Close chat"
+            >
+              ✕
+            </button>
           </div>
 
           {/* Messages */}
           <div style={{ flex: 1, overflowY: "auto", padding: 10 }}>
             {messages.map((m, i) => (
-              <div key={i} style={{ margin: "6px 0", textAlign: m.role === "user" ? "right" : "left" }}>
-                <span style={{
-                  display: "inline-block", padding: "6px 10px", borderRadius: 10,
-                  background: m.role === "user" ? GOLD : "#222",
-                  color: m.role === "user" ? BLACK : "#fff", whiteSpace: "pre-wrap",
-                }}>
+              <div
+                key={i}
+                style={{
+                  margin: "6px 0",
+                  textAlign: m.role === "user" ? "right" : "left",
+                }}
+              >
+                <span
+                  style={{
+                    display: "inline-block",
+                    padding: "6px 10px",
+                    borderRadius: 10,
+                    background: m.role === "user" ? GOLD : "#222",
+                    color: m.role === "user" ? BLACK : "#fff",
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
                   {m.content}
                 </span>
               </div>
             ))}
 
             {gate && (
-              <div style={{ marginTop: 8, padding: 10, borderRadius: 10, border: `1px solid ${GOLD}`, background: "#151515" }}>
-                <div style={{ marginBottom: 8, fontWeight: 600 }}>{gate.text}</div>
+              <div
+                style={{
+                  marginTop: 8,
+                  padding: 10,
+                  borderRadius: 10,
+                  border: `1px solid ${GOLD}`,
+                  background: "#151515",
+                }}
+              >
+                <div style={{ marginBottom: 8, fontWeight: 600 }}>
+                  {gate.text}
+                </div>
                 {gate.id === "lead_capture" ? (
                   <div style={{ display: "grid", gap: 6 }}>
-                    <input
-                      value={leadDraft.name}
-                      onChange={(e) => setLeadDraft((d) => ({ ...d, name: e.target.value }))}
-                      placeholder="Name"
-                      style={{ width: "100%", padding: "6px 8px", borderRadius: 8, background: "#111", color: "#fff", border: `1px solid ${GOLD}` }}
-                    />
-                    <input
-                      value={leadDraft.phone}
-                      onChange={(e) => setLeadDraft((d) => ({ ...d, phone: e.target.value }))}
-                      placeholder="Phone"
-                      style={{ width: "100%", padding: "6px 8px", borderRadius: 8, background: "#111", color: "#fff", border: `1px solid ${GOLD}` }}
-                    />
-                    <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
-                      <button onClick={() => onGateChoice("submit")} style={{ borderRadius: 8, padding: "6px 10px", fontWeight: 700, background: GOLD, color: BLACK }}>Apply 10% Off</button>
-                      <button onClick={() => onGateChoice("decline")} style={{ borderRadius: 8, padding: "6px 10px", fontWeight: 700, background: "#222", color: "#fff", border: `1px solid ${GOLD}` }}>No Thanks</button>
+                    <label style={{ fontSize: 12, opacity: 0.9 }}>
+                      Name
+                      <input
+                        value={leadDraft.name}
+                        onChange={(e) =>
+                          setLeadDraft((d) => ({
+                            ...d,
+                            name: e.target.value,
+                          }))
+                        }
+                        placeholder="e.g., Jamie"
+                        style={{
+                          width: "100%",
+                          marginTop: 4,
+                          padding: "6px 8px",
+                          borderRadius: 8,
+                          background: "#111",
+                          color: "#fff",
+                          border: `1px solid ${GOLD}`,
+                          outline: "none",
+                        }}
+                      />
+                    </label>
+                    <label style={{ fontSize: 12, opacity: 0.9 }}>
+                      Phone
+                      <input
+                        value={leadDraft.phone}
+                        onChange={(e) =>
+                          setLeadDraft((d) => ({
+                            ...d,
+                            phone: e.target.value,
+                          }))
+                        }
+                        placeholder="(###) ###-####"
+                        style={{
+                          width: "100%",
+                          marginTop: 4,
+                          padding: "6px 8px",
+                          borderRadius: 8,
+                          background: "#111",
+                          color: "#fff",
+                          border: `1px solid ${GOLD}`,
+                          outline: "none",
+                        }}
+                      />
+                    </label>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 8,
+                        marginTop: 6,
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      <button
+                        onClick={() => onGateChoice("submit")}
+                        style={{
+                          borderRadius: 8,
+                          padding: "6px 10px",
+                          cursor: "pointer",
+                          fontWeight: 700,
+                          background: GOLD,
+                          color: BLACK,
+                          border: "none",
+                        }}
+                      >
+                        Apply 10% off
+                      </button>
+                      <button
+                        onClick={() => onGateChoice("decline")}
+                        style={{
+                          borderRadius: 8,
+                          padding: "6px 10px",
+                          cursor: "pointer",
+                          fontWeight: 700,
+                          background: "#222",
+                          color: "#fff",
+                          border: `1px solid ${GOLD}`,
+                        }}
+                      >
+                        No thanks
+                      </button>
                     </div>
                   </div>
                 ) : (
-                  <div style={{ display: "flex", gap: 8 }}>
-                    <button onClick={() => onGateChoice("yes")} style={{ borderRadius: 8, padding: "6px 10px", fontWeight: 700, background: GOLD, color: BLACK }}>Yes</button>
-                    <button onClick={() => onGateChoice("no")} style={{ borderRadius: 8, padding: "6px 10px", fontWeight: 700, background: "#222", color: "#fff", border: `1px solid ${GOLD}` }}>No</button>
+                  <div
+                    style={{ display: "flex", gap: 8, flexWrap: "wrap" }}
+                  >
+                    <button
+                      onClick={() => onGateChoice("yes")}
+                      style={{
+                        borderRadius: 8,
+                        padding: "6px 10px",
+                        cursor: "pointer",
+                        fontWeight: 700,
+                        background: GOLD,
+                        color: BLACK,
+                        border: "none",
+                      }}
+                    >
+                      Yes
+                    </button>
+                    <button
+                      onClick={() => onGateChoice("no")}
+                      style={{
+                        borderRadius: 8,
+                        padding: "6px 10px",
+                        cursor: "pointer",
+                        fontWeight: 700,
+                        background: "#222",
+                        color: "#fff",
+                        border: `1px solid ${GOLD}`,
+                      }}
+                    >
+                      No
+                    </button>
                   </div>
                 )}
               </div>
             )}
 
-            {introTyping && <div style={{ fontStyle: "italic", marginTop: 8 }}>Assistant is typing…</div>}
-            {loading && <div style={{ fontStyle: "italic", marginTop: 8 }}>Assistant is typing…</div>}
-            {error && <div style={{ color: "red", marginTop: 8 }}>{error}</div>}
+            {introTyping && (
+              <div style={{ fontStyle: "italic", marginTop: 8 }}>
+                Assistant is typing…
+              </div>
+            )}
+            {loading && (
+              <div style={{ fontStyle: "italic", marginTop: 8 }}>
+                Assistant is typing…
+              </div>
+            )}
+            {error && (
+              <div style={{ color: "red", marginTop: 8 }}>{error}</div>
+            )}
             <div ref={endRef} />
           </div>
 
-          {/* Input */}
-          <div style={{ borderTop: `1px solid ${GOLD}`, padding: 10, opacity: gate ? 0.6 : 1 }}>
-            <textarea
-              rows={1} value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKey}
-              placeholder={gate ? "Please choose an option above…" : "Type your message..."} disabled={!!gate}
-              style={{ width: "80%", borderRadius: 8, padding: "6px 10px", background: "#111", color: "#fff", border: `1px solid ${GOLD}` }}
-            />
-            <button onClick={send} disabled={loading || !!gate} style={{ marginLeft: 8 }}>Send</button>
+          {/* Parsed result preview */}
+          <div
+            style={{
+              borderTop: `1px solid ${GOLD}`,
+              padding: 10,
+              background: "#111",
+            }}
+          >
+            <div style={{ fontSize: 12, marginBottom: 6 }}>
+              <strong>Parsed:</strong>{" "}
+              {lastParsed?.cart?.length
+                ? `${lastParsed.cart.length} lines • ${Math.round(
+                    lastParsed.totalVolume || 0
+                  )} pts • $${(
+                    (lastParsed.finalPrice ?? 0) *
+                    (discountActive ? 1 - DISCOUNT_RATE : 1)
+                  ).toFixed(2)}${
+                    discountActive ? " (10% off applied)" : ""
+                  }`
+                : "nothing yet"}
+            </div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <button
+                onClick={addParsedToCart}
+                disabled={!lastParsed?.cart?.length}
+                style={{
+                  borderRadius: 8,
+                  background: GOLD,
+                  color: BLACK,
+                  fontWeight: 700,
+                  padding: "6px 10px",
+                  cursor: "pointer",
+                }}
+              >
+                Add selected to cart
+              </button>
+              <button
+                onClick={() => navigate("/itemized")}
+                style={{
+                  borderRadius: 8,
+                  background: "#222",
+                  color: "#fff",
+                  padding: "6px 10px",
+                  border: `1px solid ${GOLD}`,
+                  cursor: "pointer",
+                }}
+              >
+                View cart / edit
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-    </>
-  );
-}
+
+          {/* Input */}
+          <div
+            style={{
+              borderTop: `1px solid ${GOLD}`,
+              padding: 10,
+              opacity: gate ? 0.6 : 1,
+            }}
+          >
+            <textarea
+              rows={1}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKey}
+              placeholder={
+                gate ? "Please choose an option above…" : "Type your message..."
+              }
+              disabled={!!gate}
+              style={{
+                width: "80%",
+                borderRadius: 8,
+                padding: "6px 10px",
+                background: "#111",
+                color: "#fff",
+                border: `1px solid ${GOLD}`,
+                outline: "none",
+              }}
+            />
+            <button
+              onClick={send}
+              disabled={loading || !!gate}
+              style={{ marginLeft: 8 }}
+            >
+              Send
