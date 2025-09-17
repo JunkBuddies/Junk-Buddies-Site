@@ -887,9 +887,16 @@ export default function ChatWidget() {
                 outline: "none",
               }}
             />
-            <button
+                       <button
               onClick={send}
               disabled={loading || !!gate}
               style={{ marginLeft: 8 }}
             >
               Send
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
