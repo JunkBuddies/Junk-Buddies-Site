@@ -4,7 +4,7 @@ import { useCart } from "../../context/CartContext";
 import { calculatePrice } from "../../utils/pricing";
 import { useNavigate } from "react-router-dom";
 
-// 🔗 Firestore (existing project)
+// 🔗 Firestore
 import { db } from "../../lib/firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
@@ -18,12 +18,14 @@ const BLACK = "#0b0b0b";
 const DISCOUNT_RATE = 0.10;
 const TIP_COOLDOWN_MS = 10 * 60 * 1000;
 
+const TEST_MODE = true; // ⬅️ toggle for unlimited captures
+
 const ASSISTANT_NAME = "Your Junk Buddy";
 
 // EmailJS config
-const EMAILJS_SERVICE_ID = "JunkBuddies.info";      // Service ID from EmailJS
-const EMAILJS_TEMPLATE_ID = "Junk-Buddies-Leads";   // Template ID from EmailJS
-const EMAILJS_PUBLIC_KEY = "QCl4Akw_LZ3T8IvUd";     // Public key from EmailJS
+const EMAILJS_SERVICE_ID = "JunkBuddies.info";
+const EMAILJS_TEMPLATE_ID = "Junk-Buddies-Leads";
+const EMAILJS_PUBLIC_KEY = "QCl4Akw_LZ3T8IvUd";
 
 // ✅ GA4 event helper
 function sendGAEvent(name, params = {}) {
@@ -35,7 +37,7 @@ function sendGAEvent(name, params = {}) {
   }
 }
 
-// ✅ Session ID generator
+// ✅ Session ID
 function getSessionId() {
   const key = "jb_chat_session";
   let s = localStorage.getItem(key);
@@ -57,23 +59,21 @@ export default function ChatWidget() {
 
   const [discountActive, setDiscountActive] = useState(false);
   const [leadCaptured, setLeadCaptured] = useState(false);
-  const [initialGateShown, setInitialGateShown] = useState(false);
-  const [offeredThisParse, setOfferedThisParse] = useState(false);
-
+  const [introShown, setIntroShown] = useState(false);
+  const [introTyping, setIntroTyping] = useState(false);
   const [gate, setGate] = useState(null);
   const [leadDraft, setLeadDraft] = useState({ name: "", phone: "" });
+  const [offeredThisParse, setOfferedThisParse] = useState(false);
 
   const lastDiscountSig = useRef2("");
   const [showTip, setShowTip] = useState(false);
-  const [introShown, setIntroShown] = useState(false);
-  const [introTyping, setIntroTyping] = useState(false);
 
   const endRef = useRef(null);
   const sessionId = useMemo(getSessionId, []);
   const { setCart } = useCart() || { setCart: () => {} };
   const navigate = useNavigate();
 
-  // Hydrate persisted flags
+  // Hydrate
   useEffect(() => {
     const d = localStorage.getItem(`jb_disc_on_${sessionId}`) === "1";
     const l = localStorage.getItem(`jb_lead_${sessionId}`) === "1";
@@ -84,7 +84,7 @@ export default function ChatWidget() {
     setLeadDraft({ name: n, phone: p });
   }, [sessionId]);
 
-  // Persist flags
+  // Persist
   useEffect(() => {
     localStorage.setItem(`jb_disc_on_${sessionId}`, discountActive ? "1" : "0");
   }, [discountActive, sessionId]);
@@ -97,78 +97,75 @@ export default function ChatWidget() {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open, loading, gate]);
 
-  const cartSummary = lastParsed?.cart?.length ? calculatePrice(lastParsed.cart) : null;
-
-  // Pre-offer gate
+  // ✅ Force capture on chat open (every visit or TEST_MODE)
   useEffect(() => {
-    if (!open || initialGateShown || discountActive) return;
-    const flag = localStorage.getItem(`jb_pre_offer_shown_${sessionId}`);
-    if (flag === "1") return;
-    setGate({
-      id: "offer_pre",
-      text: "Want **10% off** attached to your account before we add items?",
-    });
-    setInitialGateShown(true);
-  }, [open, initialGateShown, discountActive, sessionId]);
-
-  // Tip bubble
-  useEffect(() => {
-    const last = Number(localStorage.getItem("jb_tip_last") || "0");
-    const now = Date.now();
-    if (now - last > TIP_COOLDOWN_MS) {
-      setShowTip(true);
-    }
-  }, []);
-  function dismissTip() {
-    setShowTip(false);
-    localStorage.setItem("jb_tip_last", String(Date.now()));
-  }
-
-  // Assistant greeting
-  useEffect(() => {
-    if (!open || introShown) return;
-    setIntroTyping(true);
-    const t = setTimeout(() => {
-      const greeting =
-        `Hey! I’m **${ASSISTANT_NAME}** — your junk-selecting assistant.\n` +
-        `Just **list items casually** (e.g., *"2 couches + queen mattress + treadmill"*) and I’ll add & price them.`;
-      setMessages([{ role: "assistant", content: greeting }]);
-
-      if (discountActive) {
-        setMessages((m) => [
-          ...m,
-          { role: "assistant", content: "Heads up — your **10% off** is already attached and will be applied to your totals." },
+    if (!open) return;
+    if (!leadCaptured || TEST_MODE) {
+      setIntroTyping(true);
+      const t = setTimeout(() => {
+        setMessages([
+          {
+            role: "assistant",
+            content:
+              `hey there! i’m your junk buddy 👋\n` +
+              `i can select all your junk in seconds.\n` +
+              `you list it, i’ll add it.\n` +
+              `(ex: fridge, couch, sectional 3 piece, 2 ellipticals)`
+          },
         ]);
-      }
-      setIntroTyping(false);
-      setIntroShown(true);
-    }, 450);
-    return () => clearTimeout(t);
-  }, [open, introShown, discountActive]);
+        setIntroTyping(false);
+        setIntroShown(true);
+
+        // Immediately show capture form
+        setTimeout(() => {
+          setGate({
+            id: "lead_capture",
+            text: "wanna see your price with 10% off?\njust enter your name & phone below and i’ll attach it.",
+          });
+
+          // 📊 Log that the lead capture form was shown
+          sendGAEvent("lead_form_view", { type: "open", sessionId });
+          try {
+            addDoc(collection(db, "leadViews"), {
+              sessionId,
+              type: "open",
+              shownAt: serverTimestamp(),
+            });
+          } catch (err) {
+            console.error("❌ Firestore log error:", err);
+          }
+
+        }, 800);
+      }, 600);
+      return () => clearTimeout(t);
+    }
+  }, [open, leadCaptured, sessionId]);
 
   function discountedPrice(base) {
     return Math.max(0, Math.round((base * (1 - DISCOUNT_RATE) + Number.EPSILON) * 100) / 100);
   }
 
-  // Reset lead for session
+  function validPhone(p) {
+    const digits = (p || "").replace(/\D/g, "");
+    return digits.length >= 10;
+  }
+
+  // Reset lead (used for "refresh lead" command)
   function resetLeadForSession({ openCapture = true } = {}) {
     localStorage.setItem(`jb_disc_on_${sessionId}`, "0");
     localStorage.setItem(`jb_lead_${sessionId}`, "0");
     localStorage.removeItem(`jb_lead_name_${sessionId}`);
     localStorage.removeItem(`jb_lead_phone_${sessionId}`);
-    localStorage.setItem(`jb_pre_offer_shown_${sessionId}`, "0");
-
     setDiscountActive(false);
     setLeadCaptured(false);
     setLeadDraft({ name: "", phone: "" });
-    setInitialGateShown(false);
     lastDiscountSig.current = "";
-
     if (openCapture) {
       setGate({
         id: "lead_capture",
-        text: "Re-capture **10% off** — add your name & phone again.",
+        text: "wanna see your price with 10% off?\njust enter your name & phone below and i’ll attach it.",
       });
+      sendGAEvent("lead_form_view", { type: "reset", sessionId });
     }
   }
 
@@ -179,17 +176,17 @@ export default function ChatWidget() {
       resetLeadForSession({ openCapture: true });
       setMessages((m) => [
         ...m,
-        { role: "assistant", content: "Lead info cleared for this session. Enter your name & phone to re-attach **10% off**." },
+        { role: "assistant", content: "lead info cleared. enter your name & phone to re-attach 10% off." },
       ]);
       return true;
     }
     return false;
   }
+
   // Send message
   async function send() {
     const text = input.trim();
     if (!text || loading) return;
-
     if (handleLocalCommands(text)) {
       setInput("");
       return;
@@ -216,40 +213,37 @@ export default function ChatWidget() {
 
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "Request failed");
-
       setLastParsed(json.parsed || null);
 
       setMessages((prev) => {
         const next = [...prev, { role: "assistant", content: json.reply }];
         const hasCart = (json.parsed?.cart?.length || 0) > 0;
-
         if (hasCart) {
           const base = json.parsed.finalPrice ?? 0;
           const sig = `${base}|${json.parsed?.totalVolume || 0}`;
-
           if (discountActive) {
             if (lastDiscountSig.current !== sig) {
               lastDiscountSig.current = sig;
               const disc = discountedPrice(base);
               next.push({
                 role: "assistant",
-                content: `With **10% off**: **$${disc.toFixed(2)}** (was $${base.toFixed(2)})`,
+                content: `with 10% off: $${disc.toFixed(2)} (was $${base.toFixed(2)})`,
               });
             }
           } else if (!offeredThisParse) {
             setGate({
               id: "offer_post",
-              text: "Want to see your price **with 10% off** attached to your account?",
+              text: "wanna see your price with 10% off attached to your account?",
             });
             setOfferedThisParse(true);
+            sendGAEvent("lead_form_view", { type: "post-offer", sessionId });
           }
         }
         return next;
       });
-
       setOfferedThisParse(false);
     } catch (e) {
-      setError("I had trouble responding. Please try again.");
+      setError("trouble responding. try again.");
       setAiStatus((s) => (s === "unknown" ? "off" : s));
     } finally {
       setLoading(false);
@@ -268,151 +262,84 @@ export default function ChatWidget() {
     setCart((prev) => [...prev, ...lastParsed.cart]);
   }
 
-  function validPhone(p) {
-    const digits = (p || "").replace(/\D/g, "");
-    return digits.length >= 10;
-  }
-
   // Gating flow
   async function onGateChoice(action) {
     if (!gate) return;
-
-    if (gate.id === "offer_pre") {
-      localStorage.setItem(`jb_pre_offer_shown_${sessionId}`, "1");
-      if (action === "yes") {
-        setGate({
-          id: "lead_capture",
-          text: "Enter your name & phone — we’ll attach **10% off** to your account so it’s applied to your estimate.",
-        });
-
-        try {
-          await addDoc(collection(db, "leadViews"), {
-            sessionId,
-            type: "pre-offer",
-            shownAt: serverTimestamp(),
-          });
-          sendGAEvent("lead_form_view", { type: "pre-offer", sessionId });
-        } catch (err) {
-          console.error("❌ Failed to log lead form view:", err);
-        }
-      } else {
-        setGate(null);
-        setMessages((m) => [...m, { role: "assistant", content: "No problem — we can add it later if you want." }]);
-      }
-      return;
-    }
 
     if (gate.id === "offer_post") {
       if (action === "yes") {
         setGate({
           id: "lead_capture",
-          text: "Enter your name & phone — we’ll attach **10% off** to your account and show the discounted price next.",
+          text: "enter your name & phone — i’ll attach 10% off and show the discounted price next.",
         });
-
-        try {
-          await addDoc(collection(db, "leadViews"), {
-            sessionId,
-            type: "post-offer",
-            shownAt: serverTimestamp(),
-          });
-          sendGAEvent("lead_form_view", { type: "post-offer", sessionId });
-        } catch (err) {
-          console.error("❌ Failed to log lead form view:", err);
-        }
       } else {
         setGate(null);
-        setMessages((m) => [...m, { role: "assistant", content: "All good — I’ll keep showing regular pricing." }]);
+        setMessages((m) => [...m, { role: "assistant", content: "all good — showing regular pricing." }]);
       }
       return;
     }
 
-    if (gate.id === "lead_capture") {
-      if (action === "submit") {
-        if (!leadDraft.name.trim() || !validPhone(leadDraft.phone)) {
-          setMessages((m) => [...m, { role: "assistant", content: "Please add a name and a valid phone number (10+ digits)." }]);
-          return;
-        }
+    if (gate.id === "lead_capture" && action === "submit") {
+      if (!leadDraft.name.trim() || !validPhone(leadDraft.phone)) {
+        setMessages((m) => [...m, { role: "assistant", content: "please add a name and valid phone (10+ digits)." }]);
+        return;
+      }
 
-        sendGAEvent("lead_capture_attempt", {
+      // 📊 Log attempt
+      sendGAEvent("lead_capture_attempt", {
+        name: leadDraft.name.trim(),
+        phone: leadDraft.phone.trim(),
+        sessionId,
+      });
+
+      try {
+        await addDoc(collection(db, "leadCaptures"), {
           name: leadDraft.name.trim(),
           phone: leadDraft.phone.trim(),
+          enteredAt: serverTimestamp(),
           sessionId,
         });
-
-        try {
-          await addDoc(collection(db, "leadAttempts"), {
-            name: leadDraft.name.trim(),
-            phone: leadDraft.phone.trim(),
-            enteredAt: serverTimestamp(),
-            sessionId,
-          });
-        } catch (err) {
-          console.error("❌ Failed to log to leadAttempts:", err);
-        }
-
-        try {
-          await addDoc(collection(db, "leadCaptures"), {
-            name: leadDraft.name.trim(),
-            phone: leadDraft.phone.trim(),
-            enteredAt: serverTimestamp(),
-            sessionId,
-          });
-        } catch (err) {
-          console.error("❌ Failed to save to leadCaptures:", err);
-        }
-
-       // ✉️ EmailJS send
-try {
-  await emailjs.send(
-    EMAILJS_SERVICE_ID,   // "JunkBuddies.info"
-    EMAILJS_TEMPLATE_ID,  // "Junk-Buddies-Leads"
-    {
-      name: leadDraft.name.trim(),       // matches {{name}}
-      phone: leadDraft.phone.trim(),     // matches {{phone}}
-      sessionId,                         // matches {{sessionId}}
-      enteredAt: new Date().toLocaleString(), // matches {{enteredAt}}
-    },
-    EMAILJS_PUBLIC_KEY   // "QCl4Akw_LZ3T8IvUd"
-  );
-  console.log("📧 Lead emailed via EmailJS");
-} catch (err) {
-  console.error("❌ Failed to send lead via EmailJS:", err);
-}
-
-
-        localStorage.setItem(`jb_lead_name_${sessionId}`, leadDraft.name.trim());
-        localStorage.setItem(`jb_lead_phone_${sessionId}`, leadDraft.phone);
-        setLeadCaptured(true);
-        setDiscountActive(true);
-        setGate(null);
-
-        if (lastParsed?.finalPrice != null) {
-          const base = lastParsed.finalPrice;
-          const disc = discountedPrice(base);
-          setMessages((m) => [
-            ...m,
-            {
-              role: "assistant",
-              content: `Thanks, ${leadDraft.name}! Your **10% off** is attached to ${leadDraft.phone}. Discounted total: **$${disc.toFixed(2)}** (was $${base.toFixed(2)})`,
-            },
-          ]);
-          lastDiscountSig.current = `${base}|${lastParsed?.totalVolume || 0}`;
-        } else {
-          setMessages((m) => [
-            ...m,
-            { role: "assistant", content: `Thanks, ${leadDraft.name}! Your **10% off** is attached to ${leadDraft.phone}. Tell me your items and I’ll apply it.` },
-          ]);
-        }
-      } else {
-        setGate(null);
-        setMessages((m) => [...m, { role: "assistant", content: "No worries — we’ll keep the standard pricing visible." }]);
+      } catch (err) {
+        console.error("❌ Firestore lead error:", err);
       }
-      return;
+
+      try {
+        await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          {
+            name: leadDraft.name.trim(),
+            phone: leadDraft.phone.trim(),
+            sessionId,
+            enteredAt: new Date().toLocaleString(),
+          },
+          EMAILJS_PUBLIC_KEY
+        );
+      } catch (err) {
+        console.error("❌ EmailJS send error:", err);
+      }
+
+      localStorage.setItem(`jb_lead_name_${sessionId}`, leadDraft.name.trim());
+      localStorage.setItem(`jb_lead_phone_${sessionId}`, leadDraft.phone);
+      setLeadCaptured(true);
+      setDiscountActive(true);
+      setGate(null);
+
+      setMessages((m) => [
+        ...m,
+        { role: "assistant", content: `awesome, ${leadDraft.name}! your 10% off is attached ✅ now just list your items and i’ll price them.` },
+      ]);
+    }
+
+    if (gate.id === "lead_capture" && action === "decline") {
+      setGate(null);
+      setMessages((m) => [...m, { role: "assistant", content: "no worries — we’ll keep standard pricing." }]);
     }
   }
+
   return (
     <>
-      {/* Local styles for pulse + tip */}
+      {/* Local styles */}
       <style>{`
         @keyframes jbPulse {
           0% {
@@ -436,24 +363,14 @@ try {
               0 0 12px 4px rgba(212,175,55,.55);
           }
         }
-        .jb-pulse {
-          animation: jbPulse 2.2s ease-in-out infinite;
-        }
+        .jb-pulse { animation: jbPulse 2.2s ease-in-out infinite; }
 
         @keyframes jbChatGlow {
-          0% {
-            box-shadow: 0 0 10px rgba(30,144,255,0.5), 0 0 20px rgba(255,0,255,0.4);
-          }
-          50% {
-            box-shadow: 0 0 18px rgba(30,144,255,0.7), 0 0 28px rgba(255,0,255,0.6);
-          }
-          100% {
-            box-shadow: 0 0 10px rgba(30,144,255,0.5), 0 0 20px rgba(255,0,255,0.4);
-          }
+          0% { box-shadow: 0 0 10px rgba(30,144,255,0.5), 0 0 20px rgba(255,0,255,0.4); }
+          50% { box-shadow: 0 0 18px rgba(30,144,255,0.7), 0 0 28px rgba(255,0,255,0.6); }
+          100% { box-shadow: 0 0 10px rgba(30,144,255,0.5), 0 0 20px rgba(255,0,255,0.4); }
         }
-        .jb-chat-glow {
-          animation: jbChatGlow 2.5s ease-in-out infinite;
-        }
+        .jb-chat-glow { animation: jbChatGlow 2.5s ease-in-out infinite; }
 
         .jb-tip {
           background: ${BLACK};
@@ -481,7 +398,7 @@ try {
             <div
               className="jb-tip"
               style={{ position: "fixed", right: 16, bottom: 96, maxWidth: 260, zIndex: 9999 }}
-              onClick={dismissTip}
+              onClick={() => setShowTip(false)}
               role="dialog"
               aria-live="polite"
             >
@@ -492,54 +409,34 @@ try {
             </div>
           )}
 
-          {/* Glowing message next to bubble */}
+          {/* Promo button */}
           <button
-            onClick={() => {
-              setOpen(true);
-              dismissTip();
-              navigate("/itemized");
-            }}
+            onClick={() => { setOpen(true); setShowTip(false); navigate("/itemized"); }}
             style={{
               position: "fixed",
-              right: 90,
-              bottom: 26,
+              right: 90, bottom: 26,
               background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              zIndex: 9999,
-              color: "#fff",
-              fontWeight: "bold",
-              fontSize: "14px",
+              border: "none", cursor: "pointer",
+              zIndex: 9999, color: "#fff",
+              fontWeight: "bold", fontSize: "14px",
               textShadow: "0 0 8px rgba(30,144,255,0.8), 0 0 12px rgba(255,0,255,0.7)",
-              animation: "jbPulse 2.2s ease-in-out infinite",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
+              display: "flex", alignItems: "center", gap: "6px",
             }}
             className="jb-pulse"
           >
-            🎁 Free Item + 10% Off
-            <span style={{ fontSize: "18px" }}>→</span>
+            🎁 Free Item + 10% Off <span style={{ fontSize: "18px" }}>→</span>
           </button>
 
           {/* Bubble itself */}
           <button
-            onClick={() => {
-              setOpen(true);
-              dismissTip();
-              navigate("/itemized");
-            }}
+            onClick={() => { setOpen(true); setShowTip(false); navigate("/itemized"); }}
             style={{
               position: "fixed",
-              right: 16,
-              bottom: 16,
-              width: 64,
-              height: 64,
-              borderRadius: "50%",
-              background: GOLD,
+              right: 16, bottom: 16,
+              width: 64, height: 64,
+              borderRadius: "50%", background: GOLD,
               border: `2px solid ${BLACK}`,
-              fontWeight: 700,
-              cursor: "pointer",
+              fontWeight: 700, cursor: "pointer",
               zIndex: 9999,
             }}
             className="jb-pulse"
@@ -557,52 +454,32 @@ try {
           className="jb-chat-glow"
           style={{
             position: "fixed",
-            right: 16,
-            bottom: 16,
-            width: 360,
-            maxWidth: "90vw",
-            height: 560,
-            maxHeight: "85vh",
-            background: BLACK,
-            color: "#fff",
+            right: 16, bottom: 16,
+            width: 360, maxWidth: "90vw",
+            height: 560, maxHeight: "85vh",
+            background: BLACK, color: "#fff",
             borderRadius: 16,
             boxShadow: "0 18px 40px rgba(0,0,0,0.5)",
-            display: "flex",
-            flexDirection: "column",
-            zIndex: 10000,
-            border: `1px solid ${GOLD}`,
+            display: "flex", flexDirection: "column",
+            zIndex: 10000, border: `1px solid ${GOLD}`,
           }}
         >
           {/* Header */}
-          <div
-            style={{
-              padding: "10px",
-              borderBottom: `1px solid ${GOLD}`,
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
+          <div style={{
+            padding: "10px",
+            borderBottom: `1px solid ${GOLD}`,
+            display: "flex", alignItems: "center", gap: 8,
+          }}>
             <span style={{ fontWeight: "bold", flex: 1 }}>{ASSISTANT_NAME}</span>
             <span
-              title={
-                aiStatus === "on"
-                  ? "AI parser active"
-                  : aiStatus === "off"
-                  ? "AI disabled — using fallback parser"
-                  : "Status unknown"
-              }
+              title={aiStatus === "on" ? "AI parser active" :
+                     aiStatus === "off" ? "AI disabled — fallback parser" :
+                     "Status unknown"}
               style={{
-                fontSize: 12,
-                padding: "2px 8px",
-                borderRadius: 999,
-                border: `1px solid ${GOLD}`,
-                color:
-                  aiStatus === "on"
-                    ? "#22c55e"
-                    : aiStatus === "off"
-                    ? "#9ca3af"
-                    : "#f59e0b",
+                fontSize: 12, padding: "2px 8px",
+                borderRadius: 999, border: `1px solid ${GOLD}`,
+                color: aiStatus === "on" ? "#22c55e" :
+                       aiStatus === "off" ? "#9ca3af" : "#f59e0b",
                 background: "#111",
               }}
             >
@@ -612,10 +489,8 @@ try {
               onClick={() => setOpen(false)}
               style={{
                 marginLeft: 8,
-                background: "transparent",
-                border: "none",
-                color: "#fff",
-                cursor: "pointer",
+                background: "transparent", border: "none",
+                color: "#fff", cursor: "pointer",
               }}
               aria-label="Close chat"
             >
@@ -626,76 +501,54 @@ try {
           {/* Messages */}
           <div style={{ flex: 1, overflowY: "auto", padding: 10 }}>
             {messages.map((m, i) => (
-              <div
-                key={i}
-                style={{ margin: "6px 0", textAlign: m.role === "user" ? "right" : "left" }}
-              >
-                <span
-                  style={{
-                    display: "inline-block",
-                    padding: "6px 10px",
-                    borderRadius: 10,
-                    background: m.role === "user" ? GOLD : "#222",
-                    color: m.role === "user" ? BLACK : "#fff",
-                    whiteSpace: "pre-wrap",
-                  }}
-                >
+              <div key={i} style={{ margin: "6px 0", textAlign: m.role === "user" ? "right" : "left" }}>
+                <span style={{
+                  display: "inline-block",
+                  padding: "6px 10px",
+                  borderRadius: 10,
+                  background: m.role === "user" ? GOLD : "#222",
+                  color: m.role === "user" ? BLACK : "#fff",
+                  whiteSpace: "pre-wrap",
+                }}>
                   {m.content}
                 </span>
               </div>
             ))}
 
             {gate && (
-              <div
-                style={{
-                  marginTop: 8,
-                  padding: 10,
-                  borderRadius: 10,
-                  border: `1px solid ${GOLD}`,
-                  background: "#151515",
-                }}
-              >
+              <div style={{
+                marginTop: 8, padding: 10,
+                borderRadius: 10, border: `1px solid ${GOLD}`,
+                background: "#151515",
+              }}>
                 <div style={{ marginBottom: 8, fontWeight: 600 }}>{gate.text}</div>
-
                 {gate.id === "lead_capture" ? (
                   <div style={{ display: "grid", gap: 6 }}>
                     <label style={{ fontSize: 12, opacity: 0.9 }}>
                       Name
                       <input
                         value={leadDraft.name}
-                        onChange={(e) =>
-                          setLeadDraft((d) => ({ ...d, name: e.target.value }))
-                        }
+                        onChange={(e) => setLeadDraft((d) => ({ ...d, name: e.target.value }))}
                         placeholder="e.g., Jamie"
                         style={{
-                          width: "100%",
-                          marginTop: 4,
-                          padding: "6px 8px",
-                          borderRadius: 8,
-                          background: "#111",
-                          color: "#fff",
-                          border: `1px solid ${GOLD}`,
-                          outline: "none",
+                          width: "100%", marginTop: 4,
+                          padding: "6px 8px", borderRadius: 8,
+                          background: "#111", color: "#fff",
+                          border: `1px solid ${GOLD}`, outline: "none",
                         }}
                       />
                     </label>
                     <label style={{ fontSize: 12, opacity: 0.9 }}>
-                      Phone (for updates & discount)
+                      Phone
                       <input
                         value={leadDraft.phone}
-                        onChange={(e) =>
-                          setLeadDraft((d) => ({ ...d, phone: e.target.value }))
-                        }
+                        onChange={(e) => setLeadDraft((d) => ({ ...d, phone: e.target.value }))}
                         placeholder="(###) ###-####"
                         style={{
-                          width: "100%",
-                          marginTop: 4,
-                          padding: "6px 8px",
-                          borderRadius: 8,
-                          background: "#111",
-                          color: "#fff",
-                          border: `1px solid ${GOLD}`,
-                          outline: "none",
+                          width: "100%", marginTop: 4,
+                          padding: "6px 8px", borderRadius: 8,
+                          background: "#111", color: "#fff",
+                          border: `1px solid ${GOLD}`, outline: "none",
                         }}
                       />
                     </label>
@@ -703,13 +556,9 @@ try {
                       <button
                         onClick={() => onGateChoice("submit")}
                         style={{
-                          borderRadius: 8,
-                          padding: "6px 10px",
-                          cursor: "pointer",
-                          fontWeight: 700,
-                          background: GOLD,
-                          color: BLACK,
-                          border: "none",
+                          borderRadius: 8, padding: "6px 10px",
+                          cursor: "pointer", fontWeight: 700,
+                          background: GOLD, color: BLACK, border: "none",
                         }}
                       >
                         Apply 10% off
@@ -717,12 +566,9 @@ try {
                       <button
                         onClick={() => onGateChoice("decline")}
                         style={{
-                          borderRadius: 8,
-                          padding: "6px 10px",
-                          cursor: "pointer",
-                          fontWeight: 700,
-                          background: "#222",
-                          color: "#fff",
+                          borderRadius: 8, padding: "6px 10px",
+                          cursor: "pointer", fontWeight: 700,
+                          background: "#222", color: "#fff",
                           border: `1px solid ${GOLD}`,
                         }}
                       >
@@ -735,13 +581,9 @@ try {
                     <button
                       onClick={() => onGateChoice("yes")}
                       style={{
-                        borderRadius: 8,
-                        padding: "6px 10px",
-                        cursor: "pointer",
-                        fontWeight: 700,
-                        background: GOLD,
-                        color: BLACK,
-                        border: "none",
+                        borderRadius: 8, padding: "6px 10px",
+                        cursor: "pointer", fontWeight: 700,
+                        background: GOLD, color: BLACK, border: "none",
                       }}
                     >
                       Yes
@@ -749,12 +591,9 @@ try {
                     <button
                       onClick={() => onGateChoice("no")}
                       style={{
-                        borderRadius: 8,
-                        padding: "6px 10px",
-                        cursor: "pointer",
-                        fontWeight: 700,
-                        background: "#222",
-                        color: "#fff",
+                        borderRadius: 8, padding: "6px 10px",
+                        cursor: "pointer", fontWeight: 700,
+                        background: "#222", color: "#fff",
                         border: `1px solid ${GOLD}`,
                       }}
                     >
@@ -771,16 +610,13 @@ try {
             <div ref={endRef} />
           </div>
 
-          {/* Parsed result preview & actions */}
+          {/* Parsed result preview */}
           <div style={{ borderTop: `1px solid ${GOLD}`, padding: 10, background: "#111" }}>
             <div style={{ fontSize: 12, marginBottom: 6 }}>
               <strong>Parsed:</strong>{" "}
               {lastParsed?.cart?.length
-                ? `${lastParsed.cart.length} lines • ${Math.round(
-                    lastParsed.totalVolume || 0
-                  )} pts • $${(
-                    (lastParsed.finalPrice ?? 0) *
-                    (discountActive ? 1 - DISCOUNT_RATE : 1)
+                ? `${lastParsed.cart.length} lines • ${Math.round(lastParsed.totalVolume || 0)} pts • $${(
+                    (lastParsed.finalPrice ?? 0) * (discountActive ? 1 - DISCOUNT_RATE : 1)
                   ).toFixed(2)}${discountActive ? " (10% off applied)" : ""}`
                 : "nothing yet"}
             </div>
@@ -790,10 +626,8 @@ try {
                 disabled={!lastParsed?.cart?.length}
                 style={{
                   borderRadius: 8,
-                  background: GOLD,
-                  color: BLACK,
-                  fontWeight: 700,
-                  padding: "6px 10px",
+                  background: GOLD, color: BLACK,
+                  fontWeight: 700, padding: "6px 10px",
                   cursor: "pointer",
                 }}
               >
@@ -802,12 +636,9 @@ try {
               <button
                 onClick={() => navigate("/itemized")}
                 style={{
-                  borderRadius: 8,
-                  background: "#222",
-                  color: "#fff",
-                  padding: "6px 10px",
-                  border: `1px solid ${GOLD}`,
-                  cursor: "pointer",
+                  borderRadius: 8, background: "#222",
+                  color: "#fff", padding: "6px 10px",
+                  border: `1px solid ${GOLD}`, cursor: "pointer",
                 }}
               >
                 View cart / edit
@@ -825,12 +656,9 @@ try {
               placeholder={gate ? "Please choose an option above…" : "Type your message..."}
               disabled={!!gate}
               style={{
-                width: "80%",
-                borderRadius: 8,
-                padding: "6px 10px",
-                background: "#111",
-                color: "#fff",
-                border: `1px solid ${GOLD}`,
+                width: "80%", borderRadius: 8,
+                padding: "6px 10px", background: "#111",
+                color: "#fff", border: `1px solid ${GOLD}`,
                 outline: "none",
               }}
             />
@@ -843,4 +671,3 @@ try {
     </>
   );
 }
-
