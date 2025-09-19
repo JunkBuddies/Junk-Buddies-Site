@@ -534,6 +534,7 @@ export default function ChatWidget() {
 
           {/* Bubble itself */}
           <button
+             id="jb-open-button" // 👈 add this
             onClick={() => {
               setOpen(true);
               setShowTip(false);
