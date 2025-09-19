@@ -575,7 +575,7 @@ body {
   padding: 12px 24px;
   font-size: 1rem;
   font-weight: bold;
-  color: #fff; /* bright text to stand out */
+  color: #fff;
   background: radial-gradient(circle at center, #c0c0c0 40%, #0b0b0b 100%);
   border-radius: 12px;
   cursor: pointer;
@@ -588,7 +588,7 @@ body {
   transform: scale(1.05);
 }
 
-/* seamless animated border */
+/* 🔥 Seamless glowing border */
 .ai-price-button::before {
   content: "";
   position: absolute;
@@ -604,13 +604,19 @@ body {
     #ff0057,
     #9d4edd,
     #00e5ff,
-    #d4af37
+    #d4af37, /* back to gold */
+    #1e90ff,
+    #00ff6a,
+    #ff0057,
+    #9d4edd,
+    #00e5ff,
+    #d4af37 /* ensure seamless close */
   );
-  animation: spinBorder 6s linear infinite; /* smooth, no stops */
+  animation: spinBorder 4s linear infinite;
   z-index: -1;
 }
 
-/* mask to keep center solid gradient */
+/* solid gradient center */
 .ai-price-button::after {
   content: "";
   position: absolute;
