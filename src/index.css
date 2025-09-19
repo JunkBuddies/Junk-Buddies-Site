@@ -575,8 +575,8 @@ body {
   padding: 12px 24px;
   font-size: 1rem;
   font-weight: bold;
-  color: #0b0b0b; /* dark text for silver fill */
-  background: #c0c0c0; /* silver center */
+  color: #fff; /* bright text to stand out */
+  background: radial-gradient(circle at center, #c0c0c0 40%, #0b0b0b 100%);
   border-radius: 12px;
   cursor: pointer;
   overflow: hidden;
@@ -585,10 +585,10 @@ body {
 }
 
 .ai-price-button:hover {
-  transform: scale(1.05); /* subtle pop on hover */
+  transform: scale(1.05);
 }
 
-/* animated border */
+/* seamless animated border */
 .ai-price-button::before {
   content: "";
   position: absolute;
@@ -598,21 +598,19 @@ body {
   bottom: -3px;
   border-radius: 14px;
   background: conic-gradient(
-    from 0deg,
-    #d4af37,  /* Gold */
-    #1e90ff,  /* Blue */
-    #c0c0c0,  /* Silver */
-    #00ff6a,  /* Neon Green */
-    #ff0057,  /* Hot Pink/Red */
-    #9d4edd,  /* Purple */
-    #00e5ff,  /* Cyan */
-    #d4af37   /* back to Gold */
+    #d4af37,
+    #1e90ff,
+    #00ff6a,
+    #ff0057,
+    #9d4edd,
+    #00e5ff,
+    #d4af37
   );
-  animation: spinBorder 4s linear infinite, pulseGlow 6s ease-in-out infinite;
+  animation: spinBorder 6s linear infinite; /* smooth, no stops */
   z-index: -1;
 }
 
-/* inner mask to keep button center solid */
+/* mask to keep center solid gradient */
 .ai-price-button::after {
   content: "";
   position: absolute;
@@ -620,18 +618,12 @@ body {
   left: 2px;
   right: 2px;
   bottom: 2px;
-  background: #c0c0c0; /* silver center */
   border-radius: 10px;
+  background: radial-gradient(circle at center, #c0c0c0 40%, #0b0b0b 100%);
   z-index: -1;
 }
 
 @keyframes spinBorder {
   0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-/* subtle glow pulse, slower than spin */
-@keyframes pulseGlow {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.4); }
 }
