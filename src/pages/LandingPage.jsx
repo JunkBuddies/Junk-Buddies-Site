@@ -115,13 +115,13 @@ function LandingPage() {
     Same-Day Pickup
   </a>
 
-  {/* NEW AI CHAT BUTTON */}
-  <button 
-    className="ai-price-button" 
-    onClick={() => setShowChat(true)}
-  >
-    See Price In Seconds
-  </button>
+{/* NEW AI CHAT BUTTON */}
+<button 
+  className="ai-price-button" 
+  onClick={() => document.getElementById("jb-open-button")?.click()}
+>
+  See Price In Seconds
+</button>
 </div>
 </div>
       {/* REQUIRE SERVICE TODAY BAR */}
