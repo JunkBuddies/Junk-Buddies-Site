@@ -95,8 +95,8 @@ function LandingPage() {
           </p>
         </div>
 
-        {/* CTA BUTTONS */}
-        <div className="relative z-10 mt-8 flex flex-col items-center space-y-4">
+     {/* CTA BUTTONS */}
+<div className="relative z-10 mt-8 flex flex-col items-center space-y-4">
   <div className="flex flex-wrap justify-center gap-4">
     <button
       onClick={() => navigate('/selection')}
@@ -114,8 +114,15 @@ function LandingPage() {
   <a href="tel:3465936080" className="cta-metallic-button inline-block">
     Same-Day Pickup
   </a>
+
+  {/* NEW AI CHAT BUTTON */}
+  <button 
+    className="ai-price-button" 
+    onClick={() => setShowChat(true)}
+  >
+    See Price In Seconds
+  </button>
 </div>
-      </div>
 
       {/* REQUIRE SERVICE TODAY BAR */}
       <div className="w-full text-center text-lg text-white py-10 px-6 about-reveal silver">
