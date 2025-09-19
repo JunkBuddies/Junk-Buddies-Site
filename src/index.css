@@ -588,7 +588,7 @@ body {
   transform: scale(1.05);
 }
 
-/* 🔥 Seamless glowing border */
+/* 🔥 Single glowing streak border */
 .ai-price-button::before {
   content: "";
   position: absolute;
@@ -598,25 +598,16 @@ body {
   bottom: -3px;
   border-radius: 14px;
   background: conic-gradient(
-    #d4af37,
-    #1e90ff,
-    #00ff6a,
-    #ff0057,
-    #9d4edd,
-    #00e5ff,
-    #d4af37, /* back to gold */
-    #1e90ff,
-    #00ff6a,
-    #ff0057,
-    #9d4edd,
-    #00e5ff,
-    #d4af37 /* ensure seamless close */
+    from 0deg,
+    rgba(255, 0, 87, 1) 0deg,   /* bright pink/red */
+    rgba(255, 0, 87, 0) 40deg,  /* fade out */
+    transparent 360deg
   );
-  animation: spinBorder 4s linear infinite;
+  animation: spinBorder 3s linear infinite;
   z-index: -1;
 }
 
-/* solid gradient center */
+/* solid inner mask */
 .ai-price-button::after {
   content: "";
   position: absolute;
