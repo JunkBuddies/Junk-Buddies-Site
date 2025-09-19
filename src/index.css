@@ -575,8 +575,8 @@ body {
   padding: 12px 24px;
   font-size: 1rem;
   font-weight: bold;
-  color: #fff;
-  background: #0b0b0b; /* Black fill to stand out */
+  color: #0b0b0b; /* dark text to contrast silver */
+  background: #c0c0c0; /* silver fill */
   border-radius: 12px;
   cursor: pointer;
   overflow: hidden;
@@ -594,10 +594,14 @@ body {
   border-radius: 14px;
   background: conic-gradient(
     from 0deg,
-    #d4af37, /* Gold */
-    #1e90ff, /* Blue */
-    #c0c0c0, /* Silver */
-    #d4af37
+    #d4af37,  /* Gold */
+    #1e90ff,  /* Blue */
+    #c0c0c0,  /* Silver */
+    #00ff6a,  /* Neon Green */
+    #ff0057,  /* Hot Pink / Red */
+    #9d4edd,  /* Purple */
+    #00e5ff,  /* Cyan */
+    #d4af37   /* Back to Gold for smooth loop */
   );
   animation: spinBorder 3s linear infinite;
   z-index: -1;
@@ -611,12 +615,12 @@ body {
   left: 2px;
   right: 2px;
   bottom: 2px;
-  background: #0b0b0b;
+  background: #c0c0c0; /* match silver fill */
   border-radius: 10px;
   z-index: -1;
 }
 
 @keyframes spinBorder {
-  0% { transform: rotate(0deg); }
+  0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
