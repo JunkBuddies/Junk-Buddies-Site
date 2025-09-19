@@ -570,3 +570,53 @@ body {
 .silver-badge:hover {
   transform: scale(1.05);
 }
+.ai-price-button {
+  position: relative;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background: #0b0b0b; /* Black fill to stand out */
+  border-radius: 12px;
+  cursor: pointer;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* animated border */
+.ai-price-button::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border-radius: 14px;
+  background: conic-gradient(
+    from 0deg,
+    #d4af37, /* Gold */
+    #1e90ff, /* Blue */
+    #c0c0c0, /* Silver */
+    #d4af37
+  );
+  animation: spinBorder 3s linear infinite;
+  z-index: -1;
+}
+
+/* inner mask to keep button center solid */
+.ai-price-button::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  background: #0b0b0b;
+  border-radius: 10px;
+  z-index: -1;
+}
+
+@keyframes spinBorder {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
