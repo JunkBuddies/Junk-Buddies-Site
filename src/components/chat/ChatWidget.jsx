@@ -308,7 +308,7 @@ export default function ChatWidget() {
           ...m,
           {
             role: "assistant",
-            content: "No worries — you can still browse items with standard pricing.",
+            content: "No worries — Just list your items and i'll price them instantly!",
           },
         ]);
       }
@@ -360,13 +360,17 @@ export default function ChatWidget() {
         return;
       }
 
-      // 📊 Log attempt
+      // 📊 Log attempt to GA4
+      sendGAEvent("generate_lead", {
+        name: leadDraft.name.trim(),
+        phone: leadDraft.phone.trim(),
+        sessionId,
+      });
       sendGAEvent("lead_capture_attempt", {
         name: leadDraft.name.trim(),
         phone: leadDraft.phone.trim(),
         sessionId,
       });
-
       try {
         await addDoc(collection(db, "leadCaptures"), {
           name: leadDraft.name.trim(),
@@ -556,7 +560,6 @@ export default function ChatWidget() {
           </button>
         </>
       )}
-
       {/* Chat window */}
       {open && (
         <div
@@ -756,9 +759,7 @@ export default function ChatWidget() {
                     </div>
                   </div>
                 ) : (
-                  <div
-                    style={{ display: "flex", gap: 8, flexWrap: "wrap" }}
-                  >
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                     <button
                       onClick={() => onGateChoice("yes")}
                       style={{
@@ -887,7 +888,7 @@ export default function ChatWidget() {
                 outline: "none",
               }}
             />
-                       <button
+            <button
               onClick={send}
               disabled={loading || !!gate}
               style={{ marginLeft: 8 }}
