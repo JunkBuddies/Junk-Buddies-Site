@@ -576,19 +576,14 @@ body {
   font-size: 1rem;
   font-weight: bold;
   color: #fff;
-  background: radial-gradient(circle at center, #c0c0c0 40%, #0b0b0b 100%);
+  background: #0b0b0b; /* solid black center */
   border-radius: 12px;
   cursor: pointer;
   overflow: hidden;
   z-index: 1;
-  transition: transform 0.2s ease-in-out;
 }
 
-.ai-price-button:hover {
-  transform: scale(1.05);
-}
-
-/* 🔥 Single glowing streak border */
+/* Continuous rainbow AI border */
 .ai-price-button::before {
   content: "";
   position: absolute;
@@ -598,16 +593,19 @@ body {
   bottom: -3px;
   border-radius: 14px;
   background: conic-gradient(
-    from 0deg,
-    rgba(255, 0, 87, 1) 0deg,   /* bright pink/red */
-    rgba(255, 0, 87, 0) 40deg,  /* fade out */
-    transparent 360deg
+    #d4af37,   /* Gold */
+    #1e90ff,   /* Blue */
+    #00ff6a,   /* Neon Green */
+    #ff0057,   /* Red/Pink */
+    #9d4edd,   /* Purple */
+    #00e5ff,   /* Cyan */
+    #d4af37    /* Back to Gold for smooth loop */
   );
-  animation: spinBorder 3s linear infinite;
+  animation: spinBorder 4s linear infinite;
   z-index: -1;
 }
 
-/* solid inner mask */
+/* Inner mask to keep center black */
 .ai-price-button::after {
   content: "";
   position: absolute;
@@ -615,8 +613,8 @@ body {
   left: 2px;
   right: 2px;
   bottom: 2px;
+  background: #0b0b0b;
   border-radius: 10px;
-  background: radial-gradient(circle at center, #c0c0c0 40%, #0b0b0b 100%);
   z-index: -1;
 }
 
