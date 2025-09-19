@@ -575,12 +575,17 @@ body {
   padding: 12px 24px;
   font-size: 1rem;
   font-weight: bold;
-  color: #0b0b0b; /* dark text to contrast silver */
-  background: #c0c0c0; /* silver fill */
+  color: #0b0b0b; /* dark text for silver fill */
+  background: #c0c0c0; /* silver center */
   border-radius: 12px;
   cursor: pointer;
   overflow: hidden;
   z-index: 1;
+  transition: transform 0.2s ease-in-out;
+}
+
+.ai-price-button:hover {
+  transform: scale(1.05); /* subtle pop on hover */
 }
 
 /* animated border */
@@ -598,12 +603,12 @@ body {
     #1e90ff,  /* Blue */
     #c0c0c0,  /* Silver */
     #00ff6a,  /* Neon Green */
-    #ff0057,  /* Hot Pink / Red */
+    #ff0057,  /* Hot Pink/Red */
     #9d4edd,  /* Purple */
     #00e5ff,  /* Cyan */
-    #d4af37   /* Back to Gold for smooth loop */
+    #d4af37   /* back to Gold */
   );
-  animation: spinBorder 3s linear infinite;
+  animation: spinBorder 4s linear infinite, pulseGlow 6s ease-in-out infinite;
   z-index: -1;
 }
 
@@ -615,7 +620,7 @@ body {
   left: 2px;
   right: 2px;
   bottom: 2px;
-  background: #c0c0c0; /* match silver fill */
+  background: #c0c0c0; /* silver center */
   border-radius: 10px;
   z-index: -1;
 }
@@ -623,4 +628,10 @@ body {
 @keyframes spinBorder {
   0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* subtle glow pulse, slower than spin */
+@keyframes pulseGlow {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.4); }
 }
