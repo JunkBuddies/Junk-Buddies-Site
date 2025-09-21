@@ -108,16 +108,15 @@ function LandingPage() {
   "
 >
 {/* Promo Text */}
-<div
+<div 
   className="
     absolute z-20 text-white px-4 max-w-md
-    top-4 left-4        /* 📱 Mobile: very top-left of hero */
+    top-6 left-6                 /* 📱 Mobile: upper-left */
     sm:top-1/3 sm:left-1/2 sm:-translate-x-1/2  /* 💻 Tablet/laptop: centered */
     lg:top-1/3 lg:left-1/2 lg:-translate-x-1/2
     text-left sm:text-center
   "
 >
-
   <p className="text-sm md:text-lg font-medium mb-2">
     Tired of waiting?
   </p>
