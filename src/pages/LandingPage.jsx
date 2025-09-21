@@ -97,7 +97,7 @@ function LandingPage() {
           Making Space For What Matters
         </p>
 
-      {/* Promo Text */}
+  {/* Promo Text */}
 <div 
   className="
     absolute z-20 text-white px-4 max-w-md
