@@ -52,11 +52,6 @@ function LandingPage() {
   return (
     <div className="w-full overflow-hidden">
       <div className="hero-earth-bg w-full min-h-screen flex flex-col items-center justify-center text-white text-center relative">
-        {/* Animated GIF overlay */}
-        <img
-          src="/images/Earth-rotation2.gif"
-          alt="Rotating Earth Overlay"
-          className="absolute top-[8.75%] left-1/2 transform -translate-x-1/2 scale-x-[-1] w-[270px] h-[270px] object-contain z-10 pointer-events-none"
         />
 
         <div className="absolute top-6 right-6 z-50">
