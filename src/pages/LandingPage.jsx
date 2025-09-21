@@ -51,7 +51,7 @@ function LandingPage() {
 
   return (
     <div className="w-full overflow-hidden">
-      <div className="hero-earth-bg w-full min-h-screen flex flex-col items-center justify-center text-white text-center relative">
+     <div className="hero-earth-bg w-full min-h-screen flex flex-col items-center justify-center text-white text-center relative px-4 sm:px-8">
 
         <div className="absolute top-6 right-6 z-50">
           <Link
