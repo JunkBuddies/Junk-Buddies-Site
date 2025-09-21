@@ -98,25 +98,25 @@ function LandingPage() {
 {/* Responsive Promo Text */}
 <div 
   className="
-    absolute z-20 text-white px-4 sm:px-6 max-w-xl
+    absolute z-20 text-white px-4 max-w-md
+    bottom-10 left-4
+    sm:bottom-auto sm:top-1/3 sm:left-[10%]
+    lg:top-1/3 lg:left-[12%]
     text-left
-    bottom-6 left-4
-    sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:left-1/2 sm:-translate-x-1/2
   "
 >
-  <p className="text-sm sm:text-lg font-medium mb-1 sm:mb-2">
+  <p className="text-sm md:text-lg font-medium mb-2">
     Tired of waiting?
   </p>
   <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug">
     Need{" "}
     <span className="text-transparent bg-clip-text font-extrabold 
-      bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 drop-shadow-md
-      text-xl sm:text-3xl md:text-5xl">
+      bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 drop-shadow-md">
       Junk Removal
     </span>{" "}
     in Houston + surrounding cities?
   </h2>
-  <p className="mt-1 sm:mt-2 text-xs sm:text-base md:text-lg">
+  <p className="mt-2 text-xs sm:text-base md:text-lg">
     Check prices in seconds — we haul it all.
   </p>
 </div>
