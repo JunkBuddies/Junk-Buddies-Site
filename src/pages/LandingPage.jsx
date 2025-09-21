@@ -50,115 +50,117 @@ function LandingPage() {
   }, []);
 
   return (
-    <div className="w-full overflow-hidden">
-     <div className="hero-earth-bg w-full min-h-screen flex flex-col items-center justify-center text-white text-center relative px-4 sm:px-8">
+  <div className="w-full overflow-hidden">
+    <div className="hero-earth-bg w-full min-h-screen flex flex-col items-center justify-center text-white text-center relative px-4 sm:px-8">
 
-        <div className="absolute top-6 right-6 z-50">
-          <Link
-            to="/service-areas"
-            className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded-lg shadow-md"
+      {/* Cities Button */}
+      <div className="absolute top-6 right-6 z-50">
+        <Link
+          to="/service-areas"
+          className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded-lg shadow-md"
+        >
+          Cities We Serve
+        </Link>
+      </div>
+
+      {/* HERO CONTENT */}
+      <div
+        className="
+          relative z-20 flex flex-col items-center
+          mt-24
+          md:absolute md:top-10 md:w-full md:mt-0
+        "
+      >
+        {/* Logo Title */}
+        <div className="shine-wrapper flex justify-center items-center gap-3 whitespace-nowrap">
+          <span
+            ref={junkRef}
+            className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk"
           >
-            Cities We Serve
-          </Link>
+            Junk
+          </span>
+          <img
+            src="/images/logo-icon.png"
+            alt="Logo"
+            className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
+          />
+          <span
+            ref={buddiesRef}
+            className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies"
+          >
+            Buddies
+          </span>
         </div>
 
-    {/* HERO TITLE + TAGLINE + CTAs */}
-<div
-  className="
-    relative z-20 flex flex-col items-center
-    mt-24
-    md:absolute md:top-10 md:w-full md:mt-0
-  "
->
-  {/* Logo Title */}
-  <div className="shine-wrapper flex justify-center items-center gap-3 whitespace-nowrap">
-    <span
-      ref={junkRef}
-      className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk"
-    >
-      Junk
-    </span>
-    <img
-      src="/images/logo-icon.png"
-      alt="Logo"
-      className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
-    />
-    <span
-      ref={buddiesRef}
-      className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies"
-    >
-      Buddies
-    </span>
-  </div>
+        {/* Tagline */}
+        <p className="text-xl sm:text-2xl font-semibold tracking-wide mt-2">
+          Making Space For What Matters
+        </p>
 
-  {/* Tagline */}
-  <p className="text-xl sm:text-2xl font-semibold tracking-wide mt-2">
-    Making Space For What Matters
-  </p>
-{/* Responsive Promo Text */}
-<div 
-  className="
-    absolute z-20 text-white px-4 max-w-md
-    bottom-10 left-4
-    sm:bottom-auto sm:top-1/3 sm:left-[10%]
-    lg:top-1/3 lg:left-[12%]
-    text-left
-  "
->
-  <p className="text-sm md:text-lg font-medium mb-2">
-    Tired of waiting?
-  </p>
-  <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug">
-    Need{" "}
-    <span className="text-transparent bg-clip-text font-extrabold 
-      bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 drop-shadow-md">
-      Junk Removal
-    </span>{" "}
-    in Houston + surrounding cities?
-  </h2>
-  <p className="mt-2 text-xs sm:text-base md:text-lg">
-    Check prices in seconds — we haul it all.
-  </p>
-</div>
+        {/* Promo Text */}
+        <div 
+          className="
+            absolute z-20 text-white px-4 max-w-md
+            bottom-16 left-4
+            sm:bottom-auto sm:top-1/3 sm:left-[10%]
+            lg:top-1/3 lg:left-[12%]
+            text-left
+          "
+        >
+          <p className="text-sm md:text-lg font-medium mb-2">
+            Tired of waiting?
+          </p>
+          <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug">
+            Need{" "}
+            <span className="text-transparent bg-clip-text font-extrabold 
+              bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 drop-shadow-md">
+              Junk Removal
+            </span>{" "}
+            in Houston + surrounding cities?
+          </h2>
+          <p className="mt-2 text-xs sm:text-base md:text-lg">
+            Check prices in seconds — we haul it all.
+          </p>
+        </div>
 
+        {/* CTA BUTTONS */}
+        <div
+          className="
+            relative z-10 flex flex-col items-center space-y-4
+            mt-8
+            md:mt-6  /* tuck closer under tagline on md+ */
+          "
+        >
+          <div className="flex flex-wrap justify-center gap-4">
+            <button
+              onClick={() => navigate('/selection')}
+              className="cta-metallic-button"
+            >
+              Get Started
+            </button>
+            <button
+              onClick={() => navigate('/itemized')}
+              className="silver-button"
+            >
+              Instant Pricing
+            </button>
+          </div>
 
+          <a href="tel:3465936080" className="cta-metallic-button inline-block">
+            Same-Day Pickup
+          </a>
 
-  {/* CTA BUTTONS – stay further down on mobile, tuck under tagline on md+ */}
-  <div
-    className="
-      relative z-10 flex flex-col items-center space-y-4
-      mt-8
-      md:mt-4   /* reduce gap and bring closer on md+ */
-    "
-  >
-    <div className="flex flex-wrap justify-center gap-4">
-      <button
-        onClick={() => navigate('/selection')}
-        className="cta-metallic-button"
-      >
-        Get Started
-      </button>
-      <button
-        onClick={() => navigate('/itemized')}
-        className="silver-button"
-      >
-        Instant Pricing
-      </button>
+          <button
+            className="ai-price-button"
+            onClick={() => document.getElementById("jb-open-button")?.click()}
+          >
+            See Price In Seconds
+          </button>
+        </div>
+      </div>
     </div>
-
-    <a href="tel:3465936080" className="cta-metallic-button inline-block">
-      Same-Day Pickup
-    </a>
-
-    <button
-      className="ai-price-button"
-      onClick={() => document.getElementById("jb-open-button")?.click()}
-    >
-      See Price In Seconds
-    </button>
   </div>
-</div>
-       </div>
+);
 
       {/* REQUIRE SERVICE TODAY BAR */}
       <div className="w-full text-center text-lg text-white py-10 px-6 about-reveal silver">
