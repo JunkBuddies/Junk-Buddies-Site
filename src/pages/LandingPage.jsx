@@ -98,30 +98,31 @@ function LandingPage() {
         </p>
 
         {/* Promo Text */}
-        <div 
-          className="
-            absolute z-20 text-white px-4 max-w-md
-            bottom-16 left-4
-            sm:bottom-auto sm:top-1/3 sm:left-[10%]
-            lg:top-1/3 lg:left-[12%]
-            text-left
-          "
-        >
-          <p className="text-sm md:text-lg font-medium mb-2">
-            Tired of waiting?
-          </p>
-          <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug">
-            Need{" "}
-            <span className="text-transparent bg-clip-text font-extrabold 
-              bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 drop-shadow-md">
-              Junk Removal
-            </span>{" "}
-            in Houston + surrounding cities?
-          </h2>
-          <p className="mt-2 text-xs sm:text-base md:text-lg">
-            Check prices in seconds — we haul it all.
-          </p>
-        </div>
+<div
+  className="
+    absolute z-20 text-white px-4 max-w-xs
+    bottom-[20%] left-1/2 -translate-x-1/2
+    text-center
+    sm:bottom-auto sm:top-1/3 sm:left-[8%] sm:translate-x-0 sm:text-left
+    lg:left-[12%]
+  "
+>
+  <p className="text-sm sm:text-base md:text-lg font-medium mb-2">
+    Tired of waiting?
+  </p>
+  <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug">
+    Need{" "}
+    <span className="text-transparent bg-clip-text font-extrabold 
+      bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 drop-shadow-md">
+      Junk Removal
+    </span>{" "}
+    in Houston + surrounding cities?
+  </h2>
+  <p className="mt-2 text-xs sm:text-base md:text-lg">
+    Check prices in seconds — we haul it all.
+  </p>
+</div>
+
 
         {/* CTA BUTTONS */}
         <div
@@ -159,8 +160,6 @@ function LandingPage() {
         </div>
       </div>
     </div>
-  </div>
-</div>
       {/* REQUIRE SERVICE TODAY BAR */}
       <div className="w-full text-center text-lg text-white py-10 px-6 about-reveal silver">
         <p className="text-xl mb-4">
