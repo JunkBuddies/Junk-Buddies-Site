@@ -62,9 +62,19 @@ function LandingPage() {
           </Link>
         </div>
 
-      <div className="absolute top-10 w-full z-20 flex flex-col items-center">
+      {/* HERO TITLE + TAGLINE */}
+<div
+  className="
+    relative z-20 flex flex-col items-center
+    mt-24                /* mobile: keep lower */
+    md:absolute md:top-10 md:w-full md:mt-0  /* tablets & up: push to top */
+  "
+>
   <div className="shine-wrapper flex justify-center items-center gap-3 whitespace-nowrap">
-    <span ref={junkRef} className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk">
+    <span
+      ref={junkRef}
+      className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk"
+    >
       Junk
     </span>
     <img
@@ -72,14 +82,19 @@ function LandingPage() {
       alt="Logo"
       className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
     />
-    <span ref={buddiesRef} className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies">
+    <span
+      ref={buddiesRef}
+      className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies"
+    >
       Buddies
     </span>
   </div>
+
   <p className="text-xl sm:text-2xl font-semibold tracking-wide mt-2">
     Making Space For What Matters
   </p>
 </div>
+
 
 
      {/* CTA BUTTONS */}
