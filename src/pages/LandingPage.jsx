@@ -123,7 +123,7 @@ function LandingPage() {
     Making Space For What Matters
   </p>
 </div>
-</div>
+
 
         {/* CTA BUTTONS */}
         <div
