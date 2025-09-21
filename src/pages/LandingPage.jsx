@@ -95,6 +95,23 @@ function LandingPage() {
   <p className="text-xl sm:text-2xl font-semibold tracking-wide mt-2">
     Making Space For What Matters
   </p>
+<div className="relative z-20 mt-16 text-left px-4 sm:px-8 lg:px-16 max-w-3xl">
+  <p className="text-white text-lg sm:text-xl font-semibold mb-2">
+    Tired of waiting?
+  </p>
+  <h1 className="text-white text-2xl sm:text-3xl md:text-4xl font-bold leading-snug">
+    Need{" "}
+    <span className="text-transparent bg-clip-text font-extrabold 
+      bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 
+      drop-shadow-md text-3xl sm:text-4xl md:text-5xl">
+      Junk Removal
+    </span>{" "}
+    in Houston + surrounding cities?
+  </h1>
+  <p className="text-white text-lg sm:text-xl mt-3">
+    Check prices in seconds — we haul it all.
+  </p>
+</div>
 
   {/* CTA BUTTONS – stay further down on mobile, tuck under tagline on md+ */}
   <div
