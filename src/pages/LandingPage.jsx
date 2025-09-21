@@ -132,7 +132,7 @@ function LandingPage() {
     Check prices in seconds — we haul it all.
   </p>
 </div>
-
+ </div>
         {/* CTA BUTTONS */}
         <div
           className="
@@ -168,7 +168,6 @@ function LandingPage() {
           </button>
         </div>
       </div>
-    </div>
        </div>
       {/* REQUIRE SERVICE TODAY BAR */}
       <div className="w-full text-center text-lg text-white py-10 px-6 about-reveal silver">
