@@ -507,19 +507,37 @@ body {
   }
   .hero-earth-bg {
   background-image: url('/images/junk-buddies-background.png');
-  background-size: cover; /* default */
   background-repeat: no-repeat;
   background-position: center;
-  background-color: black;
+  background-size: cover; /* Default: fills screen */
+  background-attachment: scroll; /* Prevents weird fixed cutoffs */
 }
 
-/* Optional fine-tuning for very small devices */
+/* Extra small screens */
 @media (max-width: 480px) {
   .hero-earth-bg {
-    background-size: contain;  /* show whole image if it's cut off */
-    background-position: top;  /* shift focus */
+    background-size: contain;   /* Make sure full image fits */
+    background-position: top center; 
+    background-color: #000;     /* Fill sides with black if aspect ratio mismatches */
   }
 }
+
+/* Tablets */
+@media (min-width: 481px) and (max-width: 768px) {
+  .hero-earth-bg {
+    background-size: cover;
+    background-position: center top;
+  }
+}
+
+/* Desktops */
+@media (min-width: 1024px) {
+  .hero-earth-bg {
+    background-size: cover;
+    background-position: center;
+  }
+}
+
 @layer utilities {
  
 }
