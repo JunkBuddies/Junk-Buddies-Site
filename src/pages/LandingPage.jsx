@@ -159,7 +159,7 @@ function LandingPage() {
         </div>
       </div>
     </div>
-  </div>
+  
 
       {/* REQUIRE SERVICE TODAY BAR */}
       <div className="w-full text-center text-lg text-white py-10 px-6 about-reveal silver">
