@@ -63,68 +63,67 @@ function LandingPage() {
         </Link>
       </div>
 
-      {/* HERO CONTENT */}
-      <div
-        className="
-          relative z-20 flex flex-col items-center
-          mt-24
-          md:absolute md:top-10 md:w-full md:mt-0
-        "
-      >
-        {/* Logo Title */}
-        <div className="shine-wrapper flex justify-center items-center gap-3 whitespace-nowrap">
-          <span
-            ref={junkRef}
-            className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk"
-          >
-            Junk
-          </span>
-          <img
-            src="/images/logo-icon.png"
-            alt="Logo"
-            className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
-          />
-          <span
-            ref={buddiesRef}
-            className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies"
-          >
-            Buddies
-          </span>
-        </div>
-
-        {/* Tagline */}
-        <p className="text-xl sm:text-2xl font-semibold tracking-wide mt-2">
-          Making Space For What Matters
-        </p>
-
-{/* HERO CONTENT BLOCK */}
-<div 
+    {/* PROMO TEXT – moved outside hero-content so it sits above logo/tagline on mobile */}
+<div
   className="
-    relative z-20 w-full max-w-md px-4
-    flex items-start justify-start   /* 📱 Mobile: upper-left */
-    sm:items-center sm:justify-center  /* 💻 Tablet/laptop: centered */
+    absolute z-20 text-white px-4 max-w-md
+    top-6 left-6               /* 📱 Mobile: very top-left */
+    sm:top-1/3 sm:left-1/2 sm:-translate-x-1/2
+    lg:top-1/3 lg:left-1/2 lg:-translate-x-1/2
     text-left sm:text-center
-    mt-6 sm:mt-0
   "
 >
-  {/* Promo Text */}
-  <div className="text-white max-w-md">
-    <p className="text-sm md:text-lg font-medium mb-2">
-      Tired of waiting?
-    </p>
-    <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug">
-      Need{" "}
-      <span className="text-transparent bg-clip-text font-extrabold 
-        bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 drop-shadow-md">
-        Junk Removal
-      </span>{" "}
-      in Houston + surrounding cities?
-    </h2>
-    <p className="mt-2 text-xs sm:text-base md:text-lg">
-      Check prices in seconds — we haul it all.
-    </p>
-  </div>
+  <p className="text-sm md:text-lg font-medium mb-2">
+    Tired of waiting?
+  </p>
+  <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug">
+    Need{" "}
+    <span className="text-transparent bg-clip-text font-extrabold 
+      bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 drop-shadow-md">
+      Junk Removal
+    </span>{" "}
+    in Houston + surrounding cities?
+  </h2>
+  <p className="mt-2 text-xs sm:text-base md:text-lg">
+    Check prices in seconds — we haul it all.
+  </p>
 </div>
+
+{/* HERO CONTENT */}
+<div
+  className="
+    relative z-20 flex flex-col items-center
+    mt-24
+    md:absolute md:top-10 md:w-full md:mt-0
+  "
+>
+  {/* Logo Title */}
+  <div className="shine-wrapper flex justify-center items-center gap-3 whitespace-nowrap">
+    <span
+      ref={junkRef}
+      className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk"
+    >
+      Junk
+    </span>
+    <img
+      src="/images/logo-icon.png"
+      alt="Logo"
+      className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
+    />
+    <span
+      ref={buddiesRef}
+      className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies"
+    >
+      Buddies
+    </span>
+  </div>
+
+  {/* Tagline */}
+  <p className="text-xl sm:text-2xl font-semibold tracking-wide mt-2">
+    Making Space For What Matters
+  </p>
+</div>
+
 
         {/* CTA BUTTONS */}
         <div
