@@ -100,39 +100,32 @@ function LandingPage() {
 {/* HERO CONTENT BLOCK */}
 <div 
   className="
-    absolute z-20 w-full max-w-md px-4
-    top-[20%] left-1/2 -translate-x-1/2
-    sm:top-1/3 sm:left-[10%] sm:translate-x-0
-    lg:top-1/3 lg:left-[12%]
-    text-center sm:text-left
-  "
->
-{/* Promo Text */}
-<div 
-  className="
-    absolute z-20 text-white px-4 max-w-md
-    top-6 left-6                 /* 📱 Mobile: upper-left */
-    sm:top-1/3 sm:left-1/2 sm:-translate-x-1/2  /* 💻 Tablet/laptop: centered */
-    lg:top-1/3 lg:left-1/2 lg:-translate-x-1/2
+    relative z-20 w-full max-w-md px-4
+    flex items-start justify-start   /* 📱 Mobile: upper-left */
+    sm:items-center sm:justify-center  /* 💻 Tablet/laptop: centered */
     text-left sm:text-center
+    mt-6 sm:mt-0
   "
 >
-  <p className="text-sm md:text-lg font-medium mb-2">
-    Tired of waiting?
-  </p>
-  <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug">
-    Need{" "}
-    <span className="text-transparent bg-clip-text font-extrabold 
-      bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 drop-shadow-md">
-      Junk Removal
-    </span>{" "}
-    in Houston + surrounding cities?
-  </h2>
-  <p className="mt-2 text-xs sm:text-base md:text-lg">
-    Check prices in seconds — we haul it all.
-  </p>
+  {/* Promo Text */}
+  <div className="text-white max-w-md">
+    <p className="text-sm md:text-lg font-medium mb-2">
+      Tired of waiting?
+    </p>
+    <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug">
+      Need{" "}
+      <span className="text-transparent bg-clip-text font-extrabold 
+        bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 drop-shadow-md">
+        Junk Removal
+      </span>{" "}
+      in Houston + surrounding cities?
+    </h2>
+    <p className="mt-2 text-xs sm:text-base md:text-lg">
+      Check prices in seconds — we haul it all.
+    </p>
+  </div>
 </div>
- </div>
+
         {/* CTA BUTTONS */}
         <div
           className="
