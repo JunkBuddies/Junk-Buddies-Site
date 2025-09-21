@@ -18,7 +18,7 @@ function LandingPage() {
       cardRefs.current.push(el);
     }
   };
- 
+  
   useEffect(() => {
     const junk = junkRef.current;
     const buddies = buddiesRef.current;
