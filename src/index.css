@@ -507,7 +507,7 @@ body {
   }
 @layer utilities {
   .hero-earth-bg {
-  background-image: url('public/images/junk-buddies-background.png');
+  background-image: url('/images/junk-buddies-background.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
