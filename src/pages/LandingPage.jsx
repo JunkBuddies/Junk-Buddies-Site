@@ -97,17 +97,17 @@ function LandingPage() {
           Making Space For What Matters
         </p>
 
-        {/* Promo Text */}
-<div
+      {/* Promo Text */}
+<div 
   className="
-    absolute z-20 text-white px-4 max-w-xs
-    bottom-[20%] left-1/2 -translate-x-1/2
-    text-center
-    sm:bottom-auto sm:top-1/3 sm:left-[8%] sm:translate-x-0 sm:text-left
-    lg:left-[12%]
+    absolute z-20 text-white px-4 max-w-md
+    top-[25%] left-1/2 -translate-x-1/2
+    sm:top-1/3 sm:left-[10%] sm:translate-x-0
+    lg:top-1/3 lg:left-[12%]
+    text-center sm:text-left
   "
 >
-  <p className="text-sm sm:text-base md:text-lg font-medium mb-2">
+  <p className="text-sm md:text-lg font-medium mb-2">
     Tired of waiting?
   </p>
   <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug">
