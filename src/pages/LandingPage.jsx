@@ -62,32 +62,25 @@ function LandingPage() {
           </Link>
         </div>
 
-        <div className="relative z-10 mt-24">
-          <div className="relative z-10 shine-wrapper">
-            <div className="flex flex-wrap justify-center items-center gap-3 whitespace-nowrap">
-              <span
-                ref={junkRef}
-                className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk"
-              >
-                Junk
-              </span>
-              <img
-                src="/images/logo-icon.png"
-                alt="Logo"
-                className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
-              />
-              <span
-                ref={buddiesRef}
-                className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies"
-              >
-                Buddies
-              </span>
-            </div>
-          </div>
-          <p className="text-2xl font-semibold tracking-wide mt-4">
-            Making Space For What Matters
-          </p>
-        </div>
+      <div className="absolute top-10 w-full z-20 flex flex-col items-center">
+  <div className="shine-wrapper flex justify-center items-center gap-3 whitespace-nowrap">
+    <span ref={junkRef} className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk">
+      Junk
+    </span>
+    <img
+      src="/images/logo-icon.png"
+      alt="Logo"
+      className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
+    />
+    <span ref={buddiesRef} className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies">
+      Buddies
+    </span>
+  </div>
+  <p className="text-xl sm:text-2xl font-semibold tracking-wide mt-2">
+    Making Space For What Matters
+  </p>
+</div>
+
 
      {/* CTA BUTTONS */}
 <div className="relative z-10 mt-8 flex flex-col items-center space-y-4">
