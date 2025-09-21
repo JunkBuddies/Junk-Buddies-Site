@@ -62,14 +62,15 @@ function LandingPage() {
           </Link>
         </div>
 
-      {/* HERO TITLE + TAGLINE */}
+    {/* HERO TITLE + TAGLINE + CTAs */}
 <div
   className="
     relative z-20 flex flex-col items-center
-    mt-24                /* mobile: keep lower */
-    md:absolute md:top-10 md:w-full md:mt-0  /* tablets & up: push to top */
+    mt-24
+    md:absolute md:top-10 md:w-full md:mt-0
   "
 >
+  {/* Logo Title */}
   <div className="shine-wrapper flex justify-center items-center gap-3 whitespace-nowrap">
     <span
       ref={junkRef}
@@ -90,17 +91,17 @@ function LandingPage() {
     </span>
   </div>
 
+  {/* Tagline */}
   <p className="text-xl sm:text-2xl font-semibold tracking-wide mt-2">
     Making Space For What Matters
   </p>
-</div>
 
-
- {/* CTA BUTTONS */}
+  {/* CTA BUTTONS – stay further down on mobile, tuck under tagline on md+ */}
   <div
     className="
-      relative z-10 mt-8 flex flex-col items-center space-y-4
-      md:mt-6   /* tighten spacing under tagline on md+ */
+      relative z-10 flex flex-col items-center space-y-4
+      mt-8
+      md:mt-4   /* reduce gap and bring closer on md+ */
     "
   >
     <div className="flex flex-wrap justify-center gap-4">
@@ -117,6 +118,7 @@ function LandingPage() {
         Instant Pricing
       </button>
     </div>
+
     <a href="tel:3465936080" className="cta-metallic-button inline-block">
       Same-Day Pickup
     </a>
@@ -129,6 +131,7 @@ function LandingPage() {
     </button>
   </div>
 </div>
+
       {/* REQUIRE SERVICE TODAY BAR */}
       <div className="w-full text-center text-lg text-white py-10 px-6 about-reveal silver">
         <p className="text-xl mb-4">
