@@ -505,13 +505,21 @@ box-shadow:
 body {
   overflow-x: hidden;
   }
-   .hero-earth-bg {
+  .hero-earth-bg {
   background-image: url('/images/junk-buddies-background.png');
-  background-size: cover;
+  background-size: cover; /* default */
   background-repeat: no-repeat;
   background-position: center;
   background-color: black;
+}
+
+/* Optional fine-tuning for very small devices */
+@media (max-width: 480px) {
+  .hero-earth-bg {
+    background-size: contain;  /* show whole image if it's cut off */
+    background-position: top;  /* shift focus */
   }
+}
 @layer utilities {
  
 }
