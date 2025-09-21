@@ -107,7 +107,16 @@ function LandingPage() {
     text-center sm:text-left
   "
 >
-  {/* Promo Text */}
+{/* Promo Text */}
+<div 
+  className="
+    absolute z-20 text-white px-4 max-w-md
+    top-6 left-4           /* 📱 Mobile: upper-left */
+    sm:top-1/3 sm:left-1/2 sm:-translate-x-1/2  /* 💻 Tablet/laptop: centered */
+    lg:top-1/3 lg:left-1/2 lg:-translate-x-1/2
+    text-left sm:text-center
+  "
+>
   <p className="text-sm md:text-lg font-medium mb-2">
     Tired of waiting?
   </p>
@@ -122,27 +131,6 @@ function LandingPage() {
   <p className="mt-2 text-xs sm:text-base md:text-lg">
     Check prices in seconds — we haul it all.
   </p>
-
-  {/* CTA BUTTONS – now grouped with promo text */}
-  <div className="flex flex-col items-center space-y-4 mt-6">
-    <div className="flex flex-wrap justify-center gap-4">
-      <button onClick={() => navigate('/selection')} className="cta-metallic-button">
-        Get Started
-      </button>
-      <button onClick={() => navigate('/itemized')} className="silver-button">
-        Instant Pricing
-      </button>
-    </div>
-    <a href="tel:3465936080" className="cta-metallic-button inline-block">
-      Same-Day Pickup
-    </a>
-    <button
-      className="ai-price-button"
-      onClick={() => document.getElementById("jb-open-button")?.click()}
-    >
-      See Price In Seconds
-    </button>
-  </div>
 </div>
 
 
