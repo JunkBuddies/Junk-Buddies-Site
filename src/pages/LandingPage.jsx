@@ -96,35 +96,38 @@ function LandingPage() {
 </div>
 
 
+ {/* CTA BUTTONS */}
+  <div
+    className="
+      relative z-10 mt-8 flex flex-col items-center space-y-4
+      md:mt-6   /* tighten spacing under tagline on md+ */
+    "
+  >
+    <div className="flex flex-wrap justify-center gap-4">
+      <button
+        onClick={() => navigate('/selection')}
+        className="cta-metallic-button"
+      >
+        Get Started
+      </button>
+      <button
+        onClick={() => navigate('/itemized')}
+        className="silver-button"
+      >
+        Instant Pricing
+      </button>
+    </div>
+    <a href="tel:3465936080" className="cta-metallic-button inline-block">
+      Same-Day Pickup
+    </a>
 
-     {/* CTA BUTTONS */}
-<div className="relative z-10 mt-8 flex flex-col items-center space-y-4">
-  <div className="flex flex-wrap justify-center gap-4">
     <button
-      onClick={() => navigate('/selection')}
-      className="cta-metallic-button"
+      className="ai-price-button"
+      onClick={() => document.getElementById("jb-open-button")?.click()}
     >
-      Get Started
-    </button>
-    <button
-      onClick={() => navigate('/itemized')}
-      className="silver-button"
-    >
-      Instant Pricing
+      See Price In Seconds
     </button>
   </div>
-  <a href="tel:3465936080" className="cta-metallic-button inline-block">
-    Same-Day Pickup
-  </a>
-
-{/* NEW AI CHAT BUTTON */}
-<button 
-  className="ai-price-button" 
-  onClick={() => document.getElementById("jb-open-button")?.click()}
->
-  See Price In Seconds
-</button>
-</div>
 </div>
       {/* REQUIRE SERVICE TODAY BAR */}
       <div className="w-full text-center text-lg text-white py-10 px-6 about-reveal silver">
