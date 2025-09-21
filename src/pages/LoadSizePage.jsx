@@ -11,7 +11,7 @@ const loadSizes = [
   { name: '1/2 Load', price: 500 },
   { name: '1/4 Load', price: 250 },
 ];
-
+ 
 function LoadSizePage() {
   const { cart, setCart } = useCart();
   const navigate = useNavigate();
