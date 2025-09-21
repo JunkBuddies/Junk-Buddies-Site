@@ -505,14 +505,15 @@ box-shadow:
 body {
   overflow-x: hidden;
   }
-@layer utilities {
-  .hero-earth-bg {
+   .hero-earth-bg {
   background-image: url('/images/junk-buddies-background.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   background-color: black;
   }
+@layer utilities {
+ 
 }
 .about-reveal.silver {
   background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 40%, #999999 60%, #e0e0e0 100%);
