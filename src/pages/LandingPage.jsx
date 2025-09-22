@@ -63,36 +63,39 @@ function LandingPage() {
         </Link>
       </div>
 
- {/* PROMO TEXT – stays independent of logo/tagline */}
+{/* PROMO TEXT – stays independent of logo/tagline */}
 <div
   className="
     absolute z-20 text-white px-4 max-w-md
-    top-6 left-6               /* 📱 Mobile: 'Tired of waiting?' stays top-left */
-    sm:top-1/3 sm:left-1/2 sm:-translate-x-1/2
-    lg:top-1/3 lg:left-1/2 lg:-translate-x-1/2
-    text-left sm:text-center
+    top-6 left-6                /* 📱 Mobile: top-left */
+    sm:top-1/3 sm:left-[12%] sm:translate-x-0
+    lg:top-1/3 lg:left-[12%] lg:translate-x-0
+    text-left
   "
 >
   {/* Line 1 stays pinned */}
-  <p className="text-sm md:text-lg font-medium mb-2">
+  <p className="text-sm md:text-lg font-medium mb-1">
     Tired of waiting?
   </p>
 
-  {/* Group rest into its own block for mobile offset */}
-  <div className="mt-16 sm:mt-0">  
-    <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug">
-      Need{" "}
-      <span className="text-transparent bg-clip-text font-extrabold 
-        bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 drop-shadow-md">
-        Junk Removal
-      </span>{" "}
-      in Houston + surrounding cities?
-    </h2>
-    <p className="mt-2 text-xs sm:text-base md:text-lg">
-      Check prices in seconds — we haul it all.
-    </p>
-  </div>
+  {/* Need Junk directly under Tired */}
+  <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug">
+    Need{" "}
+    <span
+      className="text-transparent bg-clip-text font-extrabold 
+        bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 drop-shadow-md"
+    >
+      Junk Removal
+    </span>{" "}
+    in Houston + surrounding cities?
+  </h2>
+
+  {/* Check Prices pushed down further (extra margin for mobile only) */}
+  <p className="mt-20 sm:mt-6 text-xs sm:text-base md:text-lg">
+    Check prices in seconds — we haul it all.
+  </p>
 </div>
+
 
 
 {/* HERO CONTENT */}
