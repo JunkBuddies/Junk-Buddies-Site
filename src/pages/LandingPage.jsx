@@ -66,8 +66,8 @@ function LandingPage() {
 {/* PROMO TEXT – stays independent of logo/tagline */}
 <div
   className="
-    absolute z-20 text-white px-4 max-w-md
-    top-6 left-6                /* 📱 Mobile: top-left */
+    absolute z-20 text-white px-2 max-w-md
+    top-6 left-2                /* 📱 Mobile: closer to left */
     sm:top-1/3 sm:left-[12%] sm:translate-x-0
     lg:top-1/3 lg:left-[12%] lg:translate-x-0
     text-left
@@ -90,8 +90,8 @@ function LandingPage() {
     in Houston + surrounding cities?
   </h2>
 
-  {/* Check Prices pushed down further (extra margin for mobile only) */}
-  <p className="mt-20 sm:mt-6 text-xs sm:text-base md:text-lg">
+  {/* Check Prices further down */}
+  <p className="mt-32 sm:mt-6 text-xs sm:text-base md:text-lg">
     Check prices in seconds — we haul it all.
   </p>
 </div>
