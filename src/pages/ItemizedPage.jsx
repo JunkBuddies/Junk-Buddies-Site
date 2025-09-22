@@ -6,7 +6,7 @@ import { calculatePrice, getLoadLabel, fullLoadPoints } from "../utils/pricing";
 import itemData from "../data/itemData";
 
 const DISCOUNT_RATE = 0.10;
-
+ 
 // use same session id scheme as ChatWidget so we can read the discount flag it sets
 function getSessionId() {
   const key = "jb_chat_session";
