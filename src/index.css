@@ -658,3 +658,19 @@ body {
   0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+@keyframes rgb-underline {
+  0% { background-position: 0% 100%; }
+  100% { background-position: 200% 100%; }
+}
+
+.rgb-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  background-size: 200% auto;
+  animation: rgb-underline 6s linear infinite;
+}
