@@ -241,9 +241,10 @@ function LandingPage() {
         we treat every removal like it’s our own space.
       </p>
 
-      {/* Top 8 list with 2 images alongside (on mobile) */}
-      <div className="flex flex-col sm:flex-row sm:items-start sm:gap-4">
-        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-gray-900 flex-1">
+      {/* Top 8 list with 2 images alongside on mobile */}
+      <div className="grid grid-cols-2 gap-4 items-start lg:block">
+        {/* List (left half on mobile) */}
+        <ul className="col-span-1 grid grid-cols-1 gap-4 text-left text-gray-900">
           <li>🛋️ Furniture</li>
           <li>🏠 Appliances</li>
           <li>💻 Electronics</li>
@@ -254,8 +255,8 @@ function LandingPage() {
           <li>🏡 Full Property Refresh</li>
         </ul>
 
-        {/* First 2 images only show next to the top 8 on mobile/tablet */}
-        <div className="grid grid-cols-1 gap-4 mt-4 sm:mt-0 w-full sm:w-1/2 lg:hidden">
+        {/* First 2 images (right half on mobile, hidden on desktop) */}
+        <div className="col-span-1 grid grid-cols-1 gap-4 lg:hidden">
           <img
             src="/images/proof-hoarder.jpg"
             alt="Hoarder garage cleanout"
@@ -287,7 +288,7 @@ function LandingPage() {
       </ul>
     </div>
 
-    {/* Right Column (desktop view only, all 4 images in grid) */}
+    {/* Right Column (desktop only, all 4 images in grid) */}
     <div className="relative z-10 grid grid-cols-2 gap-4 w-full hidden lg:grid">
       <img
         src="/images/proof-hoarder.jpg"
@@ -312,7 +313,7 @@ function LandingPage() {
     </div>
   </div>
 
-  {/* Last 2 images stacked under full list on mobile/tablet */}
+  {/* Last 2 images (mobile/tablet only) */}
   <div className="grid grid-cols-2 gap-4 mt-6 lg:hidden max-w-7xl mx-auto">
     <img
       src="/images/proof-storage-before.png"
@@ -336,6 +337,7 @@ function LandingPage() {
     </p>
   </div>
 </section>
+
 
 
       <div className="relative z-10 bg-gray-900 px-6 pt-16 pb-0">
