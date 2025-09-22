@@ -52,16 +52,20 @@ function LandingPage() {
   return (
   <div className="w-full overflow-hidden">
     <div className="hero-earth-bg w-full min-h-screen flex flex-col items-center justify-center text-white text-center relative px-4 sm:px-8">
+{/* Cities Button */}
+<div className="absolute top-6 right-6 z-50">
+  <Link
+    to="/service-areas"
+    className="
+      text-gold font-semibold hover:underline bg-black/70 
+      px-2 py-1 text-xs rounded-md shadow-md   /* 📱 Smaller on mobile */
+      sm:px-4 sm:py-2 sm:text-base sm:rounded-lg /* 💻 Normal size on sm+ */
+    "
+  >
+    Cities We Serve
+  </Link>
+</div>
 
-      {/* Cities Button */}
-      <div className="absolute top-6 right-6 z-50">
-        <Link
-          to="/service-areas"
-          className="text-gold font-semibold hover:underline bg-black/70 px-4 py-2 rounded-lg shadow-md"
-        >
-          Cities We Serve
-        </Link>
-      </div>
 
 {/* PROMO TEXT – stays independent of logo/tagline */}
 <div
@@ -78,7 +82,7 @@ function LandingPage() {
     Tired of waiting?
   </p>
 
-  {/* Need Junk directly under Tired */}
+  {/* Need Junk Removal */}
   <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug">
     Need{" "}
     <span
@@ -86,15 +90,20 @@ function LandingPage() {
         bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 drop-shadow-md"
     >
       Junk Removal
-    </span>{" "}
-    in Houston + surrounding cities?
+    </span>
   </h2>
+
+  {/* Smaller, separate line */}
+  <p className="text-xs sm:text-base md:text-lg mt-1">
+    in Houston + surrounding cities?
+  </p>
 
   {/* Check Prices further down */}
   <p className="mt-32 sm:mt-6 text-xs sm:text-base md:text-lg">
     Check prices in seconds — we haul it all.
   </p>
 </div>
+
 
 
 
@@ -131,45 +140,76 @@ function LandingPage() {
   <p className="text-xl sm:text-2xl font-semibold tracking-wide mt-2">
     Making Space For What Matters
   </p>
+
+  {/* CTA BUTTONS – only show inline here on md+ */}
+  <div
+    className="
+      hidden md:flex md:flex-col md:items-center md:space-y-4 md:mt-6
+    "
+  >
+    <div className="flex flex-wrap justify-center gap-4">
+      <button
+        onClick={() => navigate('/selection')}
+        className="cta-metallic-button"
+      >
+        Get Started
+      </button>
+      <button
+        onClick={() => navigate('/itemized')}
+        className="silver-button"
+      >
+        Instant Pricing
+      </button>
+    </div>
+
+    <a href="tel:3465936080" className="cta-metallic-button inline-block">
+      Same-Day Pickup
+    </a>
+
+    <button
+      className="ai-price-button"
+      onClick={() => document.getElementById('jb-open-button')?.click()}
+    >
+      See Price In Seconds
+    </button>
+  </div>
 </div>
 
+{/* CTA BUTTONS – stays for mobile only */}
+<div
+  className="
+    relative z-10 flex flex-col items-center space-y-4
+    mt-8
+    md:hidden  /* hide on md+ */
+  "
+>
+  <div className="flex flex-wrap justify-center gap-4">
+    <button
+      onClick={() => navigate('/selection')}
+      className="cta-metallic-button"
+    >
+      Get Started
+    </button>
+    <button
+      onClick={() => navigate('/itemized')}
+      className="silver-button"
+    >
+      Instant Pricing
+    </button>
+  </div>
 
-        {/* CTA BUTTONS */}
-        <div
-          className="
-            relative z-10 flex flex-col items-center space-y-4
-            mt-8
-            md:mt-6  /* tuck closer under tagline on md+ */
-          "
-        >
-          <div className="flex flex-wrap justify-center gap-4">
-            <button
-              onClick={() => navigate('/selection')}
-              className="cta-metallic-button"
-            >
-              Get Started
-            </button>
-            <button
-              onClick={() => navigate('/itemized')}
-              className="silver-button"
-            >
-              Instant Pricing
-            </button>
-          </div>
+  <a href="tel:3465936080" className="cta-metallic-button inline-block">
+    Same-Day Pickup
+  </a>
 
-          <a href="tel:3465936080" className="cta-metallic-button inline-block">
-            Same-Day Pickup
-          </a>
-
-          <button
-            className="ai-price-button"
-            onClick={() => document.getElementById("jb-open-button")?.click()}
-          >
-            See Price In Seconds
-          </button>
-        </div>
-      </div>
-    
+  <button
+    className="ai-price-button"
+    onClick={() => document.getElementById('jb-open-button')?.click()}
+  >
+    See Price In Seconds
+  </button>
+</div>
+</div>
       {/* REQUIRE SERVICE TODAY BAR */}
       <div className="w-full text-center text-lg text-white py-10 px-6 about-reveal silver">
         <p className="text-xl mb-4">
