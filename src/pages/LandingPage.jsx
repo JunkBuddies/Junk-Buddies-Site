@@ -241,36 +241,60 @@ function LandingPage() {
         we treat every removal like it’s our own space.
       </p>
 
+      {/* Top 8 list with 2 images alongside (on mobile) */}
+      <div className="flex flex-col sm:flex-row sm:items-start sm:gap-4">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-gray-900 flex-1">
+          <li>🛋️ Furniture</li>
+          <li>🏠 Appliances</li>
+          <li>💻 Electronics</li>
+          <li>🌳 Yard Waste & Debris</li>
+          <li>🗂️ Office Cleanouts</li>
+          <li>📦 Storage Units</li>
+          <li>🧹 Hoarder Cleanouts</li>
+          <li>🏡 Full Property Refresh</li>
+        </ul>
+
+        {/* First 2 images only show next to the top 8 on mobile/tablet */}
+        <div className="grid grid-cols-1 gap-4 mt-4 sm:mt-0 w-full sm:w-1/2 lg:hidden">
+          <img
+            src="/images/proof-hoarder.jpg"
+            alt="Hoarder garage cleanout"
+            className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
+          />
+          <img
+            src="/images/proof-home.jpg"
+            alt="Home cleanout"
+            className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
+          />
+        </div>
+      </div>
+
+      {/* Minimalist Divider */}
+      <div className="my-6">
+        <hr className="border-t border-gray-300 w-4/5 mx-auto" />
+      </div>
+
+      {/* Extended list */}
       <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-gray-900">
-      <li>🛋️ Furniture</li>
-<li>🏠 Appliances</li>
-<li>💻 Electronics</li>
-<li>🌳 Yard Waste & Debris</li>
-<li>🗂️ Office Cleanouts</li>
-<li>📦 Storage Units</li>
-<li>🧹 Hoarder Cleanouts</li>
-<li>🏡 Full Property Refresh</li>
-
-<li>🛏️ Mattresses & Box Springs</li>
-<li>🚪 Doors, Windows & Fixtures</li>
-<li>🪞 Household Clutter & Decor</li>
-<li>🏗️ Hot Tubs & Above-Ground Pools</li>
-<li>🎹 Pianos & Large Specialty Items</li>
-<li>🏋️ Exercise Equipment</li>
-<li>🪵 Construction Debris & Lumber</li>
-<li>🏚️ Estate & Rental Cleanouts</li>
-
+        <li>🛏️ Mattresses & Box Springs</li>
+        <li>🚪 Doors, Windows & Fixtures</li>
+        <li>🪞 Household Clutter & Decor</li>
+        <li>🏗️ Hot Tubs & Above-Ground Pools</li>
+        <li>🎹 Pianos & Large Specialty Items</li>
+        <li>🏋️ Exercise Equipment</li>
+        <li>🪵 Construction Debris & Lumber</li>
+        <li>🏚️ Estate & Rental Cleanouts</li>
       </ul>
     </div>
 
-    {/* Right Column: Proof Images */}
-    <div className="relative z-10 grid grid-cols-2 gap-4 w-full">
+    {/* Right Column (desktop view only, all 4 images in grid) */}
+    <div className="relative z-10 grid grid-cols-2 gap-4 w-full hidden lg:grid">
       <img
         src="/images/proof-hoarder.jpg"
         alt="Hoarder garage cleanout"
         className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
       />
-       <img
+      <img
         src="/images/proof-home.jpg"
         alt="Home cleanout"
         className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
@@ -286,6 +310,20 @@ function LandingPage() {
         className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
       />
     </div>
+  </div>
+
+  {/* Last 2 images stacked under full list on mobile/tablet */}
+  <div className="grid grid-cols-2 gap-4 mt-6 lg:hidden max-w-7xl mx-auto">
+    <img
+      src="/images/proof-storage-before.png"
+      alt="Storage cleanout before"
+      className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
+    />
+    <img
+      src="/images/proof-storage-after.png"
+      alt="Storage cleanout after"
+      className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
+    />
   </div>
 
   {/* Questions Line */}
