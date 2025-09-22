@@ -220,6 +220,71 @@ function LandingPage() {
         </a>
       </div>
 
+    {/* === WHITE GLOVE SERVICE SECTION === */}
+<section className="relative w-full bg-[#111] py-20 px-6 overflow-hidden">
+  {/* Badge */}
+  <div className="absolute top-6 left-6 flex items-center space-x-2">
+    <span className="bg-gold text-black font-bold px-3 py-1 rounded-full text-xs shadow-md">
+      ✓ White Glove
+    </span>
+  </div>
+
+  <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative">
+    {/* Left Column */}
+    <div className="text-gray-200 z-10">
+      <h2 className="text-3xl sm:text-4xl font-bold text-gold mb-6">
+        Junk Buddies: White Glove Junk Removal – For Your Peace of Mind
+      </h2>
+      <p className="text-lg mb-6 text-gray-300 leading-relaxed">
+        From single-item pickups to full estate cleanouts, Junk Buddies handles it all with 
+        care and precision. Whether it’s your home, office, storage unit, or yard, 
+        we treat every removal like it’s our own space.
+      </p>
+
+      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-gray-100">
+        <li>🛋️ Furniture</li>
+        <li>🏠 Appliances</li>
+        <li>💻 Electronics</li>
+        <li>🌳 Yard Waste & Debris</li>
+        <li>🗂️ Office Cleanouts</li>
+        <li>📦 Storage Units</li>
+        <li>🧹 Hoarder Cleanouts</li>
+        <li>🏡 Full Property Refresh</li>
+      </ul>
+
+      <p className="mt-6 font-semibold text-sm bg-clip-text text-transparent 
+        bg-gradient-to-r from-red-400 via-green-400 to-blue-400 animate-pulse">
+        ❓ Questions? All your answers can be found with Junk Buddies’ Assistant
+      </p>
+    </div>
+
+    {/* Right Column: Proof Images w/ angled background */}
+    <div className="relative z-10">
+      {/* angled background divider */}
+      <div className="absolute -inset-4 bg-gradient-to-tr from-gold/10 to-transparent transform -skew-y-3 rounded-lg"></div>
+
+      <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <img
+          src="/images/proof-beforeafter.png"
+          alt="Before and After cleanout"
+          className="rounded-lg shadow-lg border border-gold/40 hover:scale-105 transition-transform"
+        />
+        <img
+          src="/images/proof-sweeping.png"
+          alt="Crew sweeping and tidying"
+          className="rounded-lg shadow-lg border border-gold/40 hover:scale-105 transition-transform"
+        />
+        <img
+          src="/images/proof-fleet.png"
+          alt="Junk Buddies fleet of trucks"
+          className="rounded-lg shadow-lg border border-gold/40 sm:col-span-2 hover:scale-105 transition-transform"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+
       <div className="relative z-10 bg-gray-900 px-6 pt-16 pb-0">
         <div className="max-w-5xl w-full mx-auto self-schedule-section text-center">
   <span className="self-schedule-badge">
