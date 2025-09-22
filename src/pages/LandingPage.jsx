@@ -220,7 +220,7 @@ function LandingPage() {
         </a>
       </div>
 
-  {/* === WHITE GLOVE SERVICE SECTION === */}
+{/* === WHITE GLOVE SERVICE SECTION === */}
 <section className="relative w-full bg-[#fafafa] py-20 px-6 overflow-hidden">
   {/* Badge */}
   <div className="absolute top-6 left-6 flex items-center space-x-2">
@@ -229,9 +229,9 @@ function LandingPage() {
     </span>
   </div>
 
-  <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative">
+  <div className="max-w-7xl mx-auto flex flex-col lg:grid lg:grid-cols-2 gap-12 items-start relative">
     {/* Left Column */}
-    <div className="text-gray-800 z-10">
+    <div className="text-gray-800 z-10 w-full">
       <h2 className="text-3xl sm:text-4xl font-bold text-gold mb-6">
         Junk Buddies: White Glove Junk Removal – For Your Peace of Mind
       </h2>
@@ -251,38 +251,41 @@ function LandingPage() {
         <li>🧹 Hoarder Cleanouts</li>
         <li>🏡 Full Property Refresh</li>
       </ul>
-
-      <p className="mt-6 font-semibold text-sm text-gray-700">
-        ❓ Questions? All your answers can be found with{" "}
-        <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-400 via-green-400 to-blue-400 animate-pulse font-bold">
-          Junk Buddies’ Assistant
-        </span>
-      </p>
     </div>
 
     {/* Right Column: Proof Images */}
-    <div className="relative z-10">
-      {/* angled soft background divider */}
-      <div className="absolute -inset-4 bg-gradient-to-tr from-gold/10 to-transparent transform -skew-y-3 rounded-lg"></div>
-
-      <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <img
-          src="/images/proof-beforeafter.png"
-          alt="Before and After cleanout"
-          className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
-        />
-        <img
-          src="/images/proof-sweeping.png"
-          alt="Crew sweeping and tidying"
-          className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
-        />
-        <img
-          src="/images/proof-fleet.png"
-          alt="Junk Buddies fleet of trucks"
-          className="rounded-lg shadow-md border border-gold/30 sm:col-span-2 hover:scale-105 transition-transform"
-        />
-      </div>
+    <div className="relative z-10 grid grid-cols-2 gap-4 w-full">
+      <img
+        src="/images/proof-hoarder.png"
+        alt="Hoarder garage cleanout"
+        className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
+      />
+      <img
+        src="/images/proof-storage-before.png"
+        alt="Storage cleanout before"
+        className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
+      />
+      <img
+        src="/images/proof-storage-after.png"
+        alt="Storage cleanout after"
+        className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
+      />
+      <img
+        src="/images/proof-home.png"
+        alt="Home cleanout"
+        className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
+      />
     </div>
+  </div>
+
+  {/* Questions Line */}
+  <div className="max-w-7xl mx-auto mt-8 text-center lg:text-left">
+    <p className="font-semibold text-sm text-gray-700">
+      ❓ Questions? All your answers can be found with{" "}
+      <span className="relative font-bold text-gray-900 rgb-underline">
+        Junk Buddies’ Assistant
+      </span>
+    </p>
   </div>
 </section>
 
