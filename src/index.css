@@ -507,8 +507,8 @@ body {
   }
 .hero-earth-bg {
   background-image: 
-    url('/images/moon-surface.png'),
-    url('/images/junk-buddies-background.png');
+    url('/images/junk-buddies-background.png'),
+    url('/images/moon-surface.png');
   background-repeat: no-repeat, no-repeat;
   background-position: bottom center, center;
   background-size: cover, cover;
