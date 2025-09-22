@@ -220,8 +220,8 @@ function LandingPage() {
         </a>
       </div>
 
-    {/* === WHITE GLOVE SERVICE SECTION === */}
-<section className="relative w-full bg-[#111] py-20 px-6 overflow-hidden">
+  {/* === WHITE GLOVE SERVICE SECTION === */}
+<section className="relative w-full bg-[#fafafa] py-20 px-6 overflow-hidden">
   {/* Badge */}
   <div className="absolute top-6 left-6 flex items-center space-x-2">
     <span className="bg-gold text-black font-bold px-3 py-1 rounded-full text-xs shadow-md">
@@ -231,17 +231,17 @@ function LandingPage() {
 
   <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative">
     {/* Left Column */}
-    <div className="text-gray-200 z-10">
+    <div className="text-gray-800 z-10">
       <h2 className="text-3xl sm:text-4xl font-bold text-gold mb-6">
         Junk Buddies: White Glove Junk Removal – For Your Peace of Mind
       </h2>
-      <p className="text-lg mb-6 text-gray-300 leading-relaxed">
+      <p className="text-lg mb-6 text-gray-700 leading-relaxed">
         From single-item pickups to full estate cleanouts, Junk Buddies handles it all with 
         care and precision. Whether it’s your home, office, storage unit, or yard, 
         we treat every removal like it’s our own space.
       </p>
 
-      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-gray-100">
+      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-gray-900">
         <li>🛋️ Furniture</li>
         <li>🏠 Appliances</li>
         <li>💻 Electronics</li>
@@ -252,32 +252,34 @@ function LandingPage() {
         <li>🏡 Full Property Refresh</li>
       </ul>
 
-      <p className="mt-6 font-semibold text-sm bg-clip-text text-transparent 
-        bg-gradient-to-r from-red-400 via-green-400 to-blue-400 animate-pulse">
-        ❓ Questions? All your answers can be found with Junk Buddies’ Assistant
+      <p className="mt-6 font-semibold text-sm text-gray-700">
+        ❓ Questions? All your answers can be found with{" "}
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-400 via-green-400 to-blue-400 animate-pulse font-bold">
+          Junk Buddies’ Assistant
+        </span>
       </p>
     </div>
 
-    {/* Right Column: Proof Images w/ angled background */}
+    {/* Right Column: Proof Images */}
     <div className="relative z-10">
-      {/* angled background divider */}
+      {/* angled soft background divider */}
       <div className="absolute -inset-4 bg-gradient-to-tr from-gold/10 to-transparent transform -skew-y-3 rounded-lg"></div>
 
       <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-4">
         <img
           src="/images/proof-beforeafter.png"
           alt="Before and After cleanout"
-          className="rounded-lg shadow-lg border border-gold/40 hover:scale-105 transition-transform"
+          className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
         />
         <img
           src="/images/proof-sweeping.png"
           alt="Crew sweeping and tidying"
-          className="rounded-lg shadow-lg border border-gold/40 hover:scale-105 transition-transform"
+          className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
         />
         <img
           src="/images/proof-fleet.png"
           alt="Junk Buddies fleet of trucks"
-          className="rounded-lg shadow-lg border border-gold/40 sm:col-span-2 hover:scale-105 transition-transform"
+          className="rounded-lg shadow-md border border-gold/30 sm:col-span-2 hover:scale-105 transition-transform"
         />
       </div>
     </div>
