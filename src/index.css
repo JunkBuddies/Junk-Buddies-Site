@@ -515,11 +515,6 @@ body {
   background-attachment: scroll, scroll;
 }
 
-/* 📱 Mobile tweak: shift moon surface down */
-@media (max-width: 768px) {
-  .hero-earth-bg {
-    background-position: bottom -60px center, center; /* nudges moon lower */
-  }
 }
 
 /* Extra small screens */
