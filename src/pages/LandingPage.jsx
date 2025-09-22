@@ -242,22 +242,37 @@ function LandingPage() {
       </p>
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-gray-900">
-        <li>🛋️ Furniture</li>
-        <li>🏠 Appliances</li>
-        <li>💻 Electronics</li>
-        <li>🌳 Yard Waste & Debris</li>
-        <li>🗂️ Office Cleanouts</li>
-        <li>📦 Storage Units</li>
-        <li>🧹 Hoarder Cleanouts</li>
-        <li>🏡 Full Property Refresh</li>
+      <li>🛋️ Furniture</li>
+<li>🏠 Appliances</li>
+<li>💻 Electronics</li>
+<li>🌳 Yard Waste & Debris</li>
+<li>🗂️ Office Cleanouts</li>
+<li>📦 Storage Units</li>
+<li>🧹 Hoarder Cleanouts</li>
+<li>🏡 Full Property Refresh</li>
+
+<li>🛏️ Mattresses & Box Springs</li>
+<li>🚪 Doors, Windows & Fixtures</li>
+<li>🪞 Household Clutter & Decor</li>
+<li>🏗️ Hot Tubs & Above-Ground Pools</li>
+<li>🎹 Pianos & Large Specialty Items</li>
+<li>🏋️ Exercise Equipment</li>
+<li>🪵 Construction Debris & Lumber</li>
+<li>🏚️ Estate & Rental Cleanouts</li>
+
       </ul>
     </div>
 
     {/* Right Column: Proof Images */}
     <div className="relative z-10 grid grid-cols-2 gap-4 w-full">
       <img
-        src="/images/proof-hoarder.png"
+        src="/images/proof-hoarder.jpg"
         alt="Hoarder garage cleanout"
+        className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
+      />
+       <img
+        src="/images/proof-home.jpg"
+        alt="Home cleanout"
         className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
       />
       <img
@@ -268,11 +283,6 @@ function LandingPage() {
       <img
         src="/images/proof-storage-after.png"
         alt="Storage cleanout after"
-        className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
-      />
-      <img
-        src="/images/proof-home.png"
-        alt="Home cleanout"
         className="rounded-lg shadow-md border border-gold/30 hover:scale-105 transition-transform"
       />
     </div>
