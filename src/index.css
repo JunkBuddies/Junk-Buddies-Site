@@ -507,13 +507,14 @@ body {
   }
 .hero-earth-bg {
   background-image: 
-    url('/images/junk-buddies-background.png'), /* main hero image */
-    url('/images/moon-surface.png');            /* fallback moon */
-  background-repeat: no-repeat, repeat; 
-  background-position: center, center; 
-  background-size: cover, cover; 
-  background-attachment: scroll, scroll; 
+    url('/images/moon-surface.png'),
+    url('/images/junk-buddies-background.png');
+  background-repeat: no-repeat, no-repeat;
+  background-position: bottom center, center;
+  background-size: 120% auto, cover; /* stretch moon-surface more downward */
+  background-attachment: scroll, scroll;
 }
+
 
 
 /* Extra small screens */
