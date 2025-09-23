@@ -448,12 +448,12 @@ function LandingPage() {
         src="/images/logo-local.png"
         alt="Local Charity Partner"
         className="h-12 sm:h-16 object-contain grayscale hover:grayscale-0 transition"
+         />
         <img
     src="/images/logo-booksbetweenkids.png"
     alt="Books Between Kids"
     className="h-12 sm:h-16 object-contain grayscale hover:grayscale-0 transition"
-  />
-      />
+ />
     </div>
   </div>
 </section>
