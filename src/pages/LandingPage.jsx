@@ -362,6 +362,83 @@ function LandingPage() {
   </div>
 </section>
 
+{/* === DONATION & RECYCLING SECTION === */}
+<section className="relative w-full bg-[#fafafa] py-20 px-6 overflow-hidden">
+  <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-stretch relative">
+    {/* Left Side – Photos */}
+    <div className="bg-gray-100 flex flex-col justify-center items-center p-4 w-full lg:w-1/2 space-y-4">
+      <img
+        src="/images/donation-placeholder1.jpg"
+        alt="Donation proof 1"
+        className="w-full h-auto object-cover rounded-lg shadow-md border border-gold/30"
+      />
+      <img
+        src="/images/donation-placeholder2.jpg"
+        alt="Donation proof 2"
+        className="w-full h-auto object-cover rounded-lg shadow-md border border-gold/30"
+      />
+    </div>
+
+    {/* Divider */}
+    <div className="hidden lg:block w-px bg-gold mx-6"></div>
+
+    {/* Right Side – Text */}
+    <div className="flex-1 text-gray-800 mt-8 lg:mt-0 lg:pl-8">
+      <h2 className="text-3xl sm:text-4xl font-bold text-gold mb-6">
+        Donation & Recycling — Built Into Every Job
+      </h2>
+      <p className="text-lg mb-6 leading-relaxed text-gray-700">
+        At Junk Buddies, responsible sorting is not optional — it’s how we
+        operate. Every pickup is evaluated for donation and recycling first,
+        reducing landfill impact and ensuring reusable items find a second life.
+      </p>
+      <p className="text-lg mb-6 leading-relaxed text-gray-700 font-semibold">
+        This system means less waste, less cost, and more value for you.
+      </p>
+      <p className="text-lg mb-6 leading-relaxed text-gray-700">
+        When you choose Junk Buddies, you’re not just clearing space — you’re{" "}
+        <span className="font-bold text-gold">Making Space For What Matters.</span>
+      </p>
+      <p className="text-sm font-semibold text-gray-600">
+        Donation and recycling: included with every service, at no extra charge.
+      </p>
+    </div>
+  </div>
+
+  {/* Partner Logos */}
+  <div className="max-w-7xl mx-auto mt-12">
+    <h3 className="text-xl font-bold text-center text-gray-800 mb-6">
+      Proud Partners In Donation & Recycling
+    </h3>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 items-center justify-items-center">
+      <img
+        src="/images/logo-goodwill.png"
+        alt="Goodwill"
+        className="h-12 sm:h-16 object-contain grayscale hover:grayscale-0 transition"
+      />
+      <img
+        src="/images/logo-salvationarmy.png"
+        alt="Salvation Army"
+        className="h-12 sm:h-16 object-contain grayscale hover:grayscale-0 transition"
+      />
+      <img
+        src="/images/logo-habitat.png"
+        alt="Habitat for Humanity"
+        className="h-12 sm:h-16 object-contain grayscale hover:grayscale-0 transition"
+      />
+      <img
+        src="/images/logo-hfb.png"
+        alt="Houston Furniture Bank"
+        className="h-12 sm:h-16 object-contain grayscale hover:grayscale-0 transition"
+      />
+      <img
+        src="/images/logo-local.png"
+        alt="Local Charity Partner"
+        className="h-12 sm:h-16 object-contain grayscale hover:grayscale-0 transition"
+      />
+    </div>
+  </div>
+</section>
 
 
 
