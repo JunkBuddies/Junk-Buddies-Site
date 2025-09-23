@@ -372,18 +372,20 @@ function LandingPage() {
     <div className="absolute top-4 left-4 text-green-600 text-2xl">♻️</div>
     <div className="absolute top-4 right-4 text-green-600 text-2xl">🌱</div>
 
-   {/* Left Side – Photos (desktop smaller, mobile full width stacked) */}
+  {/* Left Side – Photos (always stacked, responsive) */}
 <div className="bg-gray-100 flex flex-col justify-center items-center 
-                p-2 xs:p-3 sm:p-4 w-full lg:w-1/2 lg:max-w-sm space-y-2 sm:space-y-4">
+                p-2 xs:p-3 sm:p-4 w-1/2 space-y-2 sm:space-y-4">
   <img
     src="/images/donation-placeholder1.png"
     alt="Donation proof 1"
-    className="w-full h-auto object-cover rounded-lg shadow-md border border-gold/30"
+    className="w-full sm:max-w-[80%] lg:max-w-[70%] h-auto object-cover 
+               rounded-lg shadow-md border border-gold/30"
   />
   <img
     src="/images/donation-placeholder2.png"
     alt="Donation proof 2"
-    className="w-full h-auto object-cover rounded-lg shadow-md border border-gold/30"
+    className="w-full sm:max-w-[80%] lg:max-w-[70%] h-auto object-cover 
+               rounded-lg shadow-md border border-gold/30"
   />
 </div>
 
