@@ -425,11 +425,11 @@ function LandingPage() {
   </h3>
   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 items-center justify-items-center">
     {/* Goodwill */}
-    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group">
+    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group cursor-pointer">
       <img
         src="/images/goodwill-logo.png"
         alt="Goodwill"
-        className="max-h-16 sm:max-h-20 object-contain grayscale group-hover:opacity-0 transition duration-300"
+        className="max-h-16 sm:max-h-20 object-contain transition duration-300 group-hover:opacity-0"
       />
       <p className="absolute inset-0 flex items-center justify-center text-xs sm:text-sm text-gray-700 font-semibold opacity-0 group-hover:opacity-100 transition duration-300 text-center px-2">
         Goodwill: creating jobs & supporting communities.
@@ -437,11 +437,11 @@ function LandingPage() {
     </div>
 
     {/* Salvation Army */}
-    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group">
+    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group cursor-pointer">
       <img
         src="/images/Salvation-Army-logo.webp"
         alt="Salvation Army"
-        className="max-h-16 sm:max-h-20 object-contain grayscale group-hover:opacity-0 transition duration-300"
+        className="max-h-16 sm:max-h-20 object-contain transition duration-300 group-hover:opacity-0"
       />
       <p className="absolute inset-0 flex items-center justify-center text-xs sm:text-sm text-gray-700 font-semibold opacity-0 group-hover:opacity-100 transition duration-300 text-center px-2">
         Salvation Army: relief, shelter & family aid.
@@ -449,11 +449,11 @@ function LandingPage() {
     </div>
 
     {/* Habitat for Humanity */}
-    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group">
+    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group cursor-pointer">
       <img
         src="/images/Habitat_for_humanity_logo.png"
         alt="Habitat for Humanity"
-        className="max-h-16 sm:max-h-20 object-contain grayscale group-hover:opacity-0 transition duration-300"
+        className="max-h-16 sm:max-h-20 object-contain transition duration-300 group-hover:opacity-0"
       />
       <p className="absolute inset-0 flex items-center justify-center text-xs sm:text-sm text-gray-700 font-semibold opacity-0 group-hover:opacity-100 transition duration-300 text-center px-2">
         Habitat: building affordable homes for families.
@@ -461,11 +461,11 @@ function LandingPage() {
     </div>
 
     {/* Houston Furniture Bank */}
-    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group">
+    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group cursor-pointer">
       <img
         src="/images/Houston-furniture-bank-logo.png"
         alt="Houston Furniture Bank"
-        className="max-h-16 sm:max-h-20 object-contain grayscale group-hover:opacity-0 transition duration-300"
+        className="max-h-16 sm:max-h-20 object-contain transition duration-300 group-hover:opacity-0"
       />
       <p className="absolute inset-0 flex items-center justify-center text-xs sm:text-sm text-gray-700 font-semibold opacity-0 group-hover:opacity-100 transition duration-300 text-center px-2">
         Houston Furniture Bank: furnishing homes for those in need.
@@ -473,11 +473,11 @@ function LandingPage() {
     </div>
 
     {/* Books Between Kids */}
-    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group">
+    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group cursor-pointer">
       <img
         src="/images/books-between-kids-logo.png"
         alt="Books Between Kids"
-        className="max-h-16 sm:max-h-20 object-contain grayscale group-hover:opacity-0 transition duration-300"
+        className="max-h-16 sm:max-h-20 object-contain transition duration-300 group-hover:opacity-0"
       />
       <p className="absolute inset-0 flex items-center justify-center text-xs sm:text-sm text-gray-700 font-semibold opacity-0 group-hover:opacity-100 transition duration-300 text-center px-2">
         Books Between Kids: free books for Houston children.
@@ -485,11 +485,11 @@ function LandingPage() {
     </div>
 
     {/* Houston Children’s Charity */}
-    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group">
+    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group cursor-pointer">
       <img
         src="/images/Houston-Children’s-Charity-logo.png"
         alt="Houston Children’s Charity"
-        className="max-h-16 sm:max-h-20 object-contain grayscale group-hover:opacity-0 transition duration-300"
+        className="max-h-16 sm:max-h-20 object-contain transition duration-300 group-hover:opacity-0"
       />
       <p className="absolute inset-0 flex items-center justify-center text-xs sm:text-sm text-gray-700 font-semibold opacity-0 group-hover:opacity-100 transition duration-300 text-center px-2">
         Houston Children’s Charity: improving the lives of underprivileged kids.
@@ -497,6 +497,7 @@ function LandingPage() {
     </div>
   </div>
 </div>
+
 
 </section>
 
