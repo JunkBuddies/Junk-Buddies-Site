@@ -231,7 +231,7 @@ function LandingPage() {
 
   <div className="max-w-7xl mx-auto flex flex-col lg:grid lg:grid-cols-2 gap-12 items-start relative">
     {/* Left Column */}
-    <div className="text-gray-800 z-10 w-full">
+    <div className="text-gray-800 z-10 w-full flex flex-col justify-center">
       <h2 className="text-3xl sm:text-4xl font-bold text-gold mb-6">
         Junk Buddies: White Glove Junk Removal – For Your Peace of Mind
       </h2>
@@ -241,10 +241,10 @@ function LandingPage() {
         we treat every removal like it’s our own space.
       </p>
 
-      {/* Top 8 list with 2 images alongside (MOBILE ONLY) */}
-      <div className="flex lg:hidden items-start gap-4">
-        {/* List */}
-        <ul className="w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-gray-900 mt-4">
+      {/* Top 8 list with 2 images alongside (mobile alignment tightened) */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 lg:block">
+        {/* List (left) */}
+        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-gray-900 flex-1">
           <li>🛋️ Furniture</li>
           <li>🏠 Appliances</li>
           <li>💻 Electronics</li>
@@ -255,8 +255,8 @@ function LandingPage() {
           <li>🏡 Full Property Refresh</li>
         </ul>
 
-        {/* First 2 images (stacked) */}
-        <div className="w-1/2 grid grid-cols-1 gap-4">
+        {/* First 2 images (right, only on mobile/tablet) */}
+        <div className="grid grid-cols-1 gap-4 mt-4 sm:mt-0 w-full sm:w-1/2 lg:hidden self-center">
           <img
             src="/images/proof-hoarder.jpg"
             alt="Hoarder garage cleanout"
@@ -270,25 +270,13 @@ function LandingPage() {
         </div>
       </div>
 
-      {/* Desktop Top 8 List (unchanged, no images) */}
-      <ul className="hidden lg:grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-gray-900">
-        <li>🛋️ Furniture</li>
-        <li>🏠 Appliances</li>
-        <li>💻 Electronics</li>
-        <li>🌳 Yard Waste & Debris</li>
-        <li>🗂️ Office Cleanouts</li>
-        <li>📦 Storage Units</li>
-        <li>🧹 Hoarder Cleanouts</li>
-        <li>🏡 Full Property Refresh</li>
-      </ul>
-
       {/* Minimalist Divider */}
       <div className="my-6">
         <hr className="border-t border-gray-300 w-4/5 mx-auto" />
       </div>
 
       {/* Extended list */}
-      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-gray-900">
+      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-gray-900 mt-4 lg:mt-8">
         <li>🛏️ Mattresses & Box Springs</li>
         <li>🚪 Doors, Windows & Fixtures</li>
         <li>🪞 Household Clutter & Decor</li>
@@ -300,7 +288,7 @@ function LandingPage() {
       </ul>
     </div>
 
-    {/* Right Column (DESKTOP ONLY, all 4 images in grid) */}
+    {/* Right Column (desktop only, all 4 images in grid) */}
     <div className="relative z-10 grid grid-cols-2 gap-4 w-full hidden lg:grid">
       <img
         src="/images/proof-hoarder.jpg"
@@ -325,7 +313,7 @@ function LandingPage() {
     </div>
   </div>
 
-  {/* Last 2 images (MOBILE ONLY, under full list) */}
+  {/* Last 2 images (mobile/tablet only) */}
   <div className="grid grid-cols-2 gap-4 mt-6 lg:hidden max-w-7xl mx-auto">
     <img
       src="/images/proof-storage-before.png"
@@ -341,25 +329,15 @@ function LandingPage() {
 
   {/* Questions Line */}
   <div className="max-w-7xl mx-auto mt-8 text-center lg:text-left">
-    {/* Desktop: inline */}
-    <p className="hidden lg:block font-semibold text-sm text-gray-700">
-      ❓ Questions? All your answers can be found with{" "}
-      <span className="relative font-bold text-gray-900 rgb-underline">
-        Junk Buddies’ Assistant
-      </span>
+    <p className="font-semibold text-sm text-gray-700">
+      ❓ Questions? All your answers can be found with —
     </p>
-
-    {/* Mobile: stacked */}
-    <div className="lg:hidden">
-      <p className="font-semibold text-sm text-gray-700">
-        ❓ Questions? All your answers can be found with —
-      </p>
-      <p className="font-bold text-gray-900 rgb-underline mt-1">
-        Junk Buddies’ Assistant
-      </p>
-    </div>
+    <p className="mt-1 font-bold text-gray-900 text-sm">
+      <span className="relative rgb-underline">Junk Buddies’ Assistant</span>
+    </p>
   </div>
 </section>
+
 
 
 
