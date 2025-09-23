@@ -364,12 +364,20 @@ function LandingPage() {
 
 {/* === DONATION & RECYCLING SECTION === */}
 <section className="relative w-full bg-[#fafafa] overflow-hidden">
-  {/* Top Separator Bar */}
-  <div className="w-full h-3 bg-gray-200"></div>
+  {/* Top Grey Separator Bar */}
+  <div className="w-full h-4 bg-gray-200"></div>
 
-  <div className="max-w-7xl mx-auto flex flex-row items-stretch relative py-20 px-6">
-    {/* Left Side – Photos (grey background full height/width, stacked) */}
-    <div className="bg-gray-100 flex flex-col justify-center items-center p-4 w-1/2 space-y-4">
+  <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-stretch relative">
+    {/* Eco-Friendly Icons in Corners */}
+    <div className="absolute top-4 left-4 text-green-600 text-2xl">
+      ♻️
+    </div>
+    <div className="absolute top-4 right-4 text-green-600 text-2xl">
+      🌱
+    </div>
+
+    {/* Left Side – Photos */}
+    <div className="bg-gray-100 flex flex-col justify-center items-center p-4 w-full lg:w-1/2 space-y-4">
       <img
         src="/images/donation-placeholder1.jpg"
         alt="Donation proof 1"
@@ -382,24 +390,23 @@ function LandingPage() {
       />
     </div>
 
-    {/* Divider – always vertical */}
-    <div className="w-px bg-gold"></div>
+    {/* Gold Divider */}
+    <div className="w-full lg:w-px bg-gold"></div>
 
     {/* Right Side – Text */}
-    <div className="flex-1 text-gray-800 lg:pl-8 bg-[#fafafa] p-6">
+    <div className="flex-1 text-gray-800 py-10 px-6 lg:py-20 lg:px-12 bg-white">
       <h2 className="text-3xl sm:text-4xl font-bold text-gold mb-6">
         Donation & Recycling — Built Into Every Job
       </h2>
-      <p className="text-lg mb-6 leading-relaxed text-gray-700">
+      <p className="text-base sm:text-lg mb-6 leading-relaxed text-gray-700">
         At Junk Buddies, responsible sorting is not optional — it’s how we
         operate. Every pickup is evaluated for donation and recycling first,
-        reducing landfill impact, ensuring reusable items find a second life,
-        and keeping your final price lower.
+        reducing landfill impact and ensuring reusable items find a second life.
       </p>
-      <p className="text-lg mb-6 leading-relaxed text-gray-700 font-semibold">
-        This approach means less waste, stronger communities, and better value in every service.
+      <p className="text-base sm:text-lg mb-6 leading-relaxed text-gray-700 font-semibold">
+        This system means less waste, less cost, and more value for you.
       </p>
-      <p className="text-lg mb-6 leading-relaxed text-gray-700">
+      <p className="text-base sm:text-lg mb-6 leading-relaxed text-gray-700">
         When you choose Junk Buddies, you’re not just clearing space — you’re{" "}
         <span className="font-bold text-gold">Making Space For What Matters.</span>
       </p>
@@ -409,8 +416,11 @@ function LandingPage() {
     </div>
   </div>
 
+  {/* Bottom Grey Separator Bar */}
+  <div className="w-full h-4 bg-gray-200"></div>
+
   {/* Partner Logos */}
-  <div className="max-w-7xl mx-auto mt-12 pb-20 px-6">
+  <div className="max-w-7xl mx-auto mt-12 px-6">
     <h3 className="text-xl font-bold text-center text-gray-800 mb-6">
       Proud Partners In Donation & Recycling
     </h3>
@@ -442,10 +452,8 @@ function LandingPage() {
       />
     </div>
   </div>
-
-  {/* Bottom Separator Bar */}
-  <div className="w-full h-3 bg-gray-200"></div>
 </section>
+
 
 
       <div className="relative z-10 bg-gray-900 px-6 pt-16 pb-0">
