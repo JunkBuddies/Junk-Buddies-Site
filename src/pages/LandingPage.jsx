@@ -241,10 +241,10 @@ function LandingPage() {
         we treat every removal like it’s our own space.
       </p>
 
-      {/* Top 8 list with 2 images alongside on mobile */}
-      <div className="grid grid-cols-2 gap-4 items-start lg:block">
-        {/* List (left half on mobile) */}
-        <ul className="col-span-1 grid grid-cols-1 gap-4 text-left text-gray-900">
+      {/* Top 8 list with 2 images alongside (MOBILE ONLY) */}
+      <div className="flex lg:hidden items-start gap-4">
+        {/* List */}
+        <ul className="w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-gray-900 mt-4">
           <li>🛋️ Furniture</li>
           <li>🏠 Appliances</li>
           <li>💻 Electronics</li>
@@ -255,8 +255,8 @@ function LandingPage() {
           <li>🏡 Full Property Refresh</li>
         </ul>
 
-        {/* First 2 images (right half on mobile, hidden on desktop) */}
-        <div className="col-span-1 grid grid-cols-1 gap-4 lg:hidden">
+        {/* First 2 images (stacked) */}
+        <div className="w-1/2 grid grid-cols-1 gap-4">
           <img
             src="/images/proof-hoarder.jpg"
             alt="Hoarder garage cleanout"
@@ -269,6 +269,18 @@ function LandingPage() {
           />
         </div>
       </div>
+
+      {/* Desktop Top 8 List (unchanged, no images) */}
+      <ul className="hidden lg:grid grid-cols-1 sm:grid-cols-2 gap-4 text-left text-gray-900">
+        <li>🛋️ Furniture</li>
+        <li>🏠 Appliances</li>
+        <li>💻 Electronics</li>
+        <li>🌳 Yard Waste & Debris</li>
+        <li>🗂️ Office Cleanouts</li>
+        <li>📦 Storage Units</li>
+        <li>🧹 Hoarder Cleanouts</li>
+        <li>🏡 Full Property Refresh</li>
+      </ul>
 
       {/* Minimalist Divider */}
       <div className="my-6">
@@ -288,7 +300,7 @@ function LandingPage() {
       </ul>
     </div>
 
-    {/* Right Column (desktop only, all 4 images in grid) */}
+    {/* Right Column (DESKTOP ONLY, all 4 images in grid) */}
     <div className="relative z-10 grid grid-cols-2 gap-4 w-full hidden lg:grid">
       <img
         src="/images/proof-hoarder.jpg"
@@ -313,7 +325,7 @@ function LandingPage() {
     </div>
   </div>
 
-  {/* Last 2 images (mobile/tablet only) */}
+  {/* Last 2 images (MOBILE ONLY, under full list) */}
   <div className="grid grid-cols-2 gap-4 mt-6 lg:hidden max-w-7xl mx-auto">
     <img
       src="/images/proof-storage-before.png"
@@ -329,12 +341,23 @@ function LandingPage() {
 
   {/* Questions Line */}
   <div className="max-w-7xl mx-auto mt-8 text-center lg:text-left">
-    <p className="font-semibold text-sm text-gray-700">
+    {/* Desktop: inline */}
+    <p className="hidden lg:block font-semibold text-sm text-gray-700">
       ❓ Questions? All your answers can be found with{" "}
       <span className="relative font-bold text-gray-900 rgb-underline">
         Junk Buddies’ Assistant
       </span>
     </p>
+
+    {/* Mobile: stacked */}
+    <div className="lg:hidden">
+      <p className="font-semibold text-sm text-gray-700">
+        ❓ Questions? All your answers can be found with —
+      </p>
+      <p className="font-bold text-gray-900 rgb-underline mt-1">
+        Junk Buddies’ Assistant
+      </p>
+    </div>
   </div>
 </section>
 
