@@ -365,7 +365,8 @@ function LandingPage() {
 {/* === DONATION & RECYCLING SECTION === */}
 <section className="relative w-full bg-[#fafafa] py-20 px-6 overflow-hidden">
   <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-stretch relative">
-    {/* Left Side – Photos */}
+    
+    {/* Left Side – Photos (full-height grey background) */}
     <div className="bg-gray-100 flex flex-col justify-center items-center p-4 w-full lg:w-1/2 space-y-4">
       <img
         src="/images/donation-placeholder1.jpg"
@@ -387,18 +388,23 @@ function LandingPage() {
       <h2 className="text-3xl sm:text-4xl font-bold text-gold mb-6">
         Donation & Recycling — Built Into Every Job
       </h2>
+
       <p className="text-lg mb-6 leading-relaxed text-gray-700">
         At Junk Buddies, responsible sorting is not optional — it’s how we
         operate. Every pickup is evaluated for donation and recycling first,
-        reducing landfill impact and ensuring reusable items find a second life.
+        reducing landfill impact and ensuring reusable items find a second life,
+        and keeping your final price lower.
       </p>
+
       <p className="text-lg mb-6 leading-relaxed text-gray-700 font-semibold">
-        This system means less waste, less cost, and more value for you.
+        This approach means less waste, stronger communities, and better value in every service.
       </p>
+
       <p className="text-lg mb-6 leading-relaxed text-gray-700">
         When you choose Junk Buddies, you’re not just clearing space — you’re{" "}
         <span className="font-bold text-gold">Making Space For What Matters.</span>
       </p>
+
       <p className="text-sm font-semibold text-gray-600">
         Donation and recycling: included with every service, at no extra charge.
       </p>
@@ -439,8 +445,6 @@ function LandingPage() {
     </div>
   </div>
 </section>
-
-
 
 
       <div className="relative z-10 bg-gray-900 px-6 pt-16 pb-0">
