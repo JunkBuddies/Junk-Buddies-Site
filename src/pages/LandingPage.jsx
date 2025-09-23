@@ -423,7 +423,7 @@ function LandingPage() {
     <h3 className="text-xl font-bold text-center text-gray-800 mb-6">
       Proud Partners In Donation & Recycling
     </h3>
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 items-center justify-items-center">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 items-center justify-items-center">
       <img
         src="/images/logo-goodwill.png"
         alt="Goodwill"
