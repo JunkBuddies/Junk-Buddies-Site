@@ -418,44 +418,86 @@ function LandingPage() {
   {/* Bottom Grey Separator Bar */}
   <div className="w-full h-4 bg-gray-200"></div>
 
-  {/* Partner Logos */}
-  <div className="max-w-7xl mx-auto mt-12 px-6">
-    <h3 className="text-xl font-bold text-center text-gray-800 mb-6">
-      Proud Partners In Donation & Recycling
-    </h3>
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 items-center justify-items-center">
+{/* Partner Logos */}
+<div className="max-w-7xl mx-auto mt-12 px-6">
+  <h3 className="text-xl font-bold text-center text-gray-800 mb-6">
+    Proud Partners In Donation & Recycling
+  </h3>
+  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 items-center justify-items-center">
+    {/* Goodwill */}
+    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group">
       <img
-        src="/images/logo-goodwill.png"
+        src="/images/goodwill-logo.png"
         alt="Goodwill"
-        className="h-12 sm:h-16 object-contain grayscale hover:grayscale-0 transition"
+        className="max-h-16 sm:max-h-20 object-contain grayscale group-hover:opacity-0 transition duration-300"
       />
+      <p className="absolute inset-0 flex items-center justify-center text-xs sm:text-sm text-gray-700 font-semibold opacity-0 group-hover:opacity-100 transition duration-300 text-center px-2">
+        Goodwill: creating jobs & supporting communities.
+      </p>
+    </div>
+
+    {/* Salvation Army */}
+    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group">
       <img
-        src="/images/logo-salvationarmy.png"
+        src="/images/Salvation-Army-logo.webp"
         alt="Salvation Army"
-        className="h-12 sm:h-16 object-contain grayscale hover:grayscale-0 transition"
+        className="max-h-16 sm:max-h-20 object-contain grayscale group-hover:opacity-0 transition duration-300"
       />
+      <p className="absolute inset-0 flex items-center justify-center text-xs sm:text-sm text-gray-700 font-semibold opacity-0 group-hover:opacity-100 transition duration-300 text-center px-2">
+        Salvation Army: relief, shelter & family aid.
+      </p>
+    </div>
+
+    {/* Habitat for Humanity */}
+    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group">
       <img
-        src="/images/logo-habitat.png"
+        src="/images/Habitat_for_humanity_logo.png"
         alt="Habitat for Humanity"
-        className="h-12 sm:h-16 object-contain grayscale hover:grayscale-0 transition"
+        className="max-h-16 sm:max-h-20 object-contain grayscale group-hover:opacity-0 transition duration-300"
       />
+      <p className="absolute inset-0 flex items-center justify-center text-xs sm:text-sm text-gray-700 font-semibold opacity-0 group-hover:opacity-100 transition duration-300 text-center px-2">
+        Habitat: building affordable homes for families.
+      </p>
+    </div>
+
+    {/* Houston Furniture Bank */}
+    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group">
       <img
-        src="/images/logo-hfb.png"
+        src="/images/Houston-furniture-bank-logo.png"
         alt="Houston Furniture Bank"
-        className="h-12 sm:h-16 object-contain grayscale hover:grayscale-0 transition"
+        className="max-h-16 sm:max-h-20 object-contain grayscale group-hover:opacity-0 transition duration-300"
       />
+      <p className="absolute inset-0 flex items-center justify-center text-xs sm:text-sm text-gray-700 font-semibold opacity-0 group-hover:opacity-100 transition duration-300 text-center px-2">
+        Houston Furniture Bank: furnishing homes for those in need.
+      </p>
+    </div>
+
+    {/* Books Between Kids */}
+    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group">
       <img
-        src="/images/logo-local.png"
-        alt="Local Charity Partner"
-        className="h-12 sm:h-16 object-contain grayscale hover:grayscale-0 transition"
-         />
-        <img
-    src="/images/logo-booksbetweenkids.png"
-    alt="Books Between Kids"
-    className="h-12 sm:h-16 object-contain grayscale hover:grayscale-0 transition"
- />
+        src="/images/books-between-kids-logo.png"
+        alt="Books Between Kids"
+        className="max-h-16 sm:max-h-20 object-contain grayscale group-hover:opacity-0 transition duration-300"
+      />
+      <p className="absolute inset-0 flex items-center justify-center text-xs sm:text-sm text-gray-700 font-semibold opacity-0 group-hover:opacity-100 transition duration-300 text-center px-2">
+        Books Between Kids: free books for Houston children.
+      </p>
+    </div>
+
+    {/* Houston Children’s Charity */}
+    <div className="relative w-full h-16 sm:h-20 flex items-center justify-center group">
+      <img
+        src="/images/Houston-Children’s-Charity-logo.png"
+        alt="Houston Children’s Charity"
+        className="max-h-16 sm:max-h-20 object-contain grayscale group-hover:opacity-0 transition duration-300"
+      />
+      <p className="absolute inset-0 flex items-center justify-center text-xs sm:text-sm text-gray-700 font-semibold opacity-0 group-hover:opacity-100 transition duration-300 text-center px-2">
+        Houston Children’s Charity: improving the lives of underprivileged kids.
+      </p>
     </div>
   </div>
+</div>
+
 </section>
 
 
