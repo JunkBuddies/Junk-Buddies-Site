@@ -398,12 +398,12 @@ function LandingPage() {
         Donation & Recycling — Built Into Every Job
       </h2>
       <p className="text-sm xs:text-base sm:text-lg mb-6 leading-relaxed text-gray-700">
-        At Junk Buddies, responsible sorting is not optional — it’s how we
-        operate. Every pickup is evaluated for donation and recycling first,
-        reducing landfill impact and ensuring reusable items find a second life.
+        At Junk Buddies, responsible sorting is not optional — it’s how we operate. 
+        Every pickup is evaluated for donation and recycling first, reducing landfill 
+        impact, ensuring reusable items find a second life, and keeping your final price lower.
       </p>
       <p className="text-sm xs:text-base sm:text-lg mb-6 leading-relaxed text-gray-700 font-semibold">
-        This system means less waste, less cost, and more value for you.
+        This approach means less waste, stronger communities, and better value in every service.
       </p>
       <p className="text-sm xs:text-base sm:text-lg mb-6 leading-relaxed text-gray-700">
         When you choose Junk Buddies, you’re not just clearing space — you’re{" "}
@@ -448,6 +448,11 @@ function LandingPage() {
         src="/images/logo-local.png"
         alt="Local Charity Partner"
         className="h-12 sm:h-16 object-contain grayscale hover:grayscale-0 transition"
+        <img
+    src="/images/logo-booksbetweenkids.png"
+    alt="Books Between Kids"
+    className="h-12 sm:h-16 object-contain grayscale hover:grayscale-0 transition"
+  />
       />
     </div>
   </div>
