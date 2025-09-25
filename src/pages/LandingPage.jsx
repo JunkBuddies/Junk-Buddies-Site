@@ -504,7 +504,205 @@ function LandingPage() {
 
 </section>
 
+{/* === SECTION 3: PROOF & VISUAL TRUST === */}
+<section className="relative w-full bg-white py-16 px-6">
+  <div className="max-w-7xl mx-auto">
+    <h2 className="text-3xl sm:text-4xl font-bold text-center text-gold mb-12">
+      See The Difference
+    </h2>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {/* Card 1 */}
+      <div className="bg-gray-50 rounded-lg shadow-md p-4 hover:shadow-lg transition">
+        <img
+          src="/images/before-after.jpg"
+          alt="Before & After"
+          className="rounded-md mb-4 object-cover w-full h-40"
+        />
+        <p className="text-sm font-semibold text-center">Before & After Results</p>
+      </div>
+      {/* Card 2 */}
+      <div className="bg-gray-50 rounded-lg shadow-md p-4 hover:shadow-lg transition">
+        <img
+          src="/images/crew.jpg"
+          alt="Crew in Uniform"
+          className="rounded-md mb-4 object-cover w-full h-40"
+        />
+        <p className="text-sm font-semibold text-center">Professional Crew in Uniform</p>
+      </div>
+      {/* Card 3 */}
+      <div className="bg-gray-50 rounded-lg shadow-md p-4 hover:shadow-lg transition">
+        <img
+          src="/images/donation-drop.jpg"
+          alt="Donation Drop-Off"
+          className="rounded-md mb-4 object-cover w-full h-40"
+        />
+        <p className="text-sm font-semibold text-center">Donation Drop-Offs</p>
+      </div>
+      {/* Card 4 */}
+      <div className="bg-gray-50 rounded-lg shadow-md p-4 hover:shadow-lg transition">
+        <img
+          src="/images/truck-fleet.jpg"
+          alt="Junk Buddies Trucks"
+          className="rounded-md mb-4 object-cover w-full h-40"
+        />
+        <p className="text-sm font-semibold text-center">Clean, Modern Fleet</p>
+      </div>
+    </div>
+  </div>
+</section>
 
+{/* === SECTION 4: WHY HOUSTON TRUSTS US === */}
+<section className="relative w-full bg-[#f8f8f8] py-20 px-6">
+  <div className="max-w-7xl mx-auto text-center">
+    <h2 className="text-3xl sm:text-4xl font-bold text-gold mb-12">
+      Why Houston Trusts Junk Buddies
+    </h2>
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
+      {/* Badge 1 */}
+      <div className="flex flex-col items-center transform hover:-translate-y-2 transition">
+        <span className="text-4xl">🚚</span>
+        <p className="mt-2 font-semibold">Same-Day Service</p>
+      </div>
+      {/* Badge 2 */}
+      <div className="flex flex-col items-center transform hover:-translate-y-2 transition">
+        <span className="text-4xl">💵</span>
+        <p className="mt-2 font-semibold">Upfront Pricing</p>
+      </div>
+      {/* Badge 3 */}
+      <div className="flex flex-col items-center transform hover:-translate-y-2 transition">
+        <span className="text-4xl">🌎</span>
+        <p className="mt-2 font-semibold">Eco Commitment</p>
+      </div>
+      {/* Badge 4 */}
+      <div className="flex flex-col items-center transform hover:-translate-y-2 transition">
+        <span className="text-4xl">🤝</span>
+        <p className="mt-2 font-semibold">Local & Trusted</p>
+      </div>
+    </div>
+  </div>
+</section>
+    
+{/* === SECTION 4: NEIGHBORHOODS / COVERAGE AREA === */}
+<section className="relative w-full bg-gray-100 py-20 px-6 overflow-hidden">
+  <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    {/* Left Side – Map */}
+    <div
+      className="w-full h-80 sm:h-96 lg:h-[500px] rounded-lg shadow-md overflow-hidden transform transition duration-700 hover:scale-[1.01]"
+      data-aos="fade-right"
+    >
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d55857.01948076882!2d-95.4012917!3d29.7604267!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8640bf3b5d08b73b%3A0x8a89a3a0f4a0b9b4!2sHouston%2C%20TX!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus"
+        width="100%"
+        height="100%"
+        style={{ border: 0 }}
+        allowFullScreen=""
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        title="Junk Buddies Houston Coverage Map"
+      ></iframe>
+    </div>
+
+    {/* Right Side – Coverage List */}
+    <div className="text-gray-800" data-aos="fade-up">
+      <h2 className="text-3xl sm:text-4xl font-bold text-gold mb-8">
+        Neighborhoods & Coverage Areas
+      </h2>
+      <ul className="space-y-4 text-base sm:text-lg leading-relaxed">
+        <li>
+          <span className="text-gold font-semibold">Central Houston →</span>{" "}
+          77002, 77003, 77004, 77006, 77007
+        </li>
+        <li>
+          <span className="text-gold font-semibold">West Houston →</span>{" "}
+          77042, 77055, 77057, 77063, 77077
+        </li>
+        <li>
+          <span className="text-gold font-semibold">North Houston →</span>{" "}
+          77014, 77032, 77038, 77060, 77073
+        </li>
+        <li>
+          <span className="text-gold font-semibold">South Houston →</span>{" "}
+          77034, 77047, 77061, 77089
+        </li>
+        <li>
+          <span className="text-gold font-semibold">Suburbs & Beyond →</span>{" "}
+          Katy, Sugar Land, Pearland, Pasadena, The Woodlands, League City,
+          Baytown, Tomball, Missouri City, Humble, Rosenberg, Richmond, Deer
+          Park, Alvin, Channelview, La Porte, Friendswood
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+    
+{/* === SECTION 5: OFFICIAL JUNK BUDDIES — HOUSTON, TX === */}
+<section className="relative w-full bg-white overflow-hidden">
+  {/* Top Gold Divider */}
+  <div className="w-full h-1 bg-gold"></div>
+
+  <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-16 px-6">
+    {/* Left Side – Badge */}
+    <div className="flex justify-center items-center" data-aos="zoom-in">
+      <div className="flex flex-col items-center space-y-4">
+        {/* Gold Badge */}
+        <div className="w-40 h-40 flex items-center justify-center rounded-full border-4 border-gold shadow-xl relative">
+          <p className="text-center font-bold text-gold text-sm">
+            Official<br />Junk Buddies<br />Houston, TX
+          </p>
+        </div>
+        {/* Trust Indicators */}
+        <ul className="text-sm text-gray-700 font-semibold space-y-2 text-center">
+          <li>✅ Texas LLC Registered</li>
+          <li>✅ Eco-Friendly Partner</li>
+        </ul>
+      </div>
+    </div>
+
+    {/* Right Side – Authority Text */}
+    <div className="text-gray-800" data-aos="fade-up">
+      <h2 className="text-3xl sm:text-4xl font-bold text-gold mb-6">
+        The Official Junk Buddies — Serving Houston, Texas with Pride
+      </h2>
+      <p className="text-base sm:text-lg mb-4 leading-relaxed">
+        <span className="font-bold">Junk Buddies LLC</span> is a Texas-registered 
+        company headquartered in Houston. We’ve built our reputation on fast 
+        service, eco-friendly donation & recycling, and upfront pricing trusted 
+        by thousands of Houston families and businesses.
+      </p>
+      <p className="text-base sm:text-lg mb-4 leading-relaxed">
+        <span className="font-bold">Important:</span> We are <u>not affiliated</u> 
+        with companies in Missouri or Colorado operating under the same name. 
+        Those are separate businesses.
+      </p>
+      <p className="text-base sm:text-lg leading-relaxed font-semibold">
+        When you choose Junk Buddies in Houston, you’re choosing the original 
+        Houston-founded team — local, reliable, and committed to{" "}
+        <span className="text-gold font-bold">Making Space For What Matters.</span>
+      </p>
+    </div>
+  </div>
+
+  {/* Houston Skyline Banner */}
+  <div
+    className="relative w-full h-64 sm:h-80 lg:h-96 overflow-hidden"
+    data-aos="fade-in"
+  >
+    <img
+      src="/images/houston-skyline.jpg"
+      alt="Houston Skyline"
+      className="w-full h-full object-cover"
+    />
+    <div className="absolute inset-0 bg-black/20"></div>
+  </div>
+
+  {/* Bottom Gold Divider */}
+  <div className="w-full h-1 bg-gold"></div>
+
+  {/* Crawlable SEO Line */}
+  <div className="w-full bg-gray-100 py-4 px-6 text-center text-xs sm:text-sm text-gray-700 font-semibold">
+    Junk Buddies LLC — Official Junk Removal in Houston, TX | Harris County | Katy | Sugar Land | Pearland | Pasadena | Cypress | The Woodlands | League City | Baytown | Missouri City | Tomball | Richmond | Rosenberg | Friendswood | Humble | La Porte | Channelview | Deer Park | Alvin | Greater Houston Metro
+  </div>
+</section>
 
 
       <div className="relative z-10 bg-gray-900 px-6 pt-16 pb-0">
