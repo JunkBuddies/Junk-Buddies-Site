@@ -671,7 +671,7 @@ function LandingPage() {
       </p>
       <p className="text-base sm:text-lg mb-4 leading-relaxed">
         <span className="font-bold">Important:</span> We are <u>not affiliated</u> 
-        with companies in Missouri or Colorado operating under the same name. 
+         with companies in Michigan or North Carolina operating under the same name. 
         Those are separate businesses.
       </p>
       <p className="text-base sm:text-lg leading-relaxed font-semibold">
