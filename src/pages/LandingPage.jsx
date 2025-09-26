@@ -688,7 +688,7 @@ function LandingPage() {
     data-aos="fade-in"
   >
     <img
-      src="/images/houston-skyline.jpg"
+      src="/images/houston-skyline.png"
       alt="Houston Skyline"
       className="w-full h-full object-cover"
     />
