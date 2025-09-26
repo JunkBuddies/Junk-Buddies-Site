@@ -541,7 +541,7 @@ function LandingPage() {
       {/* Card 4 */}
       <div className="bg-gray-50 rounded-lg shadow-md p-4 hover:shadow-lg transition">
         <img
-          src="/images/truck-fleet.jpg"
+          src="/images/truck-fleet.png"
           alt="Junk Buddies Trucks"
           className="rounded-md mb-4 object-cover w-full h-40"
         />
