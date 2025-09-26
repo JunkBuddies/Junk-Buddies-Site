@@ -523,7 +523,7 @@ function LandingPage() {
       {/* Card 2 */}
       <div className="bg-gray-50 rounded-lg shadow-md p-4 hover:shadow-lg transition">
         <img
-          src="/images/crew.jpg"
+          src="/images/crew.png"
           alt="Crew in Uniform"
           className="rounded-md mb-4 object-cover w-full h-40"
         />
