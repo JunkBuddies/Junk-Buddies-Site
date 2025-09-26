@@ -532,7 +532,7 @@ function LandingPage() {
       {/* Card 3 */}
       <div className="bg-gray-50 rounded-lg shadow-md p-4 hover:shadow-lg transition">
         <img
-          src="/images/donation-drop.jpg"
+          src="/images/donation-drop.png"
           alt="Donation Drop-Off"
           className="rounded-md mb-4 object-cover w-full h-40"
         />
