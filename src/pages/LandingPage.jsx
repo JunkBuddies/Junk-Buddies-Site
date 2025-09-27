@@ -714,7 +714,7 @@ function LandingPage() {
   </div>
 
   {/* CTA Button: See Price In Seconds (all devices, centered) */}
-<div className="flex justify-center mt-8">
+<div className="flex justify-center mt-8 mb-8">
   <button
     className="ai-price-button"
     onClick={() => document.getElementById('jb-open-button')?.click()}
