@@ -350,15 +350,15 @@ function LandingPage() {
     </span>
   </p>
 
-  {/* CTA Button: See Price In Seconds */}
-  <div className="hidden lg:flex justify-center lg:justify-start mt-4">
-    <button
-      className="ai-price-button"
-      onClick={() => document.getElementById('jb-open-button')?.click()}
-    >
-      See Price In Seconds
-    </button>
-  </div>
+{/* CTA Button: See Price In Seconds (tablet & desktop) */}
+<div className="hidden sm:flex justify-center mt-4">
+  <button
+    className="ai-price-button"
+    onClick={() => document.getElementById('jb-open-button')?.click()}
+  >
+    See Price In Seconds
+  </button>
+</div>
 
     {/* Mobile: stacked */}
  <div className="lg:hidden">
@@ -560,16 +560,26 @@ function LandingPage() {
         <p className="text-sm font-semibold text-center">Donation Drop-Offs</p>
       </div>
       {/* Card 4 */}
-      <div className="bg-gray-50 rounded-lg shadow-md p-4 hover:shadow-lg transition">
-        <img
-          src="/images/truck-fleet.png"
-          alt="Junk Buddies Trucks"
-          className="rounded-md mb-4 object-cover w-full h-40"
-        />
-        <p className="text-sm font-semibold text-center">Clean, Modern Fleet</p>
-      </div>
-    </div>
+  <div className="bg-gray-50 rounded-lg shadow-md p-4 hover:shadow-lg transition">
+    <img
+      src="/images/truck-fleet.png"
+      alt="Junk Buddies Trucks"
+      className="rounded-md mb-4 object-cover w-full h-40"
+    />
+    <p className="text-sm font-semibold text-center">Clean, Modern Fleet</p>
   </div>
+</div>
+
+{/* CTA Button: See Price In Seconds (all devices, centered) */}
+<div className="flex justify-center mt-8">
+  <button
+    className="ai-price-button"
+    onClick={() => document.getElementById('jb-open-button')?.click()}
+  >
+    See Price In Seconds
+  </button>
+</div>
+</div>
 </section>
 
 {/* === SECTION 4: WHY HOUSTON TRUSTS US === */}
@@ -702,6 +712,16 @@ function LandingPage() {
       </p>
     </div>
   </div>
+
+  {/* CTA Button: See Price In Seconds (all devices, centered) */}
+<div className="flex justify-center mt-8">
+  <button
+    className="ai-price-button"
+    onClick={() => document.getElementById('jb-open-button')?.click()}
+  >
+    See Price In Seconds
+  </button>
+</div>
 
   {/* Houston Skyline Banner */}
   <div
