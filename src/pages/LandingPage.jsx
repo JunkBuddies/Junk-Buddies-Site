@@ -351,16 +351,27 @@ function LandingPage() {
     </p>
 
     {/* Mobile: stacked */}
-    <div className="lg:hidden">
-      <p className="font-semibold text-sm text-gray-700">
-        ❓ Questions? All your answers can be found with —
-      </p>
-      <p className="font-bold text-gray-900 rgb-underline mt-1 inline-block">
-        Junk Buddies’ Assistant
-      </p>
-    </div>
+ <div className="lg:hidden">
+  <p className="font-semibold text-sm text-gray-700">
+    ❓ Questions? All your answers can be found with —
+  </p>
+  <p className="font-bold text-gray-900 rgb-underline mt-1 inline-block">
+    Junk Buddies’ Assistant
+  </p>
+
+  {/* CTA Button: See Price In Seconds */}
+  <div className="flex justify-center mt-4">
+    <button
+      className="ai-price-button"
+      onClick={() => document.getElementById('jb-open-button')?.click()}
+    >
+      See Price In Seconds
+    </button>
   </div>
+</div>
+</div>
 </section>
+
 
 {/* === DONATION & RECYCLING SECTION === */}
 <section className="relative w-full bg-[#fafafa] overflow-hidden">
