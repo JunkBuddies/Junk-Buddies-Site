@@ -359,7 +359,6 @@ function LandingPage() {
       See Price In Seconds
     </button>
   </div>
-</div>
 
     {/* Mobile: stacked */}
  <div className="lg:hidden">
