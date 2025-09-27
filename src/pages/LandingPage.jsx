@@ -340,15 +340,26 @@ function LandingPage() {
     />
   </div>
 
-  {/* Questions Line */}
-  <div className="max-w-7xl mx-auto mt-8 text-center lg:text-left">
-    {/* Desktop: inline */}
-    <p className="hidden lg:block font-semibold text-sm text-gray-700">
-      ❓ Questions? All your answers can be found with{" "}
-      <span className="relative font-bold text-gray-900 rgb-underline">
-        Junk Buddies’ Assistant
-      </span>
-    </p>
+ {/* Questions Line */}
+<div className="max-w-7xl mx-auto mt-8 text-center lg:text-left">
+  {/* Desktop: inline */}
+  <p className="hidden lg:block font-semibold text-sm text-gray-700">
+    ❓ Questions? All your answers can be found with{" "}
+    <span className="relative font-bold text-gray-900 rgb-underline">
+      Junk Buddies’ Assistant
+    </span>
+  </p>
+
+  {/* CTA Button: See Price In Seconds */}
+  <div className="hidden lg:flex justify-center lg:justify-start mt-4">
+    <button
+      className="ai-price-button"
+      onClick={() => document.getElementById('jb-open-button')?.click()}
+    >
+      See Price In Seconds
+    </button>
+  </div>
+</div>
 
     {/* Mobile: stacked */}
  <div className="lg:hidden">
