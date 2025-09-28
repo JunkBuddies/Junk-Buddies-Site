@@ -98,8 +98,9 @@ function LandingPage() {
   in{" "}
 <span
   className="text-transparent bg-clip-text font-extrabold 
-    bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 drop-shadow-md"
+    bg-gradient-to-r from-sky-400 via-sky-500 to-sky-600 drop-shadow-md"
 >
+
     Houston
   </span>
 </h2>
