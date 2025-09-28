@@ -526,8 +526,7 @@ export default function ChatWidget() {
               alignItems: "center",
               gap: "6px",
             }}
-            className="jb-pulse"
-          >
+          
             🎁 Free Item + 10% Off{" "}
             <span style={{ fontSize: "18px" }}>→</span>
           </button>
@@ -553,7 +552,6 @@ export default function ChatWidget() {
               cursor: "pointer",
               zIndex: 9999,
             }}
-            className="jb-pulse"
             aria-label="Open chat"
             title="Chat with Your Junk Buddy"
           >
