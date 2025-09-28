@@ -502,61 +502,62 @@ export default function ChatWidget() {
             </div>
           )}
 
-          {/* Promo button */}
-          <button
-            onClick={() => {
-              setOpen(true);
-              setShowTip(false);
-              navigate("/itemized");
-            }}
-            style={{
-              position: "fixed",
-              right: 90,
-              bottom: 26,
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              zIndex: 9999,
-              color: "#fff",
-              fontWeight: "bold",
-              fontSize: "14px",
-              textShadow:
-                "0 0 8px rgba(30,144,255,0.8), 0 0 12px rgba(255,0,255,0.7)",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          
-            🎁 Free Item + 10% Off{" "}
-            <span style={{ fontSize: "18px" }}>→</span>
-          </button>
+        {/* Promo button */}
+<button
+  onClick={() => {
+    setOpen(true);
+    setShowTip(false);
+    navigate("/itemized");
+  }}
+  style={{
+    position: "fixed",
+    right: 90,
+    bottom: 26,
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    zIndex: 9999,
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: "14px",
+    textShadow:
+      "0 0 8px rgba(30,144,255,0.8), 0 0 12px rgba(255,0,255,0.7)",
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+  }}
+>
+  🎁 Free Item + 10% Off{" "}
+  <span style={{ fontSize: "18px" }}>→</span>
+</button>
 
-          {/* Bubble itself */}
-          <button
-             id="jb-open-button" // 👈 add this
-            onClick={() => {
-              setOpen(true);
-              setShowTip(false);
-              navigate("/itemized");
-            }}
-            style={{
-              position: "fixed",
-              right: 16,
-              bottom: 16,
-              width: 64,
-              height: 64,
-              borderRadius: "50%",
-              background: GOLD,
-              border: `2px solid ${BLACK}`,
-              fontWeight: 700,
-              cursor: "pointer",
-              zIndex: 9999,
-            }}
-            aria-label="Open chat"
-            title="Chat with Your Junk Buddy"
-          >
-            💬
-          </button>
+{/* Bubble itself */}
+<button
+  id="jb-open-button" // 👈 add this
+  onClick={() => {
+    setOpen(true);
+    setShowTip(false);
+    navigate("/itemized");
+  }}
+  style={{
+    position: "fixed",
+    right: 16,
+    bottom: 16,
+    width: 64,
+    height: 64,
+    borderRadius: "50%",
+    background: GOLD,
+    border: `2px solid ${BLACK}`,
+    fontWeight: 700,
+    cursor: "pointer",
+    zIndex: 9999,
+  }}
+  aria-label="Open chat"
+  title="Chat with Your Junk Buddy"
+>
+  💬
+</button>
+
         </>
       )}
       {/* Chat window */}
