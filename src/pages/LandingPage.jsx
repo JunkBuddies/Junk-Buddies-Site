@@ -82,28 +82,35 @@ function LandingPage() {
     Tired of waiting?
   </p>
 
-  {/* Need Junk Removal */}
-  <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug">
-    Need{" "}
-    <span
-      className="text-transparent bg-clip-text font-extrabold 
-        bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 drop-shadow-md"
-    >
-      Junk Removal
-    </span>
-  </h2>
+ {/* Need Junk Removal */}
+<h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug">
+  Need{" "}
+  <span
+    className="text-transparent bg-clip-text font-extrabold 
+      bg-gradient-to-r from-gray-300 via-gray-100 to-gray-400 drop-shadow-md"
+  >
+    Junk Removal
+  </span>
+</h2>
 
-  {/* Smaller, separate line */}
-  <p className="text-xs sm:text-base md:text-lg mt-1">
-    in Houston + surrounding cities?
-  </p>
+{/* Houston Line */}
+<h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug mt-2">
+  in{" "}
+  <span className="text-gold font-extrabold drop-shadow-md">
+    Houston
+  </span>
+</h2>
 
-  {/* Check Prices further down */}
-  <p className="mt-32 sm:mt-6 text-xs sm:text-base md:text-lg">
-    Check prices in seconds — we haul it all.
-  </p>
+{/* Smaller, separate line for surrounding cities */}
+<p className="text-xs sm:text-base md:text-lg mt-1">
+  + surrounding cities?
+</p>
+
+{/* Check Prices further down */}
+<p className="mt-32 sm:mt-6 text-xs sm:text-base md:text-lg">
+  Check prices in seconds — we haul it all.
+</p>
 </div>
-
 
 
 
