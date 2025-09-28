@@ -533,30 +533,19 @@ export default function ChatWidget() {
 
 {/* Bubble itself */}
 <button
-  id="jb-open-button" // 👈 add this
+  id="jb-open-button"
   onClick={() => {
     setOpen(true);
     setShowTip(false);
     navigate("/itemized");
   }}
-  style={{
-    position: "fixed",
-    right: 16,
-    bottom: 16,
-    width: 64,
-    height: 64,
-    borderRadius: "50%",
-    background: GOLD,
-    border: `2px solid ${BLACK}`,
-    fontWeight: 700,
-    cursor: "pointer",
-    zIndex: 9999,
-  }}
+  className="jb-chat-bubble"
   aria-label="Open chat"
   title="Chat with Your Junk Buddy"
 >
   💬
 </button>
+
 
         </>
       )}
