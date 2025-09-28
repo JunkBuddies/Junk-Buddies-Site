@@ -1,5 +1,5 @@
 
-function Baytown = () {
+function Baytown() {
   const navigate = useNavigate();
   const junkRef = useRef(null);
   const buddiesRef = useRef(null);
