@@ -540,6 +540,12 @@ export default function ChatWidget() {
     navigate("/itemized");
   }}
   className="jb-chat-bubble"
+  style={{
+    position: "fixed",
+    right: 16,
+    bottom: 16,
+    zIndex: 9999, // keep these so it shows
+  }}
   aria-label="Open chat"
   title="Chat with Your Junk Buddy"
 >
