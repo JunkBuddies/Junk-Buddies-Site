@@ -702,7 +702,7 @@ body {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: #0b0b0b; /* black center */
+  background: #0b0b0b; /* solid black center */
   color: #fff;
   font-size: 28px;
   font-weight: bold;
@@ -712,9 +712,10 @@ body {
   cursor: pointer;
   overflow: hidden;
   z-index: 1;
+  border: none; /* let pseudo-elements handle border */
 }
 
-/* Border glow animation (like AI button, but circular) */
+/* Continuous rainbow AI border */
 .jb-chat-bubble::before {
   content: "";
   position: absolute;
@@ -726,8 +727,8 @@ body {
   background: conic-gradient(
     #d4af37,   /* Gold */
     #1e90ff,   /* Blue */
-    #00ff6a,   /* Green */
-    #ff0057,   /* Pink/Red */
+    #00ff6a,   /* Neon Green */
+    #ff0057,   /* Red/Pink */
     #9d4edd,   /* Purple */
     #00e5ff,   /* Cyan */
     #d4af37    /* Back to Gold for smooth loop */
@@ -736,7 +737,20 @@ body {
   z-index: -1;
 }
 
+/* Inner mask to keep center black */
+.jb-chat-bubble::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  background: #0b0b0b;
+  border-radius: 50%;
+  z-index: -1;
+}
+
 @keyframes spinBorder {
-  0% { transform: rotate(0deg); }
+  0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
