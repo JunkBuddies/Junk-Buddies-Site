@@ -710,7 +710,7 @@ function Alvin() {
         <span className="font-bold">Junk Buddies LLC</span> is a Texas-registered 
         company headquartered in Houston. We’ve built our reputation on fast 
         service, eco-friendly donation & recycling, and upfront pricing trusted 
-        by thousands of Houston families and businesses.
+        by thousands of Alvin families and businesses.
       </p>
       <p className="text-base sm:text-lg mb-4 leading-relaxed">
         <span className="font-bold">Important:</span> We are <u>not affiliated </u> 
