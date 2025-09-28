@@ -96,7 +96,10 @@ function LandingPage() {
 {/* Houston Line */}
 <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-snug mt-2">
   in{" "}
-  <span className="text-gold font-extrabold drop-shadow-md">
+ <span
+  className="text-transparent bg-clip-text font-extrabold 
+    bg-gradient-to-r from-green-400 via-green-500 to-green-600 drop-shadow-md"
+>
     Houston
   </span>
 </h2>
