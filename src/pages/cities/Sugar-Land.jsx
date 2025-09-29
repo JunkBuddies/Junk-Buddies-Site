@@ -1,7 +1,7 @@
 // File: src/pages/cities/SugarLand.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-
+ 
 function SugarLand() {
   const navigate = useNavigate();
   const junkRef = useRef(null);
