@@ -625,7 +625,7 @@ function Humble() {
   </div>
 </section>
     
-{/* === SECTION 4: NEIGHBORHOODS / COVERAGE AREA === */}
+{/* === SECTION 4: NEIGHBORHOODS / COVERAGE AREA (HUMBLE) === */}
 <section className="relative w-full bg-gray-100 py-20 px-6 overflow-hidden">
   <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
     {/* Left Side – Map */}
@@ -634,14 +634,14 @@ function Humble() {
       data-aos="fade-right"
     >
       <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d55857.01948076882!2d-95.4012917!3d29.7604267!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8640bf3b5d08b73b%3A0x8a89a3a0f4a0b9b4!2sHouston%2C%20TX!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d55563.50983005333!2d-95.3089!3d29.9988!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8640ae9fdd2ff6f5%3A0x4b2b1b2a9c4e0b4!2sHumble%2C%20TX!5e0!3m2!1sen!2sus!4v1752284444444!5m2!1sen!2sus"
         width="100%"
         height="100%"
         style={{ border: 0 }}
         allowFullScreen=""
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
-        title="Junk Buddies Houston Coverage Map"
+        title="Junk Buddies Humble Coverage Map"
       ></iframe>
     </div>
 
@@ -652,31 +652,30 @@ function Humble() {
       </h2>
       <ul className="space-y-4 text-base sm:text-lg leading-relaxed">
         <li>
-          <span className="text-gold font-semibold">Central Houston →</span>{" "}
-          77002, 77003, 77004, 77006, 77007
+          <span className="text-gold font-semibold">Central Humble →</span>{" "}
+          77338
         </li>
         <li>
-          <span className="text-gold font-semibold">West Houston →</span>{" "}
-          77042, 77055, 77057, 77063, 77077
+          <span className="text-gold font-semibold">North Humble →</span>{" "}
+          Fall Creek, Northbelt
         </li>
         <li>
-          <span className="text-gold font-semibold">North Houston →</span>{" "}
-          77014, 77032, 77038, 77060, 77073
+          <span className="text-gold font-semibold">South Humble →</span>{" "}
+          Borders of Atascocita & Lake Houston
         </li>
         <li>
-          <span className="text-gold font-semibold">South Houston →</span>{" "}
-          77034, 77047, 77061, 77089
+          <span className="text-gold font-semibold">East Humble →</span>{" "}
+          Near FM 1960 & Wilson Rd
         </li>
         <li>
-          <span className="text-gold font-semibold">Suburbs & Beyond →</span>{" "}
-          Katy, Sugar Land, Pearland, Pasadena, The Woodlands, League City,
-          Baytown, Tomball, Missouri City, Humble, Rosenberg, Richmond, Deer
-          Park, Alvin, Channelview, La Porte, Friendswood
+          <span className="text-gold font-semibold">Nearby Areas →</span>{" "}
+          Kingwood, Atascocita, Porter, New Caney, Aldine, IAH Airport area
         </li>
       </ul>
     </div>
   </div>
 </section>
+
     
 {/* === SECTION 5: OFFICIAL JUNK BUDDIES — HOUSTON, TX === */}
 <section className="relative w-full bg-white overflow-hidden">
