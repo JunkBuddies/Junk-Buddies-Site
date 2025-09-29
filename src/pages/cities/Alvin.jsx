@@ -10,7 +10,7 @@ function Alvin() {
   const aboutParagraphRef = useRef(null);
   const cardRefs = useRef([]);
   cardRefs.current = [];
-  
+   
   const [aboutInView, setAboutInView] = useState(false);
 
   const setCardRef = (el) => {
