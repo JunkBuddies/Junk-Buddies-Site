@@ -102,7 +102,7 @@ function Pasadena() {
     bg-gradient-to-r from-sky-400 via-sky-500 to-sky-600 drop-shadow-md"
 >
 
-    Houston
+    Pasadena
   </span>
 </h2>
 
