@@ -674,6 +674,7 @@ function MattressRemovalPage() {
   );
 }
 
-export default LandingPage;
+export default MattressRemovalPage;
+
  
  
