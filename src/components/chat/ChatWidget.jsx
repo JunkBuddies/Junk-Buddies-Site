@@ -362,40 +362,54 @@ export default function ChatWidget() {
   // ------------------------------------------
   // 🎨 Chat UI below
   // ------------------------------------------
-  return (
+   return (
     <>
-      {/* ✨ Local styles */}
+      {/* ✨ Glassy neon chat container styling */}
       <style>{`
-        @keyframes jbPulse {
-          0% {
-            box-shadow:
-              0 0 0 0 rgba(30,144,255,0.6),
-              0 0 12px 4px rgba(212,175,55,.55);
-          }
-          40% {
-            box-shadow:
-              0 0 0 14px rgba(255,0,255,0.3),
-              0 0 16px 6px rgba(30,144,255,0.6);
-          }
-          80% {
-            box-shadow:
-              0 0 0 0 rgba(30,144,255,0),
-              0 0 10px 4px rgba(255,0,255,0.4);
-          }
-          100% {
-            box-shadow:
-              0 0 0 0 rgba(30,144,255,0),
-              0 0 12px 4px rgba(212,175,55,.55);
-          }
+        .chat-container {
+          background: rgba(0, 0, 0, 0.95);
+          border: 2px solid rgba(212, 175, 55, 0.8);
+          box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
+          border-radius: 20px;
+          backdrop-filter: blur(6px);
+          color: #d4af37;
+          font-family: 'Orbitron', sans-serif;
+          display: flex;
+          flex-direction: column;
+          height: 560px;
+          max-height: 85vh;
+          width: 360px;
+          max-width: 90vw;
         }
-        .jb-pulse { animation: jbPulse 2.2s ease-in-out infinite; }
-
-        @keyframes jbChatGlow {
-          0% { box-shadow: 0 0 10px rgba(30,144,255,0.5), 0 0 20px rgba(255,0,255,0.4); }
-          50% { box-shadow: 0 0 18px rgba(30,144,255,0.7), 0 0 28px rgba(255,0,255,0.6); }
-          100% { box-shadow: 0 0 10px rgba(30,144,255,0.5), 0 0 20px rgba(255,0,255,0.4); }
+        .message {
+          border: 1px solid rgba(212, 175, 55, 0.4);
+          border-radius: 12px;
+          background: rgba(0, 0, 0, 0.7);
+          box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.25);
+          padding: 10px 14px;
+          margin: 8px 0;
+          white-space: pre-wrap;
         }
-        .jb-chat-glow { animation: jbChatGlow 2.5s ease-in-out infinite; }
+        .user-message {
+          align-self: flex-end;
+          background: rgba(212, 175, 55, 0.1);
+          border: 1px solid rgba(212, 175, 55, 0.6);
+          color: #fff;
+        }
+        .send-button {
+          background: rgba(212, 175, 55, 0.15);
+          border: 1px solid rgba(212, 175, 55, 0.8);
+          box-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+          color: #d4af37;
+          font-weight: 600;
+          border-radius: 10px;
+          padding: 6px 12px;
+          transition: all 0.25s ease;
+        }
+        .send-button:hover {
+          background: rgba(212, 175, 55, 0.3);
+          box-shadow: 0 0 15px rgba(212, 175, 55, 0.9);
+        }
       `}</style>
 
       {/* 💬 Floating launcher */}
@@ -455,26 +469,15 @@ export default function ChatWidget() {
         </>
       )}
 
-      {/* 🪄 Chat window */}
+      {/* 🪩 Neon glass chat window */}
       {open && (
         <div
-          className="jb-chat-glow"
+          className="chat-container"
           style={{
             position: "fixed",
             right: 16,
             bottom: 16,
-            width: 360,
-            maxWidth: "90vw",
-            height: 560,
-            maxHeight: "85vh",
-            background: BLACK,
-            color: "#fff",
-            borderRadius: 16,
-            boxShadow: "0 18px 40px rgba(0,0,0,0.5)",
-            display: "flex",
-            flexDirection: "column",
             zIndex: 10000,
-            border: `1px solid ${GOLD}`,
           }}
         >
           {/* Header */}
@@ -513,6 +516,7 @@ export default function ChatWidget() {
                 border: "none",
                 color: "#fff",
                 cursor: "pointer",
+                fontSize: 18,
               }}
             >
               ✕
@@ -520,41 +524,29 @@ export default function ChatWidget() {
           </div>
 
           {/* Messages */}
-          <div style={{ flex: 1, overflowY: "auto", padding: 10 }}>
+          <div
+            style={{
+              flex: 1,
+              overflowY: "auto",
+              padding: "10px 14px",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             {messages.map((m, i) => (
               <div
                 key={i}
-                style={{
-                  margin: "6px 0",
-                  textAlign: m.role === "user" ? "right" : "left",
-                }}
+                className={`message ${m.role === "user" ? "user-message" : ""}`}
               >
-                <span
-                  style={{
-                    display: "inline-block",
-                    padding: "6px 10px",
-                    borderRadius: 10,
-                    background: m.role === "user" ? GOLD : "#222",
-                    color: m.role === "user" ? BLACK : "#fff",
-                    whiteSpace: "pre-wrap",
-                  }}
-                >
-                  {m.content}
-                </span>
+                {m.content}
               </div>
             ))}
 
             {gate && (
-              <div
-                style={{
-                  marginTop: 8,
-                  padding: 10,
-                  borderRadius: 10,
-                  border: `1px solid ${GOLD}`,
-                  background: "#151515",
-                }}
-              >
-                <div style={{ marginBottom: 8, fontWeight: 600 }}>{gate.text}</div>
+              <div className="message" style={{ background: "#151515" }}>
+                <div style={{ marginBottom: 8, fontWeight: 600 }}>
+                  {gate.text}
+                </div>
 
                 {gate.id === "lead_capture" ? (
                   <div style={{ display: "grid", gap: 6 }}>
@@ -606,15 +598,7 @@ export default function ChatWidget() {
                     >
                       <button
                         onClick={() => onGateChoice("submit")}
-                        style={{
-                          borderRadius: 8,
-                          padding: "6px 10px",
-                          cursor: "pointer",
-                          fontWeight: 700,
-                          background: GOLD,
-                          color: BLACK,
-                          border: "none",
-                        }}
+                        className="send-button"
                       >
                         Apply 10% Off
                       </button>
@@ -638,29 +622,14 @@ export default function ChatWidget() {
                   <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                     <button
                       onClick={() => onGateChoice("yes")}
-                      style={{
-                        borderRadius: 8,
-                        padding: "6px 10px",
-                        cursor: "pointer",
-                        fontWeight: 700,
-                        background: GOLD,
-                        color: BLACK,
-                        border: "none",
-                      }}
+                      className="send-button"
                     >
                       Yes
                     </button>
                     <button
                       onClick={() => onGateChoice("no")}
-                      style={{
-                        borderRadius: 8,
-                        padding: "6px 10px",
-                        cursor: "pointer",
-                        fontWeight: 700,
-                        background: "#222",
-                        color: "#fff",
-                        border: `1px solid ${GOLD}`,
-                      }}
+                      className="send-button"
+                      style={{ background: "transparent" }}
                     >
                       No
                     </button>
@@ -677,6 +646,9 @@ export default function ChatWidget() {
               borderTop: `1px solid ${GOLD}`,
               padding: 10,
               opacity: gate ? 0.6 : 1,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
             }}
           >
             <textarea
@@ -689,26 +661,19 @@ export default function ChatWidget() {
               }
               disabled={!!gate}
               style={{
-                width: "80%",
+                flex: 1,
                 borderRadius: 8,
                 padding: "6px 10px",
                 background: "#111",
                 color: "#fff",
                 border: `1px solid ${GOLD}`,
+                resize: "none",
               }}
             />
             <button
               onClick={send}
               disabled={loading || !!gate}
-              style={{
-                marginLeft: 8,
-                borderRadius: 8,
-                background: GOLD,
-                color: BLACK,
-                fontWeight: 700,
-                padding: "6px 12px",
-                cursor: "pointer",
-              }}
+              className="send-button"
             >
               Send
             </button>
