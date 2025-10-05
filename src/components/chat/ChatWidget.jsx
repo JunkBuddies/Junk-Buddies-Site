@@ -281,69 +281,71 @@ export default function ChatWidget() {
       return;
     }
 
-    if (gate.id === "lead_capture" && action === "submit") {
-      if (!leadDraft.name.trim() || !validPhone(leadDraft.phone)) {
-        setMessages((m) => [
-          ...m,
-          {
-            role: "assistant",
-            content: "Please enter a name and valid phone (10+ digits).",
-          },
-        ]);
-        return;
-      }
+  if (gate.id === "lead_capture" && action === "submit") {
+  if (!leadDraft.name.trim() || !validPhone(leadDraft.phone)) {
+    setMessages((m) => [
+      ...m,
+      {
+        role: "assistant",
+        content: "Please add a name and valid phone (10+ digits).",
+      },
+    ]);
+    return;
+  }
 
-      // 📊 Log attempt to GA4 + Firestore
-      sendGAEvent("generate_lead", {
+  // 📊 Log attempt to GA4 + Firestore
+  sendGAEvent("generate_lead", {
+    name: leadDraft.name.trim(),
+    phone: leadDraft.phone.trim(),
+    sessionId,
+  });
+
+  try {
+    await addDoc(collection(db, "leadCaptures"), {
+      name: leadDraft.name.trim(),
+      phone: leadDraft.phone.trim(),
+      enteredAt: serverTimestamp(),
+      sessionId,
+    });
+  } catch (err) {
+    console.error("❌ Firestore lead error:", err);
+  }
+
+  // ✉️ EmailJS
+  try {
+    await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_TEMPLATE_ID,
+      {
         name: leadDraft.name.trim(),
         phone: leadDraft.phone.trim(),
         sessionId,
-      });
-      try {
-        await addDoc(collection(db, "leadCaptures"), {
-          name: leadDraft.name.trim(),
-          phone: leadDraft.phone.trim(),
-          enteredAt: serverTimestamp(),
-          sessionId,
-        });
-      } catch (err) {
-        console.error("❌ Firestore lead error:", err);
-      }
+        enteredAt: new Date().toLocaleString(),
+      },
+      EMAILJS_PUBLIC_KEY
+    );
+  } catch (err) {
+    console.error("❌ EmailJS send error:", err);
+  }
 
-      // ✉️ EmailJS
-      try {
-        await emailjs.send(
-          EMAILJS_SERVICE_ID,
-          EMAILJS_TEMPLATE_ID,
-          {
-            name: leadDraft.name.trim(),
-            phone: leadDraft.phone.trim(),
-            sessionId,
-            enteredAt: new Date().toLocaleString(),
-          },
-          EMAILJS_PUBLIC_KEY
-        );
-      } catch (err) {
-        console.error("❌ EmailJS send error:", err);
-      }
+  // ✅ Persist lead info
+  localStorage.setItem(`jb_lead_name_${sessionId}`, leadDraft.name.trim());
+  localStorage.setItem(`jb_lead_phone_${sessionId}`, leadDraft.phone);
+  setLeadCaptured(true);
+  setDiscountActive(true);
 
-      // Persist
-      localStorage.setItem(`jb_lead_name_${sessionId}`, leadDraft.name.trim());
-      localStorage.setItem(`jb_lead_phone_${sessionId}`, leadDraft.phone);
-      setLeadCaptured(true);
-      setDiscountActive(true);
-      setGate(null);
+  // ✅ Close gate without wiping context
+  setGate(null);
 
-      // Reply naturally
-      setMessages((m) => [
-        ...m,
-        {
-          role: "assistant",
-          content: `Awesome, ${leadDraft.name}! Your 10% OFF + 1 FREE item is attached ✅  Now list your items and I’ll price them for you.`,
-        },
-      ]);
-      return;
-    }
+  // ✅ Append confirmation naturally to existing chat
+  setMessages((m) => [
+    ...m,
+    {
+      role: "assistant",
+      content: `Awesome, ${leadDraft.name}! Your 10% OFF + 1 FREE item is attached ✅ Just keep listing items — I’ll keep your totals updated.`,
+    },
+  ]);
+}
 
     if (gate.id === "lead_capture" && action === "decline") {
       setGate(null);
