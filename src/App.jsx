@@ -12,6 +12,8 @@ import HowMuchDoesJunkRemovalCost from './pages/blog/HowMuchDoesJunkRemovalCost'
 import SaveMoneyOnJunkRemoval from './pages/blog/SaveMoneyOnJunkRemoval';
 import FaqPage from './pages/FaqPage';
 import ServiceAreasPage from './pages/ServiceAreasPage';
+import MattressRemovalPage from "./pages/MattressRemovalPage";
+
 
 // Import city-specific pages
 import Houston from './pages/cities/Houston';
