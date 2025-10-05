@@ -88,7 +88,7 @@ function MattressRemovalPage() {
         {/* Right Side Image */}
         <div className="relative w-full lg:w-1/3 flex justify-center items-center mt-8 lg:mt-0">
           <img
-            src="/images/junk buddies chat bot visual.png"
+            src="/images/junk-buddies-chat-bot-visual.png"
             alt="Mattress Removal Junk Buddies"
             className="rounded-xl shadow-lg border border-gold/40 object-cover w-[90%] lg:w-full max-w-[400px]"
           />
