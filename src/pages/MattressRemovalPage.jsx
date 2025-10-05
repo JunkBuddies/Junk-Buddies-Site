@@ -27,8 +27,8 @@ function MattressRemovalPage() {
         {/* Left Text Column */}
         <div className="z-20 lg:w-2/3 text-left space-y-6">
 
-          {/* Animated Junk Buddies Title */}
-          <div className="shine-wrapper flex justify-center items-center gap-3 whitespace-nowrap mb-6">
+          {/* Animated Junk Buddies Title with black background */}
+          <div className="shine-wrapper flex justify-center items-center gap-3 whitespace-nowrap mb-6 bg-black rounded-xl px-4 py-2 shadow-lg border border-gold/30">
             <span
               ref={junkRef}
               className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk"
@@ -85,12 +85,12 @@ function MattressRemovalPage() {
           </div>
         </div>
 
-        {/* Right Side Image */}
-        <div className="relative w-full lg:w-1/3 flex justify-center items-center mt-8 lg:mt-0">
+        {/* Right Side Image – full hero height */}
+        <div className="relative w-full lg:w-1/3 flex justify-center items-stretch mt-8 lg:mt-0 h-full">
           <img
             src="/images/junk-buddies-chat-bot-visual.png"
             alt="Mattress Removal Junk Buddies"
-            className="rounded-xl shadow-lg border border-gold/40 object-cover w-[90%] lg:w-full max-w-[400px]"
+            className="rounded-none object-cover h-full w-full shadow-lg border-l border-gold/40"
           />
         </div>
       </section>
