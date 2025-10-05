@@ -231,6 +231,28 @@ function LandingPage() {
         </a>
       </div>
 
+{/* === INTRO: JUNK REMOVAL HOUSTON & SURROUNDING AREAS (SUBTLE VERSION) === */}
+<section className="bg-white text-gray-700 py-4 px-3 text-center border-t border-gold opacity-60 hover:opacity-80 transition-opacity duration-300">
+  <h1 className="text-xs sm:text-sm font-semibold text-gold mb-1 tracking-wide">
+    Junk Removal in Houston & Surrounding Areas
+  </h1>
+  <p className="max-w-3xl mx-auto text-[10px] sm:text-xs leading-snug text-gray-500">
+    Junk Buddies LLC provides fast, affordable junk removal in Houston, TX and nearby areas like 
+    Katy, Pearland, Pasadena, Cypress, Sugar Land, and The Woodlands. From furniture and appliances 
+    to full property cleanouts, we make junk removal easy with same-day service, upfront pricing, 
+    and eco-friendly recycling on every job.
+  </p>
+  <div className="flex justify-center mt-2">
+    <button
+      className="ai-price-button text-[10px] sm:text-xs px-2 py-1"
+      onClick={() => document.getElementById('jb-open-button')?.click()}
+    >
+      See Price In Seconds
+    </button>
+  </div>
+</section>
+
+    
 {/* === WHITE GLOVE SERVICE SECTION === */}
 <section className="relative w-full bg-[#fafafa] py-20 px-6 overflow-hidden">
   {/* Badge */}
