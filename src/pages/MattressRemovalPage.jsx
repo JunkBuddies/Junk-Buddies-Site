@@ -21,11 +21,12 @@ function MattressRemovalPage() {
 
   return (
     <div className="w-full overflow-hidden bg-white text-gray-800">
-     {/* HERO SECTION – Mattress Removal */}
+   {/* HERO SECTION – Mattress Removal */}
 <section className="relative w-full min-h-[90vh] flex flex-col bg-black text-white overflow-hidden">
 
   {/* Top Section – Junk Buddies + Image */}
   <div className="flex flex-col lg:flex-row items-center justify-between w-full h-[55vh] px-6 lg:px-16 pt-12 lg:pt-16">
+    
     {/* Left Logo Column */}
     <div className="flex flex-col justify-center items-center lg:items-start w-full lg:w-1/2 space-y-4 text-center lg:text-left">
       <div className="shine-wrapper flex justify-center items-center gap-2 sm:gap-3 whitespace-nowrap bg-black/80 rounded-xl px-3 sm:px-6 py-2 sm:py-3 shadow-lg border border-gold/30">
@@ -55,7 +56,10 @@ function MattressRemovalPage() {
       <img
         src="/images/junk-buddies-chat-bot-visual.png"
         alt="Mattress Removal Junk Buddies"
-        className="object-contain h-full w-auto max-w-[90%] relative z-10"
+        className="object-contain relative z-10 
+                   h-[60vw] sm:h-[50vw] md:h-full 
+                   w-auto max-w-[85%] sm:max-w-[80%] 
+                   lg:max-w-[90%] mx-auto"
       />
     </div>
   </div>
@@ -99,6 +103,7 @@ function MattressRemovalPage() {
     </div>
   </div>
 </section>
+
 
 
       {/* REQUIRE SERVICE TODAY BAR */}
