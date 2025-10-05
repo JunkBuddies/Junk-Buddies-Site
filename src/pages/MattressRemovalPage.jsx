@@ -21,79 +21,85 @@ function MattressRemovalPage() {
 
   return (
     <div className="w-full overflow-hidden bg-white text-gray-800">
-      {/* HERO SECTION – Mattress Removal */}
-      <section className="relative w-full min-h-[90vh] flex flex-col lg:flex-row items-center justify-between px-6 lg:px-16 py-16 bg-[#f9fafb]">
-        
-        {/* Left Text Column */}
-        <div className="z-20 lg:w-2/3 text-left space-y-6">
+     {/* HERO SECTION – Mattress Removal */}
+<section className="relative w-full min-h-[90vh] flex flex-col bg-black text-white overflow-hidden">
 
-          {/* Animated Junk Buddies Title with black background */}
-          <div className="shine-wrapper flex justify-center items-center gap-3 whitespace-nowrap mb-6 bg-black rounded-xl px-4 py-2 shadow-lg border border-gold/30">
-            <span
-              ref={junkRef}
-              className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk"
-            >
-              Junk
-            </span>
-            <img
-              src="/images/logo-icon.png"
-              alt="Logo"
-              className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
-            />
-            <span
-              ref={buddiesRef}
-              className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies"
-            >
-              Buddies
-            </span>
-          </div>
+  {/* Top Section – Junk Buddies + Image */}
+  <div className="flex flex-col lg:flex-row items-center justify-between w-full h-[55vh] px-6 lg:px-16 pt-12 lg:pt-16">
+    {/* Left Logo Column */}
+    <div className="flex flex-col justify-center items-center lg:items-start w-full lg:w-1/2 space-y-4 text-center lg:text-left">
+      <div className="shine-wrapper flex justify-center items-center gap-2 sm:gap-3 whitespace-nowrap bg-black/80 rounded-xl px-3 sm:px-6 py-2 sm:py-3 shadow-lg border border-gold/30">
+        <span
+          ref={junkRef}
+          className="text-[2.25rem] sm:text-5xl md:text-6xl lg:text-7xl metallic-text-3d shine-junk"
+        >
+          Junk
+        </span>
+        <img
+          src="/images/logo-icon.png"
+          alt="Logo"
+          className="h-[2.75rem] sm:h-[4rem] md:h-[5rem] w-auto object-contain"
+        />
+        <span
+          ref={buddiesRef}
+          className="text-[2.25rem] sm:text-5xl md:text-6xl lg:text-7xl metallic-text-3d shine-buddies"
+        >
+          Buddies
+        </span>
+      </div>
+    </div>
 
-          {/* Headline */}
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-gold leading-tight">
-            Mattress Removal in Houston, TX & Surrounding Areas
-          </h1>
+    {/* Right Image Column */}
+    <div className="relative w-full lg:w-1/2 h-full flex justify-center items-center">
+      <div className="absolute inset-0 bg-black" />
+      <img
+        src="/images/junk-buddies-chat-bot-visual.png"
+        alt="Mattress Removal Junk Buddies"
+        className="object-contain h-full w-auto max-w-[90%] relative z-10"
+      />
+    </div>
+  </div>
 
-          <p className="text-base sm:text-lg text-gray-700 max-w-2xl">
-            Got an old mattress you need gone? Junk Buddies provides fast, affordable mattress
-            pickup and disposal across Houston and nearby cities. We’ll haul it out, recycle or
-            donate when possible, and ensure it’s handled responsibly — so you can rest easy.
-          </p>
+  {/* Bottom Text Area */}
+  <div className="w-full text-center px-6 lg:px-16 py-10 bg-[#f9fafb] text-gray-800">
+    <h1 className="text-2xl sm:text-4xl font-extrabold text-gold leading-tight mb-4">
+      Mattress Removal in Houston, TX & Surrounding Areas
+    </h1>
 
-          <ul className="text-gray-700 text-base sm:text-lg space-y-2 list-disc list-inside">
-            <li>🛏️ Old Mattress & Box Spring Removal</li>
-            <li>🚚 Same-Day & Next-Day Pickup</li>
-            <li>♻️ Eco-Friendly Recycling & Donation</li>
-            <li>💵 Upfront Pricing – No Surprises</li>
-          </ul>
+    <p className="text-sm sm:text-lg text-gray-700 max-w-2xl mx-auto mb-6">
+      Got an old mattress you need gone? Junk Buddies provides fast, affordable mattress
+      pickup and disposal across Houston and nearby cities. We’ll haul it out, recycle or
+      donate when possible, and ensure it’s handled responsibly — so you can rest easy.
+    </p>
 
-          <div className="flex flex-wrap gap-4 mt-6">
-            <button
-              className="ai-price-button"
-              onClick={() => document.getElementById('jb-open-button')?.click()}
-            >
-              View Price In Seconds
-            </button>
-            <button
-              className="cta-metallic-button"
-              onClick={() => navigate('/schedule')}
-            >
-              Schedule Pickup
-            </button>
-            <a href="tel:3465936080" className="silver-button inline-block">
-              Call Now
-            </a>
-          </div>
-        </div>
+    <ul className="text-gray-700 text-sm sm:text-lg space-y-2 list-disc list-inside max-w-md mx-auto text-left sm:text-center mb-6">
+      <li>🛏️ Old Mattress & Box Spring Removal</li>
+      <li>🚚 Same-Day & Next-Day Pickup</li>
+      <li>♻️ Eco-Friendly Recycling & Donation</li>
+      <li>💵 Upfront Pricing – No Surprises</li>
+    </ul>
 
-        {/* Right Side Image – full hero height */}
-        <div className="relative w-full lg:w-1/3 flex justify-center items-stretch mt-8 lg:mt-0 h-full">
-          <img
-            src="/images/junk-buddies-chat-bot-visual.png"
-            alt="Mattress Removal Junk Buddies"
-            className="rounded-none object-cover h-full w-full shadow-lg border-l border-gold/40"
-          />
-        </div>
-      </section>
+    {/* Centered CTA Buttons */}
+    <div className="flex flex-wrap justify-center gap-4 mt-4">
+      <button
+        className="ai-price-button"
+        onClick={() => document.getElementById('jb-open-button')?.click()}
+      >
+        View Price In Seconds
+      </button>
+      <button
+        className="cta-metallic-button"
+        onClick={() => navigate('/schedule')}
+      >
+        Schedule Pickup
+      </button>
+      <a href="tel:3465936080" className="silver-button inline-block">
+        Call Now
+      </a>
+    </div>
+  </div>
+</section>
+
 
       {/* REQUIRE SERVICE TODAY BAR */}
       <div className="w-full text-center text-lg text-white py-10 px-6 about-reveal silver">
