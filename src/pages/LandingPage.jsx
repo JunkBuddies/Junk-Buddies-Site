@@ -101,7 +101,7 @@ function LandingPage() {
     bg-gradient-to-r from-sky-400 via-sky-500 to-sky-600 drop-shadow-md"
 >
 
-    Houston
+    Houston, TX
   </span>
 </h2>
 
@@ -181,7 +181,7 @@ function LandingPage() {
       className="ai-price-button"
       onClick={() => document.getElementById('jb-open-button')?.click()}
     >
-      See Price In Seconds
+      View Price In Seconds
     </button>
   </div>
 </div>
@@ -217,7 +217,7 @@ function LandingPage() {
     className="ai-price-button"
     onClick={() => document.getElementById('jb-open-button')?.click()}
   >
-    See Price In Seconds
+    View Price In Seconds
   </button>
 </div>
 </div>
@@ -247,7 +247,7 @@ function LandingPage() {
       className="ai-price-button text-[10px] sm:text-xs px-2 py-1"
       onClick={() => document.getElementById('jb-open-button')?.click()}
     >
-      See Price In Seconds
+      View Price In Seconds
     </button>
   </div>
 </section>
@@ -383,13 +383,13 @@ function LandingPage() {
     </span>
   </p>
 
-{/* CTA Button: See Price In Seconds (tablet & desktop) */}
+{/* CTA Button: View Price In Seconds (tablet & desktop) */}
 <div className="hidden sm:flex justify-center mt-4">
   <button
     className="ai-price-button"
     onClick={() => document.getElementById('jb-open-button')?.click()}
   >
-    See Price In Seconds
+    View Price In Seconds
   </button>
 </div>
 
@@ -408,7 +408,7 @@ function LandingPage() {
       className="ai-price-button"
       onClick={() => document.getElementById('jb-open-button')?.click()}
     >
-      See Price In Seconds
+      View Price In Seconds
     </button>
   </div>
 </div>
@@ -609,7 +609,7 @@ function LandingPage() {
     className="ai-price-button"
     onClick={() => document.getElementById('jb-open-button')?.click()}
   >
-    See Price In Seconds
+    View Price In Seconds
   </button>
 </div>
 </div>
@@ -752,7 +752,7 @@ function LandingPage() {
     className="ai-price-button"
     onClick={() => document.getElementById('jb-open-button')?.click()}
   >
-    See Price In Seconds
+    View Price In Seconds
   </button>
 </div>
 
