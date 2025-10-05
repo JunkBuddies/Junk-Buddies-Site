@@ -82,6 +82,8 @@ function App() {
           <Route path="/service-areas/alvin" element={<Alvin />} />
           <Route path="/service-areas/deer-park" element={<DeerPark />} />
           <Route path="/service-areas/la-porte" element={<LaPorte />} />
+          <Route path="/mattress-removal" element={<MattressRemovalPage />} />
+
         </Routes>
 
         {/* ⬇️ NEW: mounted once so it overlays all routes */}
