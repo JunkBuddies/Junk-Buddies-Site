@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 function MattressRemovalPage() {
@@ -23,8 +23,32 @@ function MattressRemovalPage() {
     <div className="w-full overflow-hidden bg-white text-gray-800">
       {/* HERO SECTION – Mattress Removal */}
       <section className="relative w-full min-h-[90vh] flex flex-col lg:flex-row items-center justify-between px-6 lg:px-16 py-16 bg-[#f9fafb]">
+        
         {/* Left Text Column */}
         <div className="z-20 lg:w-2/3 text-left space-y-6">
+
+          {/* Animated Junk Buddies Title */}
+          <div className="shine-wrapper flex justify-center items-center gap-3 whitespace-nowrap mb-6">
+            <span
+              ref={junkRef}
+              className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-junk"
+            >
+              Junk
+            </span>
+            <img
+              src="/images/logo-icon.png"
+              alt="Logo"
+              className="h-[3.5rem] sm:h-[4.75rem] md:h-[5.5rem] w-auto object-contain"
+            />
+            <span
+              ref={buddiesRef}
+              className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-8xl metallic-text-3d shine-buddies"
+            >
+              Buddies
+            </span>
+          </div>
+
+          {/* Headline */}
           <h1 className="text-3xl sm:text-5xl font-extrabold text-gold leading-tight">
             Mattress Removal in Houston, TX & Surrounding Areas
           </h1>
@@ -100,7 +124,6 @@ function MattressRemovalPage() {
           </button>
         </div>
       </section>
-
 {/* === WHITE GLOVE SERVICE SECTION === */}
 <section className="relative w-full bg-[#fafafa] py-20 px-6 overflow-hidden">
   {/* Badge */}
