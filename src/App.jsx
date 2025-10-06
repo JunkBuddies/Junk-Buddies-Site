@@ -13,6 +13,8 @@ import SaveMoneyOnJunkRemoval from './pages/blog/SaveMoneyOnJunkRemoval';
 import FaqPage from './pages/FaqPage';
 import ServiceAreasPage from './pages/ServiceAreasPage';
 import MattressRemovalPage from "./pages/MattressRemovalPage";
+import FurnitureRemovalPage from "./pages/FurnitureRemovalPage";
+
 
 
 // Import city-specific pages
@@ -85,6 +87,8 @@ function App() {
           <Route path="/service-areas/deer-park" element={<DeerPark />} />
           <Route path="/service-areas/la-porte" element={<LaPorte />} />
           <Route path="/mattress-removal" element={<MattressRemovalPage />} />
+          <Route path="/furniture-removal" element={<FurnitureRemovalPage />} />
+
 
         </Routes>
 
