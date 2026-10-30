@@ -5,15 +5,16 @@ import LandingPage from './pages/LandingPage';
 import SelectionPage from './pages/SelectionPage';
 import LoadSizePage from './pages/LoadSizePage';
 import ItemizedPage from './pages/ItemizedPage';
-import SchedulePage from './pages/SchedulePage';
-import ConfirmationPage from './pages/ConfirmationPage';
+import SchedulePageV2 from './pages/SchedulePageV2';
+import ConfirmationPageV2 from './pages/ConfirmationPageV2';
 import BlogPage from './pages/BlogPage';
 import HowMuchDoesJunkRemovalCost from './pages/blog/HowMuchDoesJunkRemovalCost';
 import SaveMoneyOnJunkRemoval from './pages/blog/SaveMoneyOnJunkRemoval';
 import FaqPage from './pages/FaqPage';
 import ServiceAreasPage from './pages/ServiceAreasPage';
 import MattressRemovalPage from "./pages/MattressRemovalPage";
-import FurnitureRemovalPage from "./pages/FurnitureRemovalPage";\nimport PartnersPage from './pages/PartnersPage';
+import FurnitureRemovalPage from "./pages/FurnitureRemovalPage";
+import PartnersPage from './pages/PartnersPage';
 
 
 
@@ -53,8 +54,8 @@ function App() {
           <Route path="/selection" element={<SelectionPage />} />
           <Route path="/load-size" element={<LoadSizePage />} />
           <Route path="/itemized" element={<ItemizedPage />} />
-          <Route path="/schedule" element={<SchedulePage />} />
-          <Route path="/confirmation" element={<ConfirmationPage />} />
+          <Route path="/schedule" element={<SchedulePageV2 />} />
+          <Route path="/confirmation" element={<ConfirmationPageV2 />} />
 
           {/* Blog Routes */}
           <Route path="/blog" element={<BlogPage />} />
@@ -87,7 +88,8 @@ function App() {
           <Route path="/service-areas/deer-park" element={<DeerPark />} />
           <Route path="/service-areas/la-porte" element={<LaPorte />} />
           <Route path="/mattress-removal" element={<MattressRemovalPage />} />
-          <Route path="/furniture-removal" element={<FurnitureRemovalPage />} />\n          <Route path="/partners" element={<PartnersPage />} />
+          <Route path="/furniture-removal" element={<FurnitureRemovalPage />} />
+          <Route path="/partners" element={<PartnersPage />} />
 
 
         </Routes>
