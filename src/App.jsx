@@ -13,7 +13,7 @@ import SaveMoneyOnJunkRemoval from './pages/blog/SaveMoneyOnJunkRemoval';
 import FaqPage from './pages/FaqPage';
 import ServiceAreasPage from './pages/ServiceAreasPage';
 import MattressRemovalPage from "./pages/MattressRemovalPage";
-import FurnitureRemovalPage from "./pages/FurnitureRemovalPage";
+import FurnitureRemovalPage from "./pages/FurnitureRemovalPage";\nimport PartnersPage from './pages/PartnersPage';
 
 
 
@@ -87,7 +87,7 @@ function App() {
           <Route path="/service-areas/deer-park" element={<DeerPark />} />
           <Route path="/service-areas/la-porte" element={<LaPorte />} />
           <Route path="/mattress-removal" element={<MattressRemovalPage />} />
-          <Route path="/furniture-removal" element={<FurnitureRemovalPage />} />
+          <Route path="/furniture-removal" element={<FurnitureRemovalPage />} />\n          <Route path="/partners" element={<PartnersPage />} />
 
 
         </Routes>
